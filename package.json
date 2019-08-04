@@ -1,5 +1,5 @@
 {
-  "name": "scratch-paper",
+  "name": "wailto",
   "version": "1.0.0",
   "description": "Playground",
   "main": "app.js",
@@ -11,6 +11,7 @@
     "build": "webpack --progress -p"
   },
   "dependencies": {
+    "@babel/runtime": "^7.5.5",
     "body-parser": "^1.19.0",
     "chalk": "^2.4.2",
     "chart.js": "^2.8.0",
@@ -23,11 +24,14 @@
     "express-validator": "^6.1.1",
     "lusca": "^1.6.1",
     "node-fetch": "^2.6.0",
+    "node-sass": "^4.12.0",
     "path": "^0.12.7",
     "plotly.js": "^1.49.1",
     "react-chartjs-2": "^2.7.6",
     "react-chartkick": "^0.3.2",
     "react-plotly.js": "^2.3.0",
+    "react-vis": "^1.11.7",
+    "recharts": "^1.6.2",
     "request": "^2.88.0"
   }
 }

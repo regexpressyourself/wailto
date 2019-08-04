@@ -1,87 +1,85 @@
 import React from 'react';
-import {LineChart} from 'react-chartkick';
-import 'chart.js';
-import {days, months} from './dateMappers';
+import './SongFrequencies.scss';
+import {
+  ResponsiveContainer,
+  AreaChart,
+  Area,
+  XAxis,
+  YAxis,
+  Tooltip,
+} from 'recharts';
+import {days, ampm, accessibleTime} from './dateMappers';
 
-const getAmPmHour = hour => {
-  let meridiem = 'am';
+function bucketSongTimes(bucketKey, bucketMaxSize, songList) {
+  /*
+   * The "map" holds an array with a definition of:
+   * [{ timeSlot: [Song1, Song2, ...] }, ... ]
+   * where timeSlot is the bucketed property's value (day of week,
+   * time of day, etc.), and Song1, Song2, etc. are the song objects
+   * from LastFM.
+   */
+  let map = Array(bucketMaxSize);
 
-  if (hour >= 12) {
-    hour = hour - 12;
-    meridiem = 'pm';
+  for (let song of songList) {
+    let date = song.date;
+    let accessibleDate = accessibleTime(date);
+    let key = accessibleDate[bucketKey];
+
+    if (map[key]) {
+      map[key].push(song);
+    } else {
+      map[key] = [song];
+    }
   }
-  if (hour === 0) {
-    hour = 12;
-  }
-  return hour + meridiem;
-};
-const getDateTime = unixTime => {
-  let date = new Date(unixTime * 1000);
-  let year = date.getFullYear();
-  let month = months()[date.getMonth()];
-  let day = date.getDate();
-  let dow = date.getDay();
-  let hour = date.getHours();
-  let minutes = '0' + date.getMinutes();
-  let seconds = '0' + date.getSeconds();
-  return {
-    month: month,
-    day: day,
-    dow: dow,
-    year: year,
-    hour: hour,
-    minutes: minutes.substr(-2),
-    seconds: seconds.substr(-2),
-  };
-};
+  return map;
+}
 
 function SongFrequencies(props) {
-  let hourMap = Array(24);
-  let dayMap = Array(7);
-  let hourData = {};
-  let dayData = {};
+  let hourDataRC = [];
+  let dayDataRC = [];
 
-  for (let song of props.data) {
-    let date = song.date;
-    let accessibleDate = getDateTime(date);
-    let hour = accessibleDate.hour;
-    let dow = accessibleDate.dow;
-
-    if (hourMap[hour]) {
-      hourMap[hour].push(accessibleDate);
-    } else {
-      hourMap[hour] = [accessibleDate];
-    }
-
-    if (dayMap[dow]) {
-      dayMap[dow].push(accessibleDate);
-    } else {
-      dayMap[dow] = [accessibleDate];
-    }
-    hourData[hour] = hourMap[hour].length;
-    dayData[dow] = dayMap[dow].length;
-  }
+  let dayMap = bucketSongTimes('dow', 7, props.data);
+  let hourMap = bucketSongTimes('hour', 24, props.data);
 
   for (let i = 0; i <= 23; i++) {
-    if (!hourData[i]) {
-      hourData[i] = 0;
-    }
-    hourData[getAmPmHour(i)] = hourData[i];
-    delete hourData[i];
+    hourDataRC.push({
+      name: ampm(i),
+      'Song Count': hourMap[i] ? hourMap[i].length : 0,
+    });
   }
 
   for (let i = 0; i <= 6; i++) {
-    if (!dayData[i]) {
-      dayData[i] = 0;
-    }
-    dayData[days()[i]] = dayData[i];
-    delete dayData[i];
+    dayDataRC.push({
+      name: days()[i],
+      'Song Count': dayMap[i] ? dayMap[i].length : 0,
+    });
   }
 
   return (
     <>
-      <LineChart data={hourData} />
-      <LineChart data={dayData} />
+    <div className="chart-container">
+      <h2>Frequency of music by hour</h2>
+      <ResponsiveContainer>
+        <AreaChart data={hourDataRC} >
+          <XAxis dataKey="name" />
+          <YAxis />
+          <Tooltip />
+          <Area type="monotone" dataKey="Song Count" stroke="#7f4782" fill="#aa5c9f" />
+        </AreaChart>
+      </ResponsiveContainer>
+    </div>
+
+    <div className="chart-container">
+      <h2>Frequency of music by day</h2>
+      <ResponsiveContainer>
+        <AreaChart data={dayDataRC} >
+          <XAxis dataKey="name" />
+          <YAxis />
+          <Tooltip />
+          <Area type="monotone" dataKey="Song Count" stroke="#7f4782" fill="#aa5c9f" />
+        </AreaChart>
+      </ResponsiveContainer>
+    </div>
     </>
   );
 }

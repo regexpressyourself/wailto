@@ -1,24 +1,16 @@
 import React, {useReducer} from 'react';
 import SongFrequencies from './SongFrequencies';
 import Nav from './Nav';
-import { ConfigContext, ConfigProvider } from 'ConfigContext';
+import { ConfigContext, configReducer} from './ConfigContext';
 import './App.css';
 
 //import {useFetch} from '../hooks/fetch';
 import songs from './songs'; // UNCOMMENT TO USE FAKE DATA
 
 function App() {
-  let initialConfig = {timeStart: '', timeEnd: ''};
-  const [config, configDispatch] = useReducer((config, configAction) => {
-    switch(configAction.type) {
-      case 'TIME_START':
-        return { timeStart: configAction.timeStart}
-      case 'TIME_END':
-        return { timeEnd: configAction.timeEnd}
-      default:
-        return config;
-    }
-  }, initialConfig);
+
+let initialConfig = {timeStart: '10', timeEnd: '10'};
+  const [config, configDispatch] = useReducer(configReducer, initialConfig)
 
   const res = {response: songs()}; // UNCOMMENT TO USE FAKE DATA
   //const res = useFetch(
@@ -36,10 +28,10 @@ function App() {
 
   return (
     <>
-    <ConfigProvider value={{config, configDispatch}}>
+    <ConfigContext.Provider value={{config, configDispatch}}>
       <Nav />
       <SongFrequencies data={res.response} />
-    </ConfigProvider>
+    </ConfigContext.Provider>
     </>
   );
 }

@@ -1,5 +1,6 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import './SongFrequencies.scss';
+import { ConfigContext } from './ConfigContext';
 import {
   ResponsiveContainer,
   AreaChart,
@@ -35,6 +36,8 @@ function bucketSongTimes(bucketKey, bucketMaxSize, songList) {
 }
 
 function SongFrequencies(props) {
+  const { config, configDispatch } = useContext(ConfigContext)
+
   let hourDataRC = [];
   let dayDataRC = [];
 

@@ -1,6 +1,6 @@
-import React, {useContext} from 'react';
+import React, {useContext, useEffect} from 'react';
 import './SongFrequencies.scss';
-import { ConfigContext } from './ConfigContext';
+import {ConfigContext} from '../context/ConfigContext';
 import {
   ResponsiveContainer,
   AreaChart,
@@ -36,7 +36,11 @@ function bucketSongTimes(bucketKey, bucketMaxSize, songList) {
 }
 
 function SongFrequencies(props) {
-  const { config, configDispatch } = useContext(ConfigContext)
+  const {config} = useContext(ConfigContext);
+  useEffect(() => {
+    // TODO use this to get specific song list
+    console.log(config);
+  }, [config]);
 
   let hourDataRC = [];
   let dayDataRC = [];
@@ -60,29 +64,39 @@ function SongFrequencies(props) {
 
   return (
     <>
-    <div className="chart-container">
-      <h2>Frequency of music by hour</h2>
-      <ResponsiveContainer>
-        <AreaChart data={hourDataRC} >
-          <XAxis dataKey="name" />
-          <YAxis />
-          <Tooltip />
-          <Area type="monotone" dataKey="Song Count" stroke="#7f4782" fill="#aa5c9f" />
-        </AreaChart>
-      </ResponsiveContainer>
-    </div>
+      <div className="chart-container">
+        <h2>Frequency of music by hour</h2>
+        <ResponsiveContainer>
+          <AreaChart data={hourDataRC}>
+            <XAxis dataKey="name" />
+            <YAxis />
+            <Tooltip />
+            <Area
+              type="monotone"
+              dataKey="Song Count"
+              stroke="#7f4782"
+              fill="#aa5c9f"
+            />
+          </AreaChart>
+        </ResponsiveContainer>
+      </div>
 
-    <div className="chart-container">
-      <h2>Frequency of music by day</h2>
-      <ResponsiveContainer>
-        <AreaChart data={dayDataRC} >
-          <XAxis dataKey="name" />
-          <YAxis />
-          <Tooltip />
-          <Area type="monotone" dataKey="Song Count" stroke="#7f4782" fill="#aa5c9f" />
-        </AreaChart>
-      </ResponsiveContainer>
-    </div>
+      <div className="chart-container">
+        <h2>Frequency of music by day</h2>
+        <ResponsiveContainer>
+          <AreaChart data={dayDataRC}>
+            <XAxis dataKey="name" />
+            <YAxis />
+            <Tooltip />
+            <Area
+              type="monotone"
+              dataKey="Song Count"
+              stroke="#7f4782"
+              fill="#aa5c9f"
+            />
+          </AreaChart>
+        </ResponsiveContainer>
+      </div>
     </>
   );
 }

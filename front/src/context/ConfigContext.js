@@ -7,9 +7,9 @@ let initialConfig = {timeStart: null, timeEnd: null};
 function configReducer(state, configAction) {
   switch (configAction.type) {
     case 'TIME_START':
-      return {timeStart: configAction.timeStart};
+      return {...state, timeStart: configAction.timeStart};
     case 'TIME_END':
-      return {timeEnd: configAction.timeEnd};
+      return {...state, timeEnd: configAction.timeEnd};
     default:
       return initialConfig;
   }

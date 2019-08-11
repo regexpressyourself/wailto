@@ -4,50 +4,18 @@ const request = require('request');
 const fetch = require('node-fetch');
 const cors = require('cors');
 const format = require('pg-format');
+const stringHash = require('string-hash');
+let client = require('./database').client;
 
 require('dotenv').config();
 const LASTFM_KEY = process.env.LASTFM_KEY;
-
-String.prototype.hashCode = function() {
-  var hash = 0,
-    i,
-    chr;
-  if (this.length === 0) return hash;
-  for (i = 0; i < this.length; i++) {
-    chr = this.charCodeAt(i);
-    hash = (hash << 5) - hash + chr;
-    hash |= 0; // Convert to 32bit integer
-  }
-  return hash;
-};
-
-const {Pool, Client} = require('pg');
-const pool = new Pool({
-  user: 'zookeeprr',
-  host: 'localhost',
-  database: 'wailto',
-  password: '',
-  port: 5432,
-});
-
-const client = new Client({
-  user: 'zookeeprr',
-  host: 'localhost',
-  database: 'wailto',
-  password: '',
-  port: 5432,
-});
-client.connect();
 
 let saveCoverage = (userId, from, to) => {
   return new Promise((resolve, reject) => {
     let values = [];
     while (from < to) {
       let unixFrom = Math.round(from.getTime() / 1000);
-      values.push([
-        userId,
-        unixFrom
-      ]);
+      values.push([userId, unixFrom]);
       from.setDate(from.getDate() + 1);
     }
 
@@ -66,12 +34,11 @@ let saveCoverage = (userId, from, to) => {
         reject(e);
       });
   });
-}
+};
 
-let saveHistory = (userId, history) => {
+let saveSongs = (userId, history) => {
   return new Promise((resolve, reject) => {
     let songValues = [];
-    let historyValues = [];
     for (let song of history) {
       songValues.push([
         song.id,
@@ -81,47 +48,46 @@ let saveHistory = (userId, history) => {
         song.artist,
         song.url,
       ]);
+    }
+
+    const songQuery = format(
+      'INSERT INTO songs (id, name, image, album, artist, url) VALUES %L ON CONFLICT (id) DO NOTHING RETURNING id;',
+      songValues,
+    );
+    client
+      .query(songQuery)
+      .then(songRes => {
+        console.log('songRes');
+        resolve(songValues);
+      })
+      .catch(e => {
+        console.error(e);
+        reject(e);
+      });
+  });
+};
+
+let saveHistory = (userId, history) => {
+  return new Promise((resolve, reject) => {
+    let historyValues = [];
+    for (let song of history) {
       historyValues.push([song.id, userId, song.date]);
     }
 
-    let songInsert = new Promise((resolve, reject) => {
-      const songQuery = format(
-        'INSERT INTO songs (id, name, image, album, artist, url) VALUES %L ON CONFLICT (id) DO NOTHING RETURNING id;',
-        songValues,
-      );
-      client
-        .query(songQuery)
-        .then(songRes => {
-          console.log('songRes');
-          resolve(songRes);
-        })
-        .catch(e => {
-          console.error(e);
-          reject(e);
-        });
-    });
-
-    let historyInsert = new Promise((resolve, reject) => {
-      const historyQuery = format(
-        'INSERT INTO song_history (song_id, user_id, unix_date ) VALUES %L ON CONFLICT DO NOTHING;',
-        historyValues,
-      );
-      client
-        .query(historyQuery)
-        .then(historyRes => {
-          console.log('historyRes');
-          resolve(historyRes);
-        })
-        .catch(e => {
-          console.error(e);
-          reject(e);
-        });
-    });
-
-    Promise.all([historyInsert, songInsert]).then((allVals) => {
-      console.log(allVals);
-      resolve([songValues, historyValues]);
-    });
+    const historyQuery = format(
+      'INSERT INTO song_history (song_id, user_id, unix_date ) VALUES %L ON CONFLICT DO NOTHING;',
+      historyValues,
+    );
+    client
+      .query(historyQuery)
+      .then(historyRes => {
+        console.log('historyRes');
+        resolve(historyValues);
+      })
+      .catch(e => {
+        console.error(e);
+        reject(e);
+      });
   });
 };
 
@@ -163,17 +129,22 @@ const fetchTracks = (username, key, from, to) => {
       .then(data => {
         console.log('got tracks');
         recentTracks = data.recenttracks.track.map(track => {
+          let id = track.mbid
+            ? stringHash(track.mbid)
+            : stringHash(track.name + track.artist['#text']);
           let newTrack = {
             name: track.name,
-            id: track.mbid.hashCode(),
+            id: id,
             url: track.url,
             date: track.date ? track.date.uts : '',
             album: track.album ? track.album['#text'] : '',
             image: track.image
-            ? track.image[track.image.length - 1]['#text']
-            : '',
+              ? track.image[track.image.length - 1]['#text']
+              : '',
             artist: track.artist ? track.artist['#text'] : '',
           };
+          console.log(track.mbid);
+          console.log(newTrack.id);
 
           return newTrack;
         });
@@ -236,52 +207,90 @@ module.exports = app => {
     from.setMilliseconds(0);
     let unixFrom = Math.round(from.getTime() / 1000);
 
-    let userInsert = new Promise((resolve, reject) => {
-      console.log('getting user');
-      getUser(username)
-        .then(user => {
-          resolve(user.id);
-        })
-        .catch(e => {
-          console.error(e);
-          reject(e);
-        });
-    });
 
-    let trackInsert = new Promise((resolve, reject) => {
-      console.log('saving  tracks');
-      fetchTracks(username, LASTFM_KEY, unixFrom, unixTo)
-        .then(recentTracks => {
-          resolve(recentTracks);
-        })
-        .catch(e => {
-          console.error(e);
-          reject(e);
-        });
-    });
+    /*
+    getUser(username)
+      .then(userRes => {
+        console.log('userRes');
+        let userId = userRes.id;
+        let coverageValues = [];
 
-    Promise.all([userInsert, trackInsert]).then(dbResponse => {
-      let userId = dbResponse[0];
-      let recentTracks = dbResponse[1];
-      console.log('dbResponse');
-      console.log(dbResponse);
-      saveHistory(userId, recentTracks)
-        .then(values => {
-          let songValues = values[0];
-          let historyValues = values[1];
-          console.log(userId);
-          saveCoverage(userId, from, to)
-            .then(historyConfirmation => {
-              console.log('historyConfirmation');
-              console.log(historyConfirmation);
-            })
-            .catch(e => {
-              console.error(e);
-            });
-        })
-        .catch(e => {
+        let newFrom = from;
+        while (newFrom < to) {
+          let newUnixFrom = Math.round(newFrom.getTime() / 1000);
+          coverageValues.push(newUnixFrom);
+          newFrom.setDate(newFrom.getDate() + 1);
+        }
+
+        const coverageQuery = format(
+          `SELECT * FROM hist_coverage WHERE day IN (%L) AND user_id = ${userId};`,
+          coverageValues,
+        );
+        client
+          .query(coverageQuery)
+          .then(coverageRes => {
+            let fetchArray = [];
+
+            console.log('coverage coverageRes');
+            let storedCoverageValues = coverageRes.rows;
+            if (storedCoverageValues.length >= coverageValues.length) {
+              // all stored, serialize from db
+              const songDataQuery = `SELECT * FROM song_history WHERE unix_date >= ${unixFrom} AND  unix_date <= ${unixTo} AND user_id = ${userId};`;
+              client
+                .query(songDataQuery)
+                .then(songDataRes => {
+                  console.log(songDataRes);
+                })
+                .catch(e => {
+                  console.error(e);
+                });
+            } else {
+              // some missing data, fetch certain days
+              let missingDays = coverageValues.filter(val => {
+                return storedCoverageValues.includes(val);
+              });
+              console.log(missingDays);
+              // TODO optimize this for large gaps
+              fetchTracks(
+                username,
+                LASTFM_KEY,
+                missingDays[0],
+                missingDays[missingDays.length - 1],
+              );
+            }
+          })
+          .catch(e => {
+            console.error(e);
+          });
+      })
+      .catch(e => {
+        console.error(e);
+      });
+
+*/
+    /*
+    */
+    Promise.all([
+      getUser(username),
+      fetchTracks(username, LASTFM_KEY, unixFrom, unixTo),
+    ])
+      .then(dbResponse => {
+        let userId = dbResponse[0].id;
+        let recentTracks = dbResponse[1];
+
+        Promise.all([
+          saveSongs(userId, recentTracks),
+          saveHistory(userId, recentTracks),
+          saveCoverage(userId, from, to),
+        ]).catch(e => {
           console.error(e);
         });
-    });
+      })
+      .catch(e => {
+        console.error(e);
+      });
+    /*
+      */
+
   });
 };

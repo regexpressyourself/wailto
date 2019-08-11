@@ -4,7 +4,7 @@ DROP TABLE songs;
 DROP TABLE users;
 
 CREATE TABLE songs (
-  id int UNIQUE,
+  id bigint UNIQUE,
   name VARCHAR(256),
   image VARCHAR(256),
   album VARCHAR(256),
@@ -30,7 +30,7 @@ CREATE TABLE hist_coverage (
 
 CREATE TABLE song_history (
   id serial,
-  song_id int NOT NULL,
+  song_id bigint NOT NULL,
   user_id int NOT NULL,
   unix_date int,
   PRIMARY KEY (id),

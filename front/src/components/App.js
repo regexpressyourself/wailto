@@ -4,8 +4,8 @@ import Nav from './Nav';
 import { ConfigContext, configReducer} from '../context/ConfigContext';
 import './App.css';
 
-//import {useFetch} from '../hooks/fetch';
-import songs from './songs'; // UNCOMMENT TO USE FAKE DATA
+import {useFetch} from '../hooks/fetch';
+//import songs from './songs'; // UNCOMMENT TO USE FAKE DATA
 
 function App() {
 
@@ -13,11 +13,14 @@ function App() {
 
   const [config, configDispatch] = useReducer(configReducer, initialConfig)
 
-  const res = {response: songs()}; // UNCOMMENT TO USE FAKE DATA
-  //const res = useFetch(
-  //`http://localhost:3009/history/?username=zookeeprr&to=`,
-  //{},
-  //);
+  //const res = {response: songs()}; // UNCOMMENT TO USE FAKE DATA
+  let username = 'zookeeprr';
+  let to = 1565308800;
+  let from = 1564617600;
+  const res = useFetch(
+  `http://localhost:3009/history/?username=${username}&to=${to}&from=${from}`,
+  {},
+  );
 
   if (res.error) {
     return <>'Oops! Something went wront getting your music.'</>;

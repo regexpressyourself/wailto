@@ -251,20 +251,38 @@ module.exports = app => {
             client
               .query(songDataQuery)
               .then(songDataRes => {
-                let songInfoValues = [];
+                let songDataList = [];
+                let songDataValues = [];
                 for (let song of songDataRes.rows) {
-                  songInfoValues.push(song.song_id);
+                  songDataList.push({song_id :song.song_id, date: song.unix_date});
+                  songDataValues.push(song.song_id);
                 }
 
                 console.log("getting songs' info");
                 const songInfoQuery = format(
                   `SELECT * FROM songs WHERE id IN (%L)`,
-                  songInfoValues,
+                  songDataValues,
                 );
                 client
                   .query(songInfoQuery)
                   .then(songInfoRes => {
-                    console.log(songInfoRes);
+                    let songInfoList = songInfoRes.rows;
+                    let finalArray = [];
+                    for ( let song of songDataList) {
+                      let date = song.date;
+                      let songId = song.song_id;
+                      let newSongObj;
+                      newSongObj = songInfoList.find(song => {
+                        return song.id === songId;
+                      });
+
+                      console.log(newSongObj);
+                      newSongObj.date = date;
+                      console.log(newSongObj);
+                      finalArray.push(newSongObj);
+                    }
+                    res.json(finalArray);
+
                     // TODO serialize this
                   })
                   .catch(e => {
@@ -282,11 +300,17 @@ module.exports = app => {
             });
             //console.log(missingDays);
             // TODO optimize this for large gaps
+            //fetchTracks(
+              //username,
+              //LASTFM_KEY,
+              //missingDays[0],
+              //missingDays[missingDays.length - 1],
+            //)
             fetchTracks(
               username,
               LASTFM_KEY,
-              missingDays[0],
-              missingDays[missingDays.length - 1],
+              unixFrom,
+              unixTo
             )
               .then(recentTracks => {
                 console.log('done fetching tracks. saving now');

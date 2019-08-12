@@ -11,6 +11,7 @@ require('dotenv').config();
 const LASTFM_KEY = process.env.LASTFM_KEY;
 
 let saveCoverage = (userId, from, to) => {
+  console.log('save coverage');
   return new Promise((resolve, reject) => {
     let values = [];
     while (from < to) {
@@ -37,6 +38,7 @@ let saveCoverage = (userId, from, to) => {
 };
 
 let saveSongs = (userId, history) => {
+  console.log('save songs');
   return new Promise((resolve, reject) => {
     let songValues = [];
     for (let song of history) {
@@ -48,6 +50,9 @@ let saveSongs = (userId, history) => {
         song.artist,
         song.url,
       ]);
+      if (song.id == '') {
+      console.log(song);
+      }
     }
 
     const songQuery = format(
@@ -68,6 +73,7 @@ let saveSongs = (userId, history) => {
 };
 
 let saveHistory = (userId, history) => {
+  console.log('save history');
   return new Promise((resolve, reject) => {
     let historyValues = [];
     for (let song of history) {
@@ -92,18 +98,22 @@ let saveHistory = (userId, history) => {
 };
 
 const getUser = username => {
+  console.log('get user');
   return new Promise((resolve, reject) => {
     let query = `SELECT * FROM users WHERE username = '${username}';`;
     client
       .query(query)
       .then(res => {
         if (res.rows.length > 0) {
+              console.log('got stored user ');
           resolve(res.rows[0]);
         } else if (res.rows.length === 0) {
+          console.log('user not found -- creating user');
           let insertUserQuery = `INSERT INTO users (username) VALUES ( '${username}' ) RETURNING id;`;
           client
             .query(insertUserQuery)
             .then(confirmRes => {
+              console.log('user created');
               resolve(confirmRes.rows[0]);
             })
             .catch(e => {
@@ -120,15 +130,15 @@ const getUser = username => {
 };
 
 const fetchTracks = (username, key, from, to) => {
+  console.log('fetch tracks');
   return new Promise((resolve, reject) => {
     let url = `https://ws.audioscrobbler.com/2.0/?method=user.getRecentTracks&user=${username}&api_key=${key}&limit=200&extended=0&page=1&format=json&to=${to}&from=${from}`;
-    console.log(url);
 
     fetch(url)
       .then(response => response.json())
       .then(data => {
         console.log('got tracks');
-        recentTracks = data.recenttracks.track.map(track => {
+        let recentTracks = data.recenttracks.track.map(track => {
           let id = track.mbid
             ? stringHash(track.mbid)
             : stringHash(track.name + track.artist['#text']);
@@ -143,8 +153,7 @@ const fetchTracks = (username, key, from, to) => {
               : '',
             artist: track.artist ? track.artist['#text'] : '',
           };
-          console.log(track.mbid);
-          console.log(newTrack.id);
+          console.log(newTrack);
 
           return newTrack;
         });

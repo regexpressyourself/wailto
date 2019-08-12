@@ -14,16 +14,21 @@ let saveCoverage = (userId, from, to) => {
   console.log('save coverage');
   return new Promise((resolve, reject) => {
     let values = [];
+    console.log('looking for day coverage');
+    console.log(from);
+    console.log(to);
     while (from < to) {
       let unixFrom = Math.round(from.getTime() / 1000);
       values.push([userId, unixFrom]);
       from.setDate(from.getDate() + 1);
     }
+    console.log(values);
 
     const query = format(
-      'INSERT INTO hist_coverage (user_id, day) VALUES %L ON CONFLICT DO NOTHING RETURNING id;',
+      'INSERT INTO hist_coverage (user_id, day) VALUES %L',
       values,
     );
+    console.log(query);
     client
       .query(query)
       .then(res => {
@@ -50,9 +55,6 @@ let saveSongs = (userId, history) => {
         song.artist,
         song.url,
       ]);
-      if (song.id == '') {
-      console.log(song);
-      }
     }
 
     const songQuery = format(
@@ -105,7 +107,7 @@ const getUser = username => {
       .query(query)
       .then(res => {
         if (res.rows.length > 0) {
-              console.log('got stored user ');
+          console.log('got stored user ');
           resolve(res.rows[0]);
         } else if (res.rows.length === 0) {
           console.log('user not found -- creating user');
@@ -153,7 +155,6 @@ const fetchTracks = (username, key, from, to) => {
               : '',
             artist: track.artist ? track.artist['#text'] : '',
           };
-          console.log(newTrack);
 
           return newTrack;
         });
@@ -216,15 +217,13 @@ module.exports = app => {
     from.setMilliseconds(0);
     let unixFrom = Math.round(from.getTime() / 1000);
 
-
-    /*
     getUser(username)
       .then(userRes => {
         console.log('userRes');
         let userId = userRes.id;
         let coverageValues = [];
 
-        let newFrom = from;
+        let newFrom = new Date(from.getTime());
         while (newFrom < to) {
           let newUnixFrom = Math.round(newFrom.getTime() / 1000);
           coverageValues.push(newUnixFrom);
@@ -235,50 +234,78 @@ module.exports = app => {
           `SELECT * FROM hist_coverage WHERE day IN (%L) AND user_id = ${userId};`,
           coverageValues,
         );
-        client
-          .query(coverageQuery)
-          .then(coverageRes => {
-            let fetchArray = [];
+        client.query(coverageQuery).then(coverageRes => {
+          let fetchArray = [];
 
-            console.log('coverage coverageRes');
-            let storedCoverageValues = coverageRes.rows;
-            if (storedCoverageValues.length >= coverageValues.length) {
-              // all stored, serialize from db
-              const songDataQuery = `SELECT * FROM song_history WHERE unix_date >= ${unixFrom} AND  unix_date <= ${unixTo} AND user_id = ${userId};`;
-              client
-                .query(songDataQuery)
-                .then(songDataRes => {
-                  console.log(songDataRes);
-                })
-                .catch(e => {
-                  console.error(e);
-                });
-            } else {
-              // some missing data, fetch certain days
-              let missingDays = coverageValues.filter(val => {
-                return storedCoverageValues.includes(val);
+          console.log(coverageRes);
+          console.log(coverageQuery);
+          console.log('coverage coverageRes');
+          let storedCoverageValues = coverageRes.rows;
+          console.log(storedCoverageValues.length);
+          console.log(coverageValues.length);
+          if (storedCoverageValues.length >= coverageValues.length) {
+            // all stored, serialize from db
+            console.log('starting db  serialization');
+            console.log('getting songs in date range');
+            const songDataQuery = `SELECT * FROM song_history WHERE unix_date >= ${unixFrom} AND  unix_date <= ${unixTo} AND user_id = ${userId};`;
+            client
+              .query(songDataQuery)
+              .then(songDataRes => {
+                let songInfoValues = [];
+                for (let song of songDataRes.rows) {
+                  songInfoValues.push(song.song_id);
+                }
+
+                console.log("getting songs' info");
+                const songInfoQuery = format(
+                  `SELECT * FROM songs WHERE id IN (%L)`,
+                  songInfoValues,
+                );
+                client
+                  .query(songInfoQuery)
+                  .then(songInfoRes => {
+                    console.log(songInfoRes);
+                    // TODO serialize this
+                  })
+                  .catch(e => {
+                    console.error(e);
+                  });
+              })
+              .catch(e => {
+                console.error(e);
               });
-              console.log(missingDays);
-              // TODO optimize this for large gaps
-              fetchTracks(
-                username,
-                LASTFM_KEY,
-                missingDays[0],
-                missingDays[missingDays.length - 1],
-              );
-            }
-          })
-          .catch(e => {
-            console.error(e);
-          });
+          } else {
+            console.log('need to fetch some tracks');
+            // some missing data, fetch certain days
+            let missingDays = coverageValues.filter(val => {
+              return storedCoverageValues.includes(val);
+            });
+            //console.log(missingDays);
+            // TODO optimize this for large gaps
+            fetchTracks(
+              username,
+              LASTFM_KEY,
+              missingDays[0],
+              missingDays[missingDays.length - 1],
+            )
+              .then(recentTracks => {
+                console.log('done fetching tracks. saving now');
+                saveSongs(userId, recentTracks);
+                saveHistory(userId, recentTracks);
+                saveCoverage(userId, from, to);
+              })
+              .catch(e => {
+                console.error(e);
+              });
+          }
+        });
       })
       .catch(e => {
         console.error(e);
       });
-
-*/
-    /*
-    */
+  });
+};
+/*
     Promise.all([
       getUser(username),
       fetchTracks(username, LASTFM_KEY, unixFrom, unixTo),
@@ -298,8 +325,4 @@ module.exports = app => {
       .catch(e => {
         console.error(e);
       });
-    /*
       */
-
-  });
-};

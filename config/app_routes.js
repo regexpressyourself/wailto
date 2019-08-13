@@ -13,15 +13,11 @@ const LASTFM_KEY = process.env.LASTFM_KEY;
 let saveCoverage = (userId, from, to) => {
   console.log('save coverage');
   return new Promise((resolve, reject) => {
-    let values = [];
     console.log('looking for day coverage');
     console.log(from);
     console.log(to);
-    while (from < to) {
-      let unixFrom = Math.round(from.getTime() / 1000);
-      values.push([userId, unixFrom]);
-      from.setDate(from.getDate() + 1);
-    }
+
+    let values = getDateRange = (from, to);
     console.log(values);
 
     const query = format(
@@ -189,6 +185,16 @@ const fetchTracks = (username, key, from, to) => {
   });
 };
 
+let getDateRange = (start, end) => {
+  let daysBetween = [];
+  let newStart = new Date(start.getTime());
+  while (newStart < end) {
+    let newUnixFrom = Math.round(newStart.getTime() / 1000);
+    daysBetween.push(newUnixFrom);
+    newStart.setDate(newStart.getDate() + 1);
+  }
+}
+
 module.exports = app => {
   app.use('/', express.static('front/public'));
   app.use('/images', express.static('static/images'));
@@ -221,69 +227,53 @@ module.exports = app => {
       .then(userRes => {
         console.log('userRes');
         let userId = userRes.id;
-        let coverageValues = [];
-
-        let newFrom = new Date(from.getTime());
-        while (newFrom < to) {
-          let newUnixFrom = Math.round(newFrom.getTime() / 1000);
-          coverageValues.push(newUnixFrom);
-          newFrom.setDate(newFrom.getDate() + 1);
-        }
+        let coverageValues = getDateRange(from, to);
 
         const coverageQuery = format(
           `SELECT * FROM hist_coverage WHERE day IN (%L) AND user_id = ${userId};`,
           coverageValues,
         );
         client.query(coverageQuery).then(coverageRes => {
-          let fetchArray = [];
 
-          console.log(coverageRes);
-          console.log(coverageQuery);
-          console.log('coverage coverageRes');
-          let storedCoverageValues = coverageRes.rows;
-          console.log(storedCoverageValues.length);
-          console.log(coverageValues.length);
+
           if (storedCoverageValues.length >= coverageValues.length) {
             // all stored, serialize from db
             console.log('starting db  serialization');
             console.log('getting songs in date range');
-            const songDataQuery = `SELECT * FROM song_history WHERE unix_date >= ${unixFrom} AND  unix_date <= ${unixTo} AND user_id = ${userId};`;
+
+            const listeningHistoryQuery = `SELECT * FROM song_history WHERE unix_date >= ${unixFrom} AND  unix_date <= ${unixTo} AND user_id = ${userId};`;
+
             client
-              .query(songDataQuery)
-              .then(songDataRes => {
-                let songDataList = [];
-                let songDataValues = [];
-                for (let song of songDataRes.rows) {
-                  songDataList.push({song_id :song.song_id, date: song.unix_date});
-                  songDataValues.push(song.song_id);
+              .query(listeningHistoryQuery)
+              .then(listeningHistoryRes => {
+                let listeningHistoryList = [];
+                let listeningHistoryIds = [];
+                for (let song of listeningHistoryRes.rows) {
+                  listeningHistoryList.push({song_id :song.song_id, date: song.unix_date});
+                  listeningHistoryIds.push(song.song_id);
                 }
 
                 console.log("getting songs' info");
                 const songInfoQuery = format(
                   `SELECT * FROM songs WHERE id IN (%L)`,
-                  songDataValues,
+                  listeningHistoryIds,
                 );
                 client
                   .query(songInfoQuery)
                   .then(songInfoRes => {
                     let songInfoList = songInfoRes.rows;
                     let finalArray = [];
-                    for ( let song of songDataList) {
-                      let date = song.date;
-                      let songId = song.song_id;
+                    for ( let listen of listeningHistoryList) {
+                      let date = listen.date;
+                      let songId = listen.song_id;
                       let newSongObj;
                       newSongObj = songInfoList.find(song => {
                         return song.id === songId;
                       });
-
-                      console.log(newSongObj);
                       newSongObj.date = date;
-                      console.log(newSongObj);
                       finalArray.push(newSongObj);
                     }
                     res.json(finalArray);
-
-                    // TODO serialize this
                   })
                   .catch(e => {
                     console.error(e);

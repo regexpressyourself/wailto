@@ -17,8 +17,10 @@ let saveCoverage = (userId, from, to) => {
     console.log(from);
     console.log(to);
 
-    let values = getDateRange = (from, to);
-    console.log(values);
+    let values = getDateRange(from, to);
+    values = values.map(value => {
+      return [userId, value];
+    });
 
     const query = format(
       'INSERT INTO hist_coverage (user_id, day) VALUES %L',
@@ -193,6 +195,7 @@ let getDateRange = (start, end) => {
     daysBetween.push(newUnixFrom);
     newStart.setDate(newStart.getDate() + 1);
   }
+  return daysBetween;
 }
 
 module.exports = app => {
@@ -234,7 +237,7 @@ module.exports = app => {
           coverageValues,
         );
         client.query(coverageQuery).then(coverageRes => {
-
+          let storedCoverageValues = coverageRes.rows;
 
           if (storedCoverageValues.length >= coverageValues.length) {
             // all stored, serialize from db
@@ -285,9 +288,9 @@ module.exports = app => {
           } else {
             console.log('need to fetch some tracks');
             // some missing data, fetch certain days
-            let missingDays = coverageValues.filter(val => {
-              return storedCoverageValues.includes(val);
-            });
+            //let missingDays = coverageValues.filter(val => {
+              //return storedCoverageValues.includes(val);
+            //});
             //console.log(missingDays);
             // TODO optimize this for large gaps
             //fetchTracks(

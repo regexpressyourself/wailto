@@ -16,3 +16,4 @@ function configReducer(state, configAction) {
 }
 
 export {ConfigContext, configReducer};
+

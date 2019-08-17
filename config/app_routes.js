@@ -143,8 +143,8 @@ const fetchTracks = (username, key, from, to) => {
             date: track.date ? track.date.uts : '',
             album: track.album ? track.album['#text'] : '',
             image: track.image
-              ? track.image[track.image.length - 1]['#text']
-              : '',
+            ? track.image[track.image.length - 1]['#text']
+            : '',
             artist: track.artist ? track.artist['#text'] : '',
           };
 
@@ -365,65 +365,38 @@ module.exports = app => {
     from.setMilliseconds(0);
     let unixFrom = Math.round(from.getTime() / 1000);
 
-    getUser(username)
-      .then(userRes => {
-        console.log('userRes');
-        let userId = userRes.id;
-        getCoverageValues(userId, from, to)
-          .then(storedCoverageValues => {
-            if (storedCoverageValues.length >= getDateRange(from, to).length) {
-              // all stored, serialize from db
-              console.log('starting db  serialization');
-              console.log('getting songs in date range');
-              getSongHistoryFromDb(userId, unixFrom, unixTo)
-                .then(finalResult => {
-                  console.log('sending songs from db');
-                  res.json(finalResult);
-                })
-                .catch(e => {
-                  console.error(e);
-                });
-            } else {
-              console.log('need to fetch some tracks');
-              // some missing data, fetch certain days
-              //let missingDays = coverageValues.filter(val => {
-              //return storedCoverageValues.includes(val);
-              //});
-              //console.log(missingDays);
-              // TODO optimize this for large gaps
-              //fetchTracks(
-              //username,
-              //LASTFM_KEY,
-              //missingDays[0],
-              //missingDays[missingDays.length - 1],
-              //)
-              //
-              //
-              saveUserInfo(username, userId, from, to)
-                .then(dbResponse => {
-                  console.log('getting freshly fetched songs from db');
+    let userId;
+    let storedCoverageValues;
 
-                  getSongHistoryFromDb(userId, unixFrom, unixTo)
-                    .then(finalResult => {
-                      console.log('sending freshly fetched songs from db');
-                      res.json(finalResult);
-                    })
-                    .catch(e => {
-                      console.error(e);
-                    });
-                })
-                .catch(e => {
-                  console.log('error saving user info');
-                  console.error(e);
-                });
-            }
-          })
-          .catch(e => {
-            console.error(e);
-          });
-      })
-      .catch(e => {
-        console.error(e);
-      });
+    let getUserCoverage = async function() {
+      let userRes = await getUser(username);
+      userId = userRes.id;
+      storedCoverageValues = await getCoverageValues(userId, from, to);
+      if (storedCoverageValues.length < getDateRange(from, to).length) {
+        console.log('need to fetch some tracks');
+        // some missing data, fetch certain days
+
+        let saveUserResponses = await saveUserInfo(username, userId, from, to);
+        //saveUserResponses === Promise.all([saveSongsPromise, saveHistoryPromise, saveCoveragePromise])
+      }
+      // all stored, serialize from db
+      console.log('starting db  serialization');
+      console.log('getting songs in date range');
+      let finalResult = await getSongHistoryFromDb(userId, unixFrom, unixTo);
+      res.json(finalResult);
+    }
+    getUserCoverage();
   });
 };
+
+//let missingDays = coverageValues.filter(val => {
+//return storedCoverageValues.includes(val);
+//});
+//console.log(missingDays);
+// TODO optimize this for large gaps
+//fetchTracks(
+//username,
+//LASTFM_KEY,
+//missingDays[0],
+//missingDays[missingDays.length - 1],
+//)

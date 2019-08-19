@@ -1,5 +1,6 @@
-import React, {useContext, useEffect} from 'react';
+import React, {useContext} from 'react';
 import './SongFrequencies.scss';
+import {HistoryContext} from '../context/HistoryContext';
 import {ConfigContext} from '../context/ConfigContext';
 import {
   ResponsiveContainer,
@@ -9,7 +10,7 @@ import {
   YAxis,
   Tooltip,
 } from 'recharts';
-import {days, ampm, accessibleTime} from './dateMappers';
+import {days, months, ampm, accessibleTime} from './dateMappers';
 
 function bucketSongTimes(bucketKey, bucketMaxSize, songList) {
   /*
@@ -19,7 +20,7 @@ function bucketSongTimes(bucketKey, bucketMaxSize, songList) {
    * time of day, etc.), and Song1, Song2, etc. are the song objects
    * from LastFM.
    */
-  let map = Array(bucketMaxSize);
+  let map = new Array(bucketMaxSize);
 
   for (let song of songList) {
     let date = song.date;
@@ -36,17 +37,39 @@ function bucketSongTimes(bucketKey, bucketMaxSize, songList) {
 }
 
 function SongFrequencies(props) {
+  const {history} = useContext(HistoryContext);
   const {config} = useContext(ConfigContext);
-  useEffect(() => {
-    // TODO use this to get specific song list
-    console.log(config);
-  }, [config]);
 
   let hourDataRC = [];
   let dayDataRC = [];
+  let dateDataRC = [];
 
-  let dayMap = bucketSongTimes('dow', 7, props.data);
-  let hourMap = bucketSongTimes('hour', 24, props.data);
+  let dayMap = bucketSongTimes('dow', 7, history.history);
+  let hourMap = bucketSongTimes('hour', 24, history.history);
+
+  let end = new Date(config.timeEnd);
+  let start = new Date(config.timeStart);
+
+  let datesBetween = [];
+  while (start < end) {
+    let year = start.getFullYear();
+    let month = months()[start.getMonth()];
+    let day = start.getDate();
+    let date = `${month} ${day}, ${year}`;
+    datesBetween.push(date);
+    start.setDate(start.getDate() + 1);
+  }
+
+  let dateMap = bucketSongTimes('date', datesBetween.length, history.history);
+
+  for (let i = 0; i < datesBetween.length; i++) {
+    dateDataRC.push({
+      name: datesBetween[i],
+      'Song Count': dateMap[datesBetween[i]]
+        ? dateMap[datesBetween[i]].length
+        : 0,
+    });
+  }
 
   for (let i = 0; i <= 23; i++) {
     hourDataRC.push({
@@ -64,6 +87,23 @@ function SongFrequencies(props) {
 
   return (
     <>
+      <div className="chart-container">
+        <h2>Frequency of music by date</h2>
+        <ResponsiveContainer>
+          <AreaChart data={dateDataRC}>
+            <XAxis dataKey="name" />
+            <YAxis />
+            <Tooltip />
+            <Area
+              type="monotone"
+              dataKey="Song Count"
+              stroke="#7f4782"
+              fill="#aa5c9f"
+            />
+          </AreaChart>
+        </ResponsiveContainer>
+      </div>
+
       <div className="chart-container">
         <h2>Frequency of music by hour</h2>
         <ResponsiveContainer>

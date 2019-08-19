@@ -38,7 +38,7 @@ const saveSongs = (userId, history) => {
     ON CONFLICT (id)
     DO NOTHING
     RETURNING id;`,
-    songValues
+    songValues,
   );
   return client.query(songQuery);
 };
@@ -55,7 +55,7 @@ const saveHistory = (userId, history) => {
 
   const historyQuery = format(
     'INSERT INTO song_history (song_id, user_id, unix_date ) VALUES %L ON CONFLICT DO NOTHING;',
-    historyValues
+    historyValues,
   );
   return client.query(historyQuery);
 };
@@ -69,7 +69,7 @@ const saveCoverage = (userId, from, to) => {
   });
   const query = format(
     'INSERT INTO hist_coverage (user_id, day) VALUES %L',
-    values
+    values,
   );
   return client.query(query);
 };
@@ -79,7 +79,7 @@ const getCoverageValues = (userId, from, to) => {
   let unixTo = Math.round(to.getTime() / 1000);
   const coverageQuery = format(
     `SELECT * FROM hist_coverage WHERE day IN (%L) AND user_id = ${userId};`,
-    getDateRange(from, to)
+    getDateRange(from, to),
   );
   return client.query(coverageQuery);
 };
@@ -87,14 +87,24 @@ const getCoverageValues = (userId, from, to) => {
 const getUser = async function(username) {
   console.log('get user');
   let query = `SELECT * FROM users WHERE username = '${username}';`;
-  let getExistingUserRes = await client.query(query);
+  let getExistingUserRes;
+  try {
+    getExistingUserRes = await client.query(query);
+  } catch (error) {
+    console.error(error);
+  }
   if (getExistingUserRes.rows.length > 0) {
     console.log('got stored user ');
     return getExistingUserRes.rows[0];
   } else if (getExistingUserRes.rows.length === 0) {
     console.log('user not found -- creating user');
     let insertUserQuery = `INSERT INTO users (username) VALUES ( '${username}' ) RETURNING id;`;
-    let saveConfirmationRes = await client.query(insertUserQuery);
+    let saveConfirmationRes;
+    try {
+      saveConfirmationRes = await client.query(insertUserQuery);
+    } catch (error) {
+      console.error(error);
+    }
     console.log('user created');
     return saveConfirmationRes.rows[0];
   }
@@ -107,7 +117,12 @@ const getSongHistory = async function(userId, unixFrom, unixTo) {
                                  user_id = ${userId};`;
 
   console.log('%i:\tgetting song history', userId);
-  let listeningHistoryRes = await client.query(listeningHistoryQuery);
+  let listeningHistoryRes;
+  try {
+    listeningHistoryRes = await client.query(listeningHistoryQuery);
+  } catch (error) {
+    console.error(error);
+  }
   console.log('%i:\tgot song history', userId);
 
   let listeningHistoryList = [];
@@ -127,9 +142,14 @@ const getSongHistory = async function(userId, unixFrom, unixTo) {
   console.log("%i:\tgetting songs' info", userId);
   const songInfoQuery = format(
     `SELECT * FROM songs WHERE id IN (%L)`,
-    listeningHistoryIds
+    listeningHistoryIds,
   );
-  let songInfoRes = await client.query(songInfoQuery);
+  let songInfoRes;
+  try {
+    songInfoRes = await client.query(songInfoQuery);
+  } catch (error) {
+    console.error(error);
+  }
   let songInfoList = songInfoRes.rows;
   let finalArray = [];
   for (let listen of listeningHistoryList) {

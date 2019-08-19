@@ -44,8 +44,17 @@ const fetchTracks = async function(username, key, from, to) {
   console.log('fetch tracks');
   let url = `https://ws.audioscrobbler.com/2.0/?method=user.getRecentTracks&user=${username}&api_key=${key}&limit=200&extended=0&page=1&format=json&to=${to}&from=${from}`;
 
-  let lastFMData = await fetch(url);
-  lastFMData = await lastFMData.json();
+  let lastFMData;
+  try {
+    lastFMData = await fetch(url);
+  } catch (error) {
+    console.error(error);
+  }
+  try {
+    lastFMData = await lastFMData.json();
+  } catch (error) {
+    console.error(error);
+  }
   console.log('got tracks');
 
   let trackList = [];
@@ -63,7 +72,12 @@ const fetchTracks = async function(username, key, from, to) {
       }
       i++;
     }
-    let newTracks = await fetchTracks(username, key, lastDate, to);
+    let newTracks;
+    try {
+      newTracks = await fetchTracks(username, key, lastDate, to);
+    } catch (error) {
+      console.error(error);
+    }
     recentTracks.concat(newTracks);
   }
   return recentTracks;
@@ -100,39 +114,73 @@ module.exports = app => {
     let username = request.username;
 
     const [from, unixFrom] = resetDate(request.from);
-    const [to, unixTo] = resetDate(request.to);
+    const [to, unixTo] = resetDate(request.to, true);
 
     let userId;
     let storedCoverageValues;
 
     let main = async function() {
-      let userRes = await getUser(username);
+      let userRes;
+      try {
+        userRes = await getUser(username);
+      } catch (error) {
+        console.error(error);
+      }
       userId = userRes.id;
-      storedCoverageValues = await getCoverageValues(userId, from, to);
+      console.log(username);
+      console.log(userId);
+      console.log(from);
+      console.log(to);
+      try {
+        storedCoverageValues = await getCoverageValues(userId, from, to);
+      } catch (error) {
+        console.error(error);
+      }
+      console.log('storedCoverageValues.rows');
+      console.log(storedCoverageValues.rows);
+      console.log('storedCoverageValues.length');
+      console.log(storedCoverageValues.length);
+      console.log('getDateRange(from, to).length');
+      console.log(getDateRange(from, to).length);
       storedCoverageValues = storedCoverageValues.rows;
       if (storedCoverageValues.length < getDateRange(from, to).length) {
         console.log('need to fetch some tracks');
         // some missing data, fetch certain days
-        let recentTracks = await fetchTracks(
-          username,
-          LASTFM_KEY,
-          unixFrom,
-          unixTo
-        );
+        let recentTracks;
+        try {
+          recentTracks = await fetchTracks(
+            username,
+            LASTFM_KEY,
+            unixFrom,
+            unixTo,
+          );
+        } catch (error) {
+          console.error(error);
+        }
         console.log('%i:\tdone fetching tracks. saving now', userId);
 
         //saveUserResponses === Promise.all([saveSongsPromise, saveHistoryPromise, saveCoveragePromise])
-        let saveUserResponses = await saveUserInfo(
-          userId,
-          from,
-          to,
-          recentTracks
-        );
+        let saveUserResponses;
+        try {
+          saveUserResponses = await saveUserInfo(
+            userId,
+            from,
+            to,
+            recentTracks,
+          );
+        } catch (error) {
+          console.error(error);
+        }
       }
       // all stored, serialize from db
       console.log('starting db  serialization');
       console.log('getting songs in date range');
-      let finalResult = await getSongHistory(userId, unixFrom, unixTo);
+      let finalResult;
+      try {
+        finalResult = await getSongHistory(userId, unixFrom, unixTo);
+      } catch (error) {
+        console.error(error);
+      }
       res.json(finalResult);
     };
     main();

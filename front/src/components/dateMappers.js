@@ -49,6 +49,7 @@ const accessibleTime = unixTime => {
   let minutes = '0' + date.getMinutes();
   let seconds = '0' + date.getSeconds();
   return {
+    date: `${month} ${day}, ${year}`,
     month: month,
     day: day,
     dow: dow,

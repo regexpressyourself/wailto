@@ -1,0 +1,30 @@
+.song-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 5px solid rgba(253, 208, 67, 0.5);
+}
+
+.song-item__img {
+  max-width: 100px;
+  min-width: 100px;
+}
+.song-item__info {
+  padding: 0 20px;
+  margin: 20px 0;
+  min-width: 50vw;
+  max-width: 50vw;
+}
+.song-item__info__title {
+  font-size: 36px;
+  margin: 0;
+}
+.song-item__info__content {
+  font-size: 18px;
+  margin: 0;
+}
+.song-item__date {
+  font-size: 18px;
+  margin: 0;
+  text-align: right;
+}

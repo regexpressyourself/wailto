@@ -50,12 +50,16 @@ const saveHistory = (userId, history) => {
     if (!song.id || !userId || !song.date) {
       continue;
     }
-    historyValues.push([song.id, userId, song.date]);
+    historyValues.push({id: song.id, userId: userId, date: song.date});
   }
+
+  const dbHistoryValues = historyValues.map(historyItem => {
+    return [historyItem.id, historyItem.userId, historyItem.date];
+  });
 
   const historyQuery = format(
     'INSERT INTO song_history (song_id, user_id, unix_date ) VALUES %L ON CONFLICT DO NOTHING;',
-    historyValues,
+    dbHistoryValues,
   );
   return client.query(historyQuery);
 };
@@ -162,6 +166,9 @@ const getSongHistory = async function(userId, unixFrom, unixTo) {
     newSongObj.date = date;
     finalArray.push(newSongObj);
   }
+  console.log('sorting history');
+  finalArray.sort((a, b) => (a.date > b.date ? 1 : -1));
+  console.log('done sorting history');
   return finalArray;
 };
 

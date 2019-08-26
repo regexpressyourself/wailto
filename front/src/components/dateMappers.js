@@ -26,7 +26,7 @@ const months = () => {
   ];
 };
 
-const ampm = hour => {
+const hourToAmpm = hour => {
   let meridiem = 'am';
 
   if (hour >= 12) {
@@ -45,19 +45,73 @@ const accessibleTime = unixTime => {
   let month = months()[date.getMonth()];
   let day = date.getDate();
   let dow = date.getDay();
+  let dowName = days()[date.getDay()];
   let hour = date.getHours();
   let minutes = '0' + date.getMinutes();
+  minutes = minutes.substr(-2);
   let seconds = '0' + date.getSeconds();
+  seconds = seconds.substr(-2);
+  let meridiem = 'am';
+  if (hour >= 12) {
+    meridiem = 'pm';
+  }
+  let ampmHour = hour % 12;
+  let time = ampmHour + ':' + minutes + meridiem;
+
   return {
     date: `${month} ${day}, ${year}`,
+    time: time,
     month: month,
     day: day,
     dow: dow,
+    dowName: dowName,
     year: year,
     hour: hour,
-    minutes: minutes.substr(-2),
-    seconds: seconds.substr(-2),
+    minutes: minutes,
+    seconds: seconds,
   };
 };
+const getDatesBetween = (start, end) => {
+  let datesBetween = [];
+  while (start < end) {
+    let year = start.getFullYear();
+    let month = months()[start.getMonth()];
+    let day = start.getDate();
+    let date = `${month} ${day}, ${year}`;
+    datesBetween.push(date);
+    start.setDate(start.getDate() + 1);
+  }
+  return datesBetween;
+};
+function bucketSongTimes(bucketKey, bucketMaxSize, songList) {
+  /*
+   * The "map" holds an array with a definition of:
+   * [{ timeSlot: [Song1, Song2, ...] }, ... ]
+   * where timeSlot is the bucketed property's value (day of week,
+   * time of day, etc.), and Song1, Song2, etc. are the song objects
+   * from LastFM.
+   */
+  let map = new Array(bucketMaxSize);
 
-export {days, months, ampm, accessibleTime};
+  for (let song of songList) {
+    let date = song.date;
+    let accessibleDate = accessibleTime(date);
+    let key = accessibleDate[bucketKey];
+
+    if (map[key]) {
+      map[key].push(song);
+    } else {
+      map[key] = [song];
+    }
+  }
+  return map;
+}
+
+export {
+  days,
+  months,
+  hourToAmpm,
+  accessibleTime,
+  getDatesBetween,
+  bucketSongTimes,
+};

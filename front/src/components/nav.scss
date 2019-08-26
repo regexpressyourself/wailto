@@ -1,0 +1,12 @@
+.nav {
+  display: flex;
+  flex-direction: column;
+  width: 600px;
+  justify-content: space-between;
+  padding: 20px;
+}
+.nav__date-pickers {
+  display: flex;
+  text-align: center;
+  justify-content: space-between;
+}

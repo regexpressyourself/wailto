@@ -80,6 +80,15 @@ const fetchTracks = async function(username, key, from, to) {
     }
     recentTracks.concat(newTracks);
   }
+
+  recentTracks = recentTracks.reduce((acc, current) => {
+    const x = acc.find(item => item.id === current.id);
+    if (!x) {
+      return acc.concat([current]);
+    } else {
+      return acc;
+    }
+  }, []);
   return recentTracks;
 };
 

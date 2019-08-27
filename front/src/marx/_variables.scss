@@ -1,4 +1,5 @@
 //Basic stylings
+@import url('https://fonts.googleapis.com/css?family=Livvic&display=swap');
 $br: 4px !default;
 $xs-pad: 4px !default;
 $sm-pad: 8px !default;
@@ -18,7 +19,12 @@ $red: #f44336 !default;
 $yellow: #ffeb3b !default;
 $grey: #f7f7f9 !default;
 $white: #fff !default;
-$black: #000 !default;
+$black: #333 !default;
+
+$w-yellow: #fdd043 !default;
+$w-light-purple: #aa5c9f !default;
+$w-dark-purple: #7f4782 !default;
+$w-pink: #e2598b !default;
 
 //Text
 $text: rgba(0, 0, 0, 0.8) !default;
@@ -31,7 +37,9 @@ $link-color: $primary !default;
 $link-hover-color: darken($link-color, 15%) !default;
 
 //Font
-$sans-serif: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol" !default;
+$sans-serif: 'Livvic', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+  'Helvetica Neue', Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+  'Segoe UI Symbol' !default;
 $serif: Georgia, Times, 'Times New Roman', serif !default;
 $monospace: Menlo, Monaco, Consolas, 'Courier New', monospace !default;
 $font-family: $sans-serif !default;

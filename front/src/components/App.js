@@ -1,21 +1,25 @@
 import React, {useReducer, useState, useEffect} from 'react';
-import Nav from './Nav';
+import axios from 'axios';
 import {ConfigContext, configReducer} from '../context/ConfigContext';
 import {HistoryContext, historyReducer} from '../context/HistoryContext';
 import FullHistory from './modules/FullHistory';
-import axios from 'axios';
+import Nav from './Nav';
 import './App.css';
 
 function App() {
+  let today = new Date();
+  let weekAgo = new Date();
+  weekAgo.setDate(today.getDate() - 7);
   let initialConfig = {
-    timeStart: new Date(2019, 7, 21),
-    timeEnd: new Date(2019, 7, 25),
+    timeStart: weekAgo,
+    timeEnd: today,
     username: 'zookeeprr',
   };
 
   const [config, configDispatch] = useReducer(configReducer, initialConfig);
   const [history, historyDispatch] = useReducer(historyReducer, {});
   const [isUpdating, setIsUpdating] = useState(false);
+  console.log(isUpdating);
 
   useEffect(() => {
     console.log('config');
@@ -34,18 +38,11 @@ function App() {
           historyDispatch({history: data.data});
           setIsUpdating(false);
         });
+    } else {
+      setIsUpdating(false);
     }
   }, [config]);
 
-  if (!history.history ) {
-    return (
-      <>
-        <ConfigContext.Provider value={{config, configDispatch}}>
-          <Nav />
-        </ConfigContext.Provider>
-      </>
-    );
-  }
   if (isUpdating) {
     return (
       <>
@@ -54,6 +51,15 @@ function App() {
           <h1>Loading...</h1>
         </ConfigContext.Provider>
       </>
+    );
+  }
+  if (!history.history) {
+    return (
+      <div className="home">
+        <ConfigContext.Provider value={{config, configDispatch}}>
+          <Nav showMessages={!!config.username.length}/>
+        </ConfigContext.Provider>
+      </div>
     );
   }
 

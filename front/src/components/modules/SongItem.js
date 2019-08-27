@@ -4,19 +4,22 @@ import './SongItem.scss';
 function SongItem(props) {
   return (
     <div className="song-item">
-      <img className="song-item__img" alt="album cover" src={props.image} />
       <div className="song-item__info">
-        <p className="song-item__info__title">{props.name}</p>
-        <br />
-        <p className="song-item__info__content">
-          {props.artist}&mdash;{props.album}
-        </p>
+        <img className="song-item__img" alt="album cover" src={props.image} />
+        <div>
+          <p className="song-item__info__title">{props.name}</p>
+          <p className="song-item__info__content">
+            {props.artist}
+            <br />
+            {props.album}
+          </p>
+        </div>
       </div>
       <p className="song-item__date">
         {props.date.dowName}
-        <br />
+        &nbsp;
         {props.date.date}
-        <br />
+        &nbsp;
         {props.date.time}
       </p>
     </div>

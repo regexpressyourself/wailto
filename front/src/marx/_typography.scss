@@ -81,6 +81,7 @@ code {
   word-wrap: break-word;
 }
 
+.clickable,
 a {
   color: $link-color;
   text-decoration: none;
@@ -88,6 +89,7 @@ a {
 
   &:hover,
   &:focus {
+    cursor: pointer;
     color: darken($primary, 10%);
     text-decoration: underline;
   }

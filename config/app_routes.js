@@ -18,6 +18,19 @@ const resetDate = require('./dates').resetDate;
 require('dotenv').config();
 const LASTFM_KEY = process.env.LASTFM_KEY;
 
+
+const removeDuplicates = (array) => {
+  const reducedArray = array.reduce((acc, current) => {
+    const x = acc.find(item => item.id === current.id);
+    if (!x) {
+      return acc.concat([current]);
+    } else {
+      return acc;
+    }
+  }, []);
+  return reducedArray;
+}
+
 const serializeLastFmData = track => {
   let id;
   if (track.mbid) {
@@ -63,9 +76,10 @@ const fetchTracks = async function(username, key, from, to) {
   let recentTracks = trackList.map(serializeLastFmData);
 
   if (recentTracks.length >= 200) {
-    console.log('getting more tracks');
+    console.log('HIT LIMIT -- getting more tracks');
     let lastDate = null;
     let i = 0;
+
     while (lastDate === null) {
       if (recentTracks[i].date && recentTracks[i].date > 0) {
         lastDate = recentTracks[i].date;
@@ -81,22 +95,22 @@ const fetchTracks = async function(username, key, from, to) {
     recentTracks.concat(newTracks);
   }
 
-  recentTracks = recentTracks.reduce((acc, current) => {
-    const x = acc.find(item => item.id === current.id);
-    if (!x) {
-      return acc.concat([current]);
-    } else {
-      return acc;
-    }
-  }, []);
+  recentTracks = removeDuplicates(recentTracks);
   return recentTracks;
 };
 
 let saveUserInfo = async function(userId, from, to, recentTracks) {
   return new Promise((resolve, reject) => {
-    let saveSongsPromise = saveSongs(userId, recentTracks);
-    let saveHistoryPromise = saveHistory(userId, recentTracks);
-    let saveCoveragePromise = saveCoverage(userId, from, to);
+    let saveSongsPromise;
+    let saveHistoryPromise;
+    let saveCoveragePromise;
+    if (userId && recentTracks) {
+      saveSongsPromise = saveSongs(userId, recentTracks);
+      saveHistoryPromise = saveHistory(userId, recentTracks);
+    }
+    if (userId && from && to) {
+      saveCoveragePromise = saveCoverage(userId, from, to);
+    }
     Promise.all([saveSongsPromise, saveHistoryPromise, saveCoveragePromise])
       .then(saveUserResponses => {
         resolve(saveUserResponses);
@@ -136,39 +150,35 @@ module.exports = app => {
         console.error(error);
       }
       userId = userRes.id;
-      console.log(username);
-      console.log(userId);
-      console.log(from);
-      console.log(to);
       try {
         storedCoverageValues = await getCoverageValues(userId, from, to);
       } catch (error) {
         console.error(error);
       }
-      console.log('storedCoverageValues.rows');
-      console.log(storedCoverageValues.rows);
-      console.log('storedCoverageValues.length');
-      console.log(storedCoverageValues.length);
-      console.log('getDateRange(from, to).length');
-      console.log(getDateRange(from, to).length);
+
       storedCoverageValues = storedCoverageValues.rows;
       if (storedCoverageValues.length < getDateRange(from, to).length) {
         console.log('need to fetch some tracks');
         // some missing data, fetch certain days
         let recentTracks;
+        let missingValues = [];
+        for (let date of getDateRange(from, to)) {
+          if (!storedCoverageValues.find(covVal => covVal.day === date)) {
+            missingValues.push(date);
+          }
+        }
         try {
           recentTracks = await fetchTracks(
             username,
             LASTFM_KEY,
-            unixFrom,
-            unixTo,
+            missingValues[0],
+            resetDate(missingValues[missingValues.length - 1], true)[1],
           );
         } catch (error) {
           console.error(error);
         }
         console.log('%i:\tdone fetching tracks. saving now', userId);
 
-        //saveUserResponses === Promise.all([saveSongsPromise, saveHistoryPromise, saveCoveragePromise])
         let saveUserResponses;
         try {
           saveUserResponses = await saveUserInfo(
@@ -190,6 +200,9 @@ module.exports = app => {
       } catch (error) {
         console.error(error);
       }
+
+      finalResult = removeDuplicates(finalResult);
+
       res.json(finalResult);
     };
     main();

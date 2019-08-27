@@ -1,30 +1,76 @@
+@function strip-unit($value) {
+  @return $value / ($value * 0 + 1);
+}
+$min-width: 320px;
+$max-width: 1920px;
+
+@mixin fluid-type($min-vw, $max-vw, $min-font-size, $max-font-size) {
+  $u1: unit($min-vw);
+  $u2: unit($max-vw);
+  $u3: unit($min-font-size);
+  $u4: unit($max-font-size);
+
+  @if $u1 == $u2 and $u1 == $u3 and $u1 == $u4 {
+    & {
+      font-size: $min-font-size;
+      @media screen and (min-width: $min-vw) {
+        font-size: calc(
+          #{$min-font-size} + #{strip-unit($max-font-size - $min-font-size)} *
+            ((100vw - #{$min-vw}) / #{strip-unit($max-vw - $min-vw)})
+        );
+      }
+      @media screen and (min-width: $max-vw) {
+        font-size: $max-font-size;
+      }
+    }
+  }
+}
+
 .song-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
   border-bottom: 5px solid rgba(253, 208, 67, 0.5);
+  flex-wrap: wrap;
+  max-width: 768px;
+  margin: auto;
 }
 
 .song-item__img {
   max-width: 100px;
   min-width: 100px;
+  margin-right: 20px;
 }
 .song-item__info {
   padding: 0 20px;
   margin: 20px 0;
-  min-width: 50vw;
-  max-width: 50vw;
+  flex-basis: 66%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  @media screen and (max-width: 768px) {
+    flex-basis: 100%;
+    text-align: right;
+    justify-content: space-between;
+  }
 }
 .song-item__info__title {
-  font-size: 36px;
-  margin: 0;
+  font-weight: 500;
+  @include fluid-type($min_width, $max_width, 28px, 36px);
+  line-height: 1.1;
+  margin: 0 0 10px;
 }
 .song-item__info__content {
-  font-size: 18px;
-  margin: 0;
+  @include fluid-type($min_width, $max_width, 18px, 28px);
+  margin: 0 0 5px;
+  line-height: 1.1;
 }
 .song-item__date {
-  font-size: 18px;
+  @include fluid-type($min_width, $max_width, 14px, 18px);
   margin: 0;
   text-align: right;
+  flex-basis: 32%;
+  @media screen and (max-width: 768px) {
+    flex-basis: 100%;
+  }
 }

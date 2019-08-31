@@ -79,6 +79,9 @@ $max-width: 1920px;
 
 .input-wrapper {
   padding: 10px 0;
+  @media screen and (max-width: 768px) {
+    padding: 0;
+  }
 }
 
 .nav {
@@ -107,7 +110,7 @@ $max-width: 1920px;
 
   @media screen and (max-width: 768px) {
     top: 0;
-    bottom: 20vw;
+    bottom: 10vw;
     left: 0;
     right: 0;
     margin-left: 0vw;
@@ -166,6 +169,7 @@ button.submit-btn {
   border: 3px solid #fdd043;
   color: #333;
   font-weight: 600;
+  min-height: 50px;
   @include fluid-prop('font-size', $min_width, $max_width, 18px, 28px);
   margin-top: 20px;
   border-radius: 0;
@@ -179,13 +183,18 @@ button.submit-btn {
 
 .nav__date-pickers {
   display: flex;
-  text-align: center;
   justify-content: space-between;
   flex-wrap: wrap;
+  //div {
+  //width: 45%;
+  //input {
+  //@include fluid-prop('font-size', $min_width, $max_width, 18px, 34px);
+  //}
+  //}
 }
 
 .username-input {
-  @include fluid-prop('font-size', $min_width, $max_width, 22px, 34px);
+  @include fluid-prop('font-size', $min_width, $max_width, 18px, 34px);
 }
 .nav__username {
   @include fluid-prop('font-size', $min_width, $max_width, 22px, 34px);
@@ -198,7 +207,7 @@ button.submit-btn {
   font-weight: 600;
   line-height: 1.1;
   margin: 5px auto;
-  @include fluid-prop('font-size', $min_width, $max_width, 22px, 34px);
+  @include fluid-prop('font-size', $min_width, $max_width, 18px, 34px);
   display: block;
   .header-help-link {
     @include fluid-prop('font-size', $min_width, $max_width, 16px, 20px);

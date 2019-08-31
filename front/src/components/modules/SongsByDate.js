@@ -38,7 +38,7 @@ function SongsByDate(props) {
       <div className="chart-container">
         <h1 className="chart-heading">
           Song Listens
-          <br /> <span className="per">&mdash;per&mdash;</span> <br />
+          <br /> <span className="per">&mdash;by&mdash;</span> <br />
           Date
         </h1>
         <ResponsiveContainer>

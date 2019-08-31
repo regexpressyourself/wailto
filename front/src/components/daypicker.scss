@@ -34,7 +34,6 @@ $max-width: 1920px;
 
 .DayPicker-wrapper {
   position: relative;
-
   flex-direction: row;
   padding-bottom: 1em;
 
@@ -242,7 +241,13 @@ $max-width: 1920px;
   position: absolute;
   left: 0;
   z-index: 1;
-
   background: white;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+}
+.input-wrapper--end-date {
+  .DayPickerInput-Overlay {
+    @media screen and (max-width: 768px) {
+      bottom: 0;
+    }
+  }
 }

@@ -4,6 +4,7 @@ import {ConfigContext, configReducer} from '../context/ConfigContext';
 import {HistoryContext, historyReducer} from '../context/HistoryContext';
 import Dashboard from './Dashboard';
 import Nav from './Nav';
+import Loading from './Loading';
 import FullHistory from './modules/FullHistory';
 import SongsByDate from './modules/SongsByDate';
 import SongsByDow from './modules/SongsByDow';
@@ -67,10 +68,11 @@ function App() {
   useEffect(() => {
     switch (appState) {
       case 'updating':
-        setContent(<h1>Loading...</h1>);
+        setContent(<Loading />);
         break;
       case 'dashboard':
-        setContent(<Dashboard />);
+        setAppState('updating');
+        //setContent(<Dashboard />);
         break;
       case 'dow':
         setContent(<SongsByDow />);
@@ -85,12 +87,18 @@ function App() {
         setContent(<FullHistory />);
         break;
       case 'tutorial':
+      default:
+        setAppState('updating');
     }
   }, [appState]);
 
   return (
     <main
-      className={`app ${appState === 'tutorial' ? 'app--unpopulated' : null}`}>
+      className={`app ${
+        appState === 'tutorial' || appState === 'updating'
+          ? 'app--unpopulated'
+          : null
+      }`}>
       <ConfigContext.Provider value={{config, configDispatch}}>
         <HistoryContext.Provider value={{history, historyDispatch}}>
           {userInfo}

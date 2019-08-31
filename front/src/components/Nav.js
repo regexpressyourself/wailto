@@ -27,10 +27,9 @@ function Nav(props) {
           <p className="help-title">Let's Get Started!</p>
           <p className="help-link">Click the button to start:</p>
           <p className="help-subtext">
-            For more info,{' '}
             <Link to="/about">
               <span id="about-link" className="clickable">
-                click here
+                &mdash;&nbsp;More info&nbsp;&mdash;
               </span>
             </Link>
           </p>
@@ -67,14 +66,13 @@ function Nav(props) {
                     }, 50 * i);
                   }
                 }}>
-                Check out mine!
+                Use mine!
               </span>
             </p>
             <p className="help-subtext">
-              For more info,{' '}
               <Link to="/about">
                 <span id="about-link" className="clickable">
-                  click here
+                &mdash;&nbsp;More info&nbsp;&mdash;
                 </span>
               </Link>
             </p>
@@ -122,10 +120,9 @@ function Nav(props) {
             <p className="help-title">Let's Get Started!</p>
             <p className="help-link">Click the button to start:</p>
             <p className="help-subtext">
-              For more info,{' '}
               <Link to="/about">
                 <span id="about-link" className="clickable">
-                  click here
+                &mdash;&nbsp;More info&nbsp;&mdash;
                 </span>
               </Link>
             </p>
@@ -180,7 +177,7 @@ function Nav(props) {
               onChange={e => setUsername(e.target.value)}
             />
           </div>
-          <div className="input-wrapper">
+          <div className="input-wrapper input-wrapper--start-date">
             <label className="nav__heading">Start date:</label>
             <DayPickerInput
               style={{width: '100%'}}
@@ -192,7 +189,7 @@ function Nav(props) {
               }}
             />
           </div>
-          <div className="input-wrapper">
+          <div className="input-wrapper input-wrapper--end-date">
             <label className="nav__heading">End date:</label>
             <DayPickerInput
               style={{width: '100%'}}
@@ -230,7 +227,7 @@ function Nav(props) {
           <button
             className={`nav__toggle-btn ${buttonAnimation ? 'animated' : ''}`}
             onClick={e => {
-                setIsExpanded(!isExpanded);
+              setIsExpanded(!isExpanded);
             }}>
             {buttonText}
           </button>

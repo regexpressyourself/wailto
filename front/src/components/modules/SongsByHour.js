@@ -27,7 +27,11 @@ function SongsByHour(props) {
   return (
     <>
       <div className="chart-container">
-        <h2>Frequency of music by hour</h2>
+        <h1 className="chart-heading">
+          Song Listens
+          <br /> <span className="per">&mdash;per&mdash;</span> <br />
+          Hour of Day
+        </h1>
         <ResponsiveContainer>
           <AreaChart data={hourDataRC}>
             <XAxis dataKey="name" />

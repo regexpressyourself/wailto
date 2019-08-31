@@ -86,12 +86,14 @@ a {
   color: $link-color;
   text-decoration: none;
   background-color: transparent;
+  cursor: pointer;
 
   &:hover,
   &:focus {
     cursor: pointer;
     color: darken($primary, 10%);
     text-decoration: underline;
+    z-index: 1000;
   }
 }
 

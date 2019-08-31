@@ -1,7 +1,7 @@
 import React from 'react';
 import logo from '../assets/wailto-logo.png';
 
-function Home() {
+function About() {
   return (
     <section className="home__body">
       <img src={logo} alt="WAILto" />
@@ -9,4 +9,4 @@ function Home() {
   );
 }
 
-export default Home;
+export default About;

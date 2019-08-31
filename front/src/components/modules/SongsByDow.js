@@ -20,7 +20,7 @@ function SongsByDow(props) {
 
   for (let i = 0; i <= 6; i++) {
     dayDataRC.push({
-      name: days()[i],
+      name: `${days()[i]}s`,
       'Song Count': dayMap[i] ? dayMap[i].length : 0,
     });
   }
@@ -28,7 +28,11 @@ function SongsByDow(props) {
   return (
     <>
       <div className="chart-container">
-        <h2>Frequency of music by day</h2>
+        <h1 className="chart-heading">
+          Song Listens
+          <br /> <span className="per">&mdash;per&mdash;</span> <br />
+          Day of Week
+        </h1>
         <ResponsiveContainer>
           <AreaChart data={dayDataRC}>
             <XAxis dataKey="name" />

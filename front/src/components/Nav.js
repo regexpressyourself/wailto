@@ -1,73 +1,47 @@
 import React, {useState, useEffect, useContext} from 'react';
 import DayPickerInput from 'react-day-picker/DayPickerInput';
 import {ConfigContext} from '../context/ConfigContext';
-import {Plus, X} from 'react-feather';
+import {Plus, X, ChevronLeft} from 'react-feather';
 import './daypicker.scss';
 import './nav.scss';
-import {BrowserRouter as Link} from 'react-router-dom';
-
-let triggerAnimation = () => {
-  console.log('triggered');
-  let body = document.querySelector('.introduce-message');
-  let button = document.querySelector('.nav__toggle-btn');
-  if (body) {
-    body.classList.add('animated');
-  }
-  if (button) {
-    button.classList.remove('animated');
-  }
-  document.removeEventListener('mouseover', triggerAnimation);
-  document.removeEventListener('scroll', triggerAnimation);
-  document.removeEventListener('keydown', triggerAnimation);
-  document.removeEventListener('click', triggerAnimation);
-};
+import {Link} from 'react-router-dom';
 
 function Nav(props) {
   const {config, configDispatch} = useContext(ConfigContext);
 
-  let [username, setUsername] = useState('');
+  let [username, setUsername] = useState(config.username);
   let [from, setFrom] = useState(config.timeStart);
   let [to, setTo] = useState(config.timeEnd);
+  let [fromString, setFromString] = useState(config.timeStart);
+  let [toString, setToString] = useState(config.timeEnd);
   let [isExpanded, setIsExpanded] = useState(null);
   let [helpMessage, setHelpMessage] = useState(null);
   let [buttonText, setButtonText] = useState(<Plus />);
-
-  document.addEventListener('mouseover', triggerAnimation);
-  document.addEventListener('scroll', triggerAnimation);
-  document.addEventListener('keydown', triggerAnimation);
-  document.addEventListener('click', triggerAnimation);
+  let [buttonAnimation, setButtonAnimation] = useState(false);
 
   if (props.showMessages) {
     if (!isExpanded && !helpMessage) {
-      let button = document.querySelector('.nav__toggle-btn');
-      console.log(button);
-      if (button) {
-        button.classList.add('animated');
-      }
+      setButtonAnimation(true);
       setHelpMessage(
         <div className="introduce-message">
           <p className="help-title">Let's Get Started!</p>
-          <p>Click the bottom-left button to start:</p>
+          <p className="help-link">Click the button to start:</p>
           <p className="help-subtext">
             For more info,{' '}
             <Link to="/about">
               <span id="about-link" className="clickable">
-              click here
-            </span>
+                click here
+              </span>
             </Link>
           </p>
         </div>,
       );
     }
   }
-
   useEffect(() => {
-    console.log('isExpanded');
-    console.log(isExpanded);
-    if (isExpanded) {
-      setButtonText(<X />);
-      document.querySelector('.nav').classList.remove('nav--collapsed');
-      document.querySelector('.nav').classList.add('nav--uncollapsed');
+    if (!isExpanded) {
+      setHelpMessage(null);
+    } else {
       if (props.showMessages) {
         setHelpMessage(
           <div>
@@ -77,38 +51,122 @@ function Nav(props) {
               <span
                 className="clickable"
                 onClick={e => {
-                  configDispatch({type: 'TIME_START', timeStart: from});
-                  configDispatch({type: 'TIME_END', timeEnd: to});
-                  configDispatch({type: 'USERNAME', username: 'zookeeprr'});
+                  document
+                    .querySelector('.nav__heading--username')
+                    .classList.add('atn--font-color');
+                  document
+                    .querySelector('.username-input')
+                    .classList.add('atn--border-color');
+                  setFromString(props.defaultStart);
+                  setToString(props.defaultEnd);
+
+                  let zookeeprr = 'zookeeprr';
+                  for (let i = 1; i <= zookeeprr.length; i++) {
+                    setTimeout(() => {
+                      setUsername(zookeeprr.substring(0, i));
+                    }, 50 * i);
+                  }
                 }}>
                 Check out mine!
               </span>
             </p>
+            <p className="help-subtext">
+              For more info,{' '}
+              <Link to="/about">
+                <span id="about-link" className="clickable">
+                  click here
+                </span>
+              </Link>
+            </p>
           </div>,
         );
       }
+    }
+  }, [props.showMessages, props.defaultStart, props.defaultEnd, isExpanded]);
+  useEffect(() => {
+    if (username === 'zookeeprr') {
+      document
+        .querySelector('.nav__heading--username')
+        .classList.add('atn--font-color');
+      document
+        .querySelector('.username-input')
+        .classList.add('atn--border-color');
+    } else if (!'zookeeprr'.includes(username)) {
+      document
+        .querySelector('.nav__heading--username')
+        .classList.remove('atn--font-color');
+      document
+        .querySelector('.username-input')
+        .classList.remove('atn--border-color');
+    }
+  }, [username]);
+
+  useEffect(() => {
+    if (isExpanded) {
+      setButtonText(<X />);
+      document.querySelector('.nav').classList.remove('nav--collapsed');
+      document.querySelector('.nav').classList.add('nav--uncollapsed');
+      if (document.querySelector('.recharts-wrapper')) {
+        document.querySelector('.recharts-wrapper').style.zIndex = '-1';
+      }
     } else if (isExpanded !== null) {
       setButtonText(<Plus />);
+      if (document.querySelector('.recharts-wrapper')) {
+        document.querySelector('.recharts-wrapper').style.zIndex = '1';
+      }
       document.querySelector('.nav').classList.add('nav--collapsed');
       document.querySelector('.nav').classList.remove('nav--uncollapsed');
       if (props.showMessages) {
         setHelpMessage(
           <div>
             <p className="help-title">Let's Get Started!</p>
-            <p>Click the bottom-left button to start:</p>
+            <p className="help-link">Click the button to start:</p>
+            <p className="help-subtext">
+              For more info,{' '}
+              <Link to="/about">
+                <span id="about-link" className="clickable">
+                  click here
+                </span>
+              </Link>
+            </p>
           </div>,
         );
       }
     }
-  }, [isExpanded]);
+  }, [
+    isExpanded,
+    from,
+    to,
+    config.username,
+    props.showMessages,
+    props.defaultStart,
+    props.defaultEnd,
+  ]);
+
+  const backButton = props.showBack ? (
+    <button
+      className="nav__back-btn"
+      onClick={e => {
+        configDispatch({type: 'APP_STATE', appState: 'dashboard'});
+      }}>
+      <ChevronLeft />
+    </button>
+  ) : null;
 
   return (
     <header className="main-header">
       <div className="main-header__inner">
         <nav className="nav">
           <div className="nav__username input-wrapper">
-            <label className="nav__heading" htmlFor="username">
-              Username
+            <label
+              className="nav__heading nav__heading--username"
+              htmlFor="username">
+              Username&nbsp;
+              <Link to="/about">
+                <span className="clickable header-help-link">
+                  (Need a username?)
+                </span>
+              </Link>
             </label>
             <span className="required-reminder">
               &nbsp;&mdash;&nbsp;please enter a username
@@ -123,23 +181,25 @@ function Nav(props) {
             />
           </div>
           <div className="input-wrapper">
-            <label className="nav__heading">From:</label>
+            <label className="nav__heading">Start date:</label>
             <DayPickerInput
               style={{width: '100%'}}
               dayPickerProps={{selectedDays: from}}
-              placeholder="Start of date range"
-              onDayClick={e => {
+              value={fromString}
+              placeholder="YYYY-M-D"
+              onDayChange={e => {
                 setFrom(e);
               }}
             />
           </div>
           <div className="input-wrapper">
-            <label className="nav__heading">To:</label>
+            <label className="nav__heading">End date:</label>
             <DayPickerInput
               style={{width: '100%'}}
               dayPickerProps={{selectedDays: to}}
-              placeholder="End of date range"
-              onDayClick={e => {
+              value={toString}
+              placeholder="YYYY-M-D"
+              onDayChange={e => {
                 setTo(e);
               }}
             />
@@ -156,19 +216,21 @@ function Nav(props) {
                   .querySelector('.nav__username')
                   .classList.remove('nav__username--invalid');
               }
+
               configDispatch({type: 'TIME_START', timeStart: from});
               configDispatch({type: 'TIME_END', timeEnd: to});
               configDispatch({type: 'USERNAME', username: username});
+              setIsExpanded(false);
             }}>
-            Submit
+            What Am I Listening to?
           </button>
         </nav>
         <div className="main-header__bottom">
-          {helpMessage}
+          <div>{helpMessage ? helpMessage : backButton}</div>
           <button
-            className="nav__toggle-btn"
+            className={`nav__toggle-btn ${buttonAnimation ? 'animated' : ''}`}
             onClick={e => {
-              setIsExpanded(!isExpanded);
+                setIsExpanded(!isExpanded);
             }}>
             {buttonText}
           </button>

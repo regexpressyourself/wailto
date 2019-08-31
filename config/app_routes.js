@@ -18,8 +18,11 @@ const resetDate = require('./dates').resetDate;
 require('dotenv').config();
 const LASTFM_KEY = process.env.LASTFM_KEY;
 
+const reflect = p => {
+  p.then(res => ({res, status: 'fulfilled'}), e => ({e, status: 'rejected'}));
+};
 
-const removeDuplicates = (array) => {
+const removeDuplicates = array => {
   const reducedArray = array.reduce((acc, current) => {
     const x = acc.find(item => item.id === current.id);
     if (!x) {
@@ -29,7 +32,7 @@ const removeDuplicates = (array) => {
     }
   }, []);
   return reducedArray;
-}
+};
 
 const serializeLastFmData = track => {
   let id;
@@ -53,9 +56,9 @@ const serializeLastFmData = track => {
   return newTrack;
 };
 
-const fetchTracks = async function(username, key, from, to) {
-  console.log('fetch tracks');
-  let url = `https://ws.audioscrobbler.com/2.0/?method=user.getRecentTracks&user=${username}&api_key=${key}&limit=200&extended=0&page=1&format=json&to=${to}&from=${from}`;
+const fetchTracks = async function(username, key, from, to, page = 1) {
+  console.log('page %i: fetching tracks', page);
+  let url = `https://ws.audioscrobbler.com/2.0/?method=user.getRecentTracks&user=${username}&api_key=${key}&limit=200&extended=0&page=1&format=json&to=${to}&from=${from}&page=${page}`;
 
   let lastFMData;
   try {
@@ -68,35 +71,56 @@ const fetchTracks = async function(username, key, from, to) {
   } catch (error) {
     console.error(error);
   }
-  console.log('got tracks');
+  console.log('page %i: got tracks', page);
 
   let trackList = [];
   trackList = lastFMData.recenttracks.track;
 
   let recentTracks = trackList.map(serializeLastFmData);
 
-  if (recentTracks.length >= 200) {
-    console.log('HIT LIMIT -- getting more tracks');
-    let lastDate = null;
-    let i = 0;
-
-    while (lastDate === null) {
-      if (recentTracks[i].date && recentTracks[i].date > 0) {
-        lastDate = recentTracks[i].date;
+  let subsequentRequests = [];
+  let totalPages = lastFMData.recenttracks['@attr'].totalPages;
+  if (page === 1 && page < totalPages) {
+    console.log('HIT LIMIT -- getting more tracks ');
+    while (page < totalPages) {
+      page = page + 1;
+      console.log(
+        `getting page ${page} of ${lastFMData.recenttracks['@attr'].totalPages}`,
+      );
+      try {
+        subsequentRequests.push(fetchTracks(username, key, from, to, page));
+      } catch (error) {
+        console.error(error);
       }
-      i++;
     }
-    let newTracks;
-    try {
-      newTracks = await fetchTracks(username, key, lastDate, to);
-    } catch (error) {
-      console.error(error);
-    }
-    recentTracks.concat(newTracks);
   }
-
-  recentTracks = removeDuplicates(recentTracks);
-  return recentTracks;
+  if (subsequentRequests.length) {
+    let fullTrackList = await Promise.all(subsequentRequests)
+      .then(allTrackLists => {
+        // allTrackLists is an array of trackLists
+        console.log('batched track requests succeeded:');
+        process.stdout.write(`${'['}`);
+        for (let trackList of allTrackLists) {
+          process.stdout.write(`[${trackList.length}], `);
+          recentTracks = recentTracks.concat(trackList);
+          recentTracks = removeDuplicates(recentTracks);
+        }
+        console.log(']');
+        console.log('recentTracks.length');
+        console.log(recentTracks.length);
+        return recentTracks;
+      })
+      .catch(e => {
+        console.error('error waiting on batched track request ');
+        console.error(e);
+        reject(e);
+      });
+    console.log('fullTrackList.length');
+    console.log(fullTrackList.length);
+    return fullTrackList;
+  } else {
+    return recentTracks;
+  }
 };
 
 let saveUserInfo = async function(userId, from, to, recentTracks) {
@@ -178,6 +202,7 @@ module.exports = app => {
           console.error(error);
         }
         console.log('%i:\tdone fetching tracks. saving now', userId);
+        console.log('Total track number: %i\t', recentTracks.length);
 
         let saveUserResponses;
         try {

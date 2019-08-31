@@ -71,6 +71,38 @@ const accessibleTime = unixTime => {
     seconds: seconds,
   };
 };
+const accessibleJsTime = jsDate=> {
+  let date = jsDate;
+  let year = date.getFullYear();
+  let month = months()[date.getMonth()];
+  let day = date.getDate();
+  let dow = date.getDay();
+  let dowName = days()[date.getDay()];
+  let hour = date.getHours();
+  let minutes = '0' + date.getMinutes();
+  minutes = minutes.substr(-2);
+  let seconds = '0' + date.getSeconds();
+  seconds = seconds.substr(-2);
+  let meridiem = 'am';
+  if (hour >= 12) {
+    meridiem = 'pm';
+  }
+  let ampmHour = hour % 12;
+  let time = ampmHour + ':' + minutes + meridiem;
+
+  return {
+    date: `${month} ${day}, ${year}`,
+    time: time,
+    month: month,
+    day: day,
+    dow: dow,
+    dowName: dowName,
+    year: year,
+    hour: hour,
+    minutes: minutes,
+    seconds: seconds,
+  };
+};
 const getDatesBetween = (start, end) => {
   let datesBetween = [];
   while (start < end) {
@@ -112,6 +144,7 @@ export {
   months,
   hourToAmpm,
   accessibleTime,
+  accessibleJsTime,
   getDatesBetween,
   bucketSongTimes,
 };

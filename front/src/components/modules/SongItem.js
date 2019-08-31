@@ -9,9 +9,11 @@ function SongItem(props) {
         <div>
           <p className="song-item__info__title">{props.name}</p>
           <p className="song-item__info__content">
+            <span className="song-item__info__content__artist">
             {props.artist}
+            </span>
             <br />
-            {props.album}
+            &mdash; {props.album}
           </p>
         </div>
       </div>

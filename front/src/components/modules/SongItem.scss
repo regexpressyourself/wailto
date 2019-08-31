@@ -50,12 +50,14 @@ $max-width: 1920px;
   justify-content: flex-start;
   @media screen and (max-width: 768px) {
     flex-basis: 100%;
-    text-align: right;
+    text-align: center;
     justify-content: space-between;
+    flex-direction: column;
+    margin-bottom: 0;
   }
 }
 .song-item__info__title {
-  font-weight: 500;
+  font-weight: 600;
   @include fluid-type($min_width, $max_width, 28px, 36px);
   line-height: 1.1;
   margin: 0 0 10px;
@@ -64,6 +66,10 @@ $max-width: 1920px;
   @include fluid-type($min_width, $max_width, 18px, 28px);
   margin: 0 0 5px;
   line-height: 1.1;
+  .song-item__info__content__artist {
+    margin: 0 0 15px;
+    @include fluid-type($min_width, $max_width, 22px, 32px);
+  }
 }
 .song-item__date {
   @include fluid-type($min_width, $max_width, 14px, 18px);
@@ -72,5 +78,7 @@ $max-width: 1920px;
   flex-basis: 32%;
   @media screen and (max-width: 768px) {
     flex-basis: 100%;
+    text-align: center;
+    margin-bottom: 20px;
   }
 }

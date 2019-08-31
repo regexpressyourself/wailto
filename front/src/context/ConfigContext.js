@@ -8,9 +8,10 @@ let initialConfig = {
   unixTimeStart: null,
   unixTimeEnd: null,
   username: null,
+  appState: 'home',
 };
 
-let transformTimeEnd = (timeEnd) => {
+let transformTimeEnd = timeEnd => {
   // sets the end time to 11:59:59 on selected date
   let newEnd = new Date(timeEnd.getTime());
   newEnd.setDate(newEnd.getDate());
@@ -18,7 +19,7 @@ let transformTimeEnd = (timeEnd) => {
   newEnd.setMinutes(59);
   newEnd.setSeconds(59);
   return newEnd;
-}
+};
 
 function configReducer(state, configAction) {
   state.timeEnd = transformTimeEnd(state.timeEnd);
@@ -45,6 +46,11 @@ function configReducer(state, configAction) {
         ...state,
         timeEnd: newEnd,
         unixTimeEnd: unixTimeEnd,
+      };
+    case 'APP_STATE':
+      return {
+        ...state,
+        appState: configAction.appState,
       };
     default:
       return initialConfig;

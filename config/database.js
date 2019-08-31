@@ -19,7 +19,7 @@ const client = new Client({
 });
 
 const saveSongs = (userId, history) => {
-  console.log('%i:\tsave songs', userId);
+  console.log('user %i:\tsave songs', userId);
   let songValues = [];
   for (let song of history) {
     songValues.push([
@@ -44,7 +44,7 @@ const saveSongs = (userId, history) => {
 };
 
 const saveHistory = (userId, history) => {
-  console.log('%i:\tsave history', userId);
+  console.log('user %i:\tsave history', userId);
   let historyValues = [];
   for (let song of history) {
     if (!song.id || !userId || !song.date) {
@@ -65,8 +65,8 @@ const saveHistory = (userId, history) => {
 };
 
 const saveCoverage = (userId, from, to) => {
-  console.log('%i:\tsave coverage', userId);
-  console.log('%i:\tlooking for day coverage', userId);
+  console.log('user %i:\tsave coverage', userId);
+  console.log('user %i:\tlooking for day coverage', userId);
   let values = getDateRange(from, to);
   values = values.map(value => {
     return [userId, value];
@@ -109,7 +109,7 @@ const getUser = async function(username) {
     } catch (error) {
       console.error(error);
     }
-    console.log('user created');
+    console.log('user created id: ', saveConfirmationRes.rows[0].id);
     return saveConfirmationRes.rows[0];
   }
 };
@@ -120,14 +120,14 @@ const getSongHistory = async function(userId, unixFrom, unixTo) {
                                  unix_date <= ${unixTo} AND
                                  user_id = ${userId};`;
 
-  console.log('%i:\tgetting song history', userId);
+  console.log('user %i:\tgetting song history', userId);
   let listeningHistoryRes;
   try {
     listeningHistoryRes = await client.query(listeningHistoryQuery);
   } catch (error) {
     console.error(error);
   }
-  console.log('%i:\tgot song history', userId);
+  console.log('user %i:\tgot song history', userId);
 
   let listeningHistoryList = [];
   let listeningHistoryIds = [];

@@ -2,9 +2,14 @@ import React, {useReducer, useState, useEffect} from 'react';
 import axios from 'axios';
 import {ConfigContext, configReducer} from '../context/ConfigContext';
 import {HistoryContext, historyReducer} from '../context/HistoryContext';
-import FullHistory from './modules/FullHistory';
+import Dashboard from './Dashboard';
 import Nav from './Nav';
-import './App.css';
+import FullHistory from './modules/FullHistory';
+import SongsByDate from './modules/SongsByDate';
+import SongsByDow from './modules/SongsByDow';
+import SongsByHour from './modules/SongsByHour';
+import './App.scss';
+import {accessibleJsTime} from './dateMappers';
 
 function App() {
   let today = new Date();
@@ -13,19 +18,35 @@ function App() {
   let initialConfig = {
     timeStart: weekAgo,
     timeEnd: today,
-    username: 'zookeeprr',
+    username: '',
   };
 
   const [config, configDispatch] = useReducer(configReducer, initialConfig);
   const [history, historyDispatch] = useReducer(historyReducer, {});
-  const [isUpdating, setIsUpdating] = useState(false);
-  console.log(isUpdating);
+
+  let [appState, setAppState] = useState(config.appState);
+  let [content, setContent] = useState(null);
+  let [userInfo, setUserInfo] = useState(null);
 
   useEffect(() => {
-    console.log('config');
-    console.log(config);
-    setIsUpdating(true);
+    setAppState(config.appState);
+  }, [config.appState]);
+
+  useEffect(() => {
+    configDispatch({type: 'APP_STATE', appState: 'updating'});
     if (config.username && config.unixTimeEnd && config.unixTimeStart) {
+      setUserInfo(
+        <section className="user-info">
+          <p className="user-info__username">{config.username}</p>
+          <div>
+            <p className="user-info__dates">
+              {accessibleJsTime(config.timeStart).date}
+              &nbsp; &mdash; &nbsp;
+              {accessibleJsTime(config.timeEnd).date}
+            </p>
+          </div>
+        </section>,
+      );
       axios
         .get('http://localhost:3009/history/', {
           params: {
@@ -36,42 +57,53 @@ function App() {
         })
         .then(data => {
           historyDispatch({history: data.data});
-          setIsUpdating(false);
+          configDispatch({type: 'APP_STATE', appState: 'dashboard'});
         });
     } else {
-      setIsUpdating(false);
+      configDispatch({type: 'APP_STATE', appState: 'tutorial'});
     }
-  }, [config]);
+  }, [config.username, config.unixTimeEnd, config.unixTimeStart]);
 
-  if (isUpdating) {
-    return (
-      <>
-        <ConfigContext.Provider value={{config, configDispatch}}>
-          <Nav />
-          <h1>Loading...</h1>
-        </ConfigContext.Provider>
-      </>
-    );
-  }
-  if (!history.history) {
-    return (
-      <div className="home">
-        <ConfigContext.Provider value={{config, configDispatch}}>
-          <Nav showMessages={!!config.username.length}/>
-        </ConfigContext.Provider>
-      </div>
-    );
-  }
+  useEffect(() => {
+    switch (appState) {
+      case 'updating':
+        setContent(<h1>Loading...</h1>);
+        break;
+      case 'dashboard':
+        setContent(<Dashboard />);
+        break;
+      case 'dow':
+        setContent(<SongsByDow />);
+        break;
+      case 'date':
+        setContent(<SongsByDate />);
+        break;
+      case 'hour':
+        setContent(<SongsByHour />);
+        break;
+      case 'history':
+        setContent(<FullHistory />);
+        break;
+      case 'tutorial':
+    }
+  }, [appState]);
 
   return (
-    <>
+    <main
+      className={`app ${appState === 'tutorial' ? 'app--unpopulated' : null}`}>
       <ConfigContext.Provider value={{config, configDispatch}}>
-        <Nav />
         <HistoryContext.Provider value={{history, historyDispatch}}>
-          <FullHistory />
+          {userInfo}
+          {content}
+          <Nav
+            defaultStart={initialConfig.timeStart}
+            defaultEnd={initialConfig.timeEnd}
+            showMessages={!config.username.length}
+            showBack={!!content && appState !== 'dashboard'}
+          />
         </HistoryContext.Provider>
       </ConfigContext.Provider>
-    </>
+    </main>
   );
 }
 

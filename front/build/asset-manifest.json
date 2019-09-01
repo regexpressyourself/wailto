@@ -1,0 +1,20 @@
+{
+  "files": {
+    "main.css": "/static/css/main.bc73c5dc.chunk.css",
+    "main.js": "/static/js/main.aebb1322.chunk.js",
+    "main.js.map": "/static/js/main.aebb1322.chunk.js.map",
+    "runtime~main.js": "/static/js/runtime~main.a8a9905a.js",
+    "runtime~main.js.map": "/static/js/runtime~main.a8a9905a.js.map",
+    "static/css/2.bb342caa.chunk.css": "/static/css/2.bb342caa.chunk.css",
+    "static/js/2.5269df4b.chunk.js": "/static/js/2.5269df4b.chunk.js",
+    "static/js/2.5269df4b.chunk.js.map": "/static/js/2.5269df4b.chunk.js.map",
+    "index.html": "/index.html",
+    "precache-manifest.5ed6697523f2abe55bc1a85d9efad1ed.js": "/precache-manifest.5ed6697523f2abe55bc1a85d9efad1ed.js",
+    "service-worker.js": "/service-worker.js",
+    "static/css/2.bb342caa.chunk.css.map": "/static/css/2.bb342caa.chunk.css.map",
+    "static/css/main.bc73c5dc.chunk.css.map": "/static/css/main.bc73c5dc.chunk.css.map",
+    "static/media/friday.jpg": "/static/media/friday.02a1c71d.jpg",
+    "static/media/sm.png": "/static/media/sm.2a3978c5.png",
+    "static/media/wailto-logo.png": "/static/media/wailto-logo.4450519c.png"
+  }
+}

@@ -13,9 +13,6 @@ yarn-error.log
 # testing
 /front/coverage
 
-# production
-/front/build
-
 # misc
 .DS_Store
 .env.local

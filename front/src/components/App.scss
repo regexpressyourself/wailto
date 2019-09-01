@@ -54,7 +54,9 @@ $max-width: 1920px;
   @include fluid-prop('font-size', $min_width, $max_width, 22px, 28px);
   text-transform: uppercase;
   font-weight: 800;
+  font-family: 'Barriecito', 'Livvic', sans-serif;
 }
 .user-info__dates {
   @include fluid-prop('font-size', $min_width, $max_width, 16px, 18px);
+  font-family: 'Barriecito', 'Livvic', sans-serif;
 }

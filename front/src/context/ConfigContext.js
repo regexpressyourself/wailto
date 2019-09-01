@@ -7,7 +7,7 @@ let initialConfig = {
   timeEnd: null,
   unixTimeStart: null,
   unixTimeEnd: null,
-  username: null,
+  username: localStorage.getItem('wt-username') || '',
   appState: 'home',
 };
 
@@ -28,6 +28,7 @@ function configReducer(state, configAction) {
 
   switch (configAction.type) {
     case 'USERNAME':
+      localStorage.setItem('wt-username', configAction.username);
       return {
         ...state,
         username: configAction.username,

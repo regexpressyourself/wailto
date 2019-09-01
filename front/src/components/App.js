@@ -19,7 +19,7 @@ function App() {
   let initialConfig = {
     timeStart: weekAgo,
     timeEnd: today,
-    username: '',
+    username: localStorage.getItem('wt-username') || '',
   };
 
   const [config, configDispatch] = useReducer(configReducer, initialConfig);
@@ -71,8 +71,8 @@ function App() {
         setContent(<Loading />);
         break;
       case 'dashboard':
-        setAppState('updating');
-        //setContent(<Dashboard />);
+        //setAppState('updating');
+        setContent(<Dashboard />);
         break;
       case 'dow':
         setContent(<SongsByDow />);
@@ -88,7 +88,8 @@ function App() {
         break;
       case 'tutorial':
       default:
-        setAppState('updating');
+        setContent(null);
+      //setAppState('updating');
     }
   }, [appState]);
 

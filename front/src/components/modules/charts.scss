@@ -34,7 +34,8 @@ $max-width: 1920px;
 .chart-heading {
   text-align: center;
   @include fluid-prop('font-size', $min_width, $max_width, 32px, 64px);
-  margin: auto auto 100px;
+  font-family: 'Barriecito', 'Livvic', sans-serif;
+  margin: auto auto 0;
   line-height: 1;
   font-weight: 800;
   max-width: 700px;
@@ -47,6 +48,10 @@ $max-width: 1920px;
 }
 .chart-subheading {
   text-align: center;
-  margin-bottom: 50px;
-  @include fluid-prop('font-size', $min_width, $max_width, 18px, 28px);
+  margin-bottom: 100px;
+  @include fluid-prop('font-size', $min_width, $max_width, 24px, 36px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
 }

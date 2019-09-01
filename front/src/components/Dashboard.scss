@@ -57,53 +57,44 @@ $max-width: 1920px;
   @media screen and (max-width: 768px) {
     width: 90%;
   }
+
+  animation-name: dashboard-boxes;
+  animation-duration: 0.5s;
+  animation-iteration-count: 1;
   &:nth-of-type(1n) {
-    //background: linear-gradient(70deg, #aa5c9f 40%, #e2598b 40%);
     background-color: rgba(170, 92, 159, 0.7);
   }
   &:nth-of-type(2n) {
-    //background: linear-gradient(110deg, #fdd043 60%, #7f4782 60%);
-    //#aa5c9f
-    //#e2598b
-    //#fdd043
-    //#7f4782
     background-color: rgba(253, 208, 67, 0.7);
+    animation-delay: 0.1s;
   }
 
   &:nth-of-type(3n) {
-    //background: linear-gradient(70deg, #e2598b 30%, rgba(0, 0, 0, 0) 30%),
-    //linear-gradient(30deg, #fff810 60%, #aa5c9f 60%);
     background-color: rgba(253, 139, 123, 0.7);
+    animation-delay: 0.2s;
   }
   &:nth-of-type(4n) {
-    //background: linear-gradient(110deg, #7f4782 40%, rgba(0, 0, 0, 0) 30%),
-    //radial-gradient(farthest-corner at 0% 0%, #aa5c9f 70%, #e2598b 70%);
     background-color: rgba(226, 89, 139, 0.7);
+    animation-delay: 0.3s;
   }
 
-  //background: linear-gradient(
-  //325deg,
-  //rgba(253, 208, 67, 0.7) 0%,
-  //rgba(226, 89, 139, 0.5) 100%
-  //);
-
-  &:before {
-    content: '';
-    transition: all 0.7s cubic-bezier(0.25, 0.8, 0.25, 1);
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background-color: rgba(255, 255, 255, 0.2);
-    z-index: 2;
-  }
+  //&:before {
+  //transition: all 0.7s cubic-bezier(0.25, 0.8, 0.25, 1);
+  //position: absolute;
+  //top: 0;
+  //bottom: 0;
+  //left: 0;
+  //right: 0;
+  //background-color: rgba(255, 255, 255, 0);
+  //z-index: 2;
+  //}
   &:hover {
     box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
+    transform: translateY(-10px) scale(1.01);
     filter: saturate(120%);
-    &:before {
-      background-color: rgba(255, 255, 255, 0);
-    }
+    //&:before {
+    //background-color: rgba(255, 255, 255, 0);
+    //}
   }
   * {
     position: relative;
@@ -114,6 +105,7 @@ $max-width: 1920px;
   @include fluid-prop('font-size', $min_width, $max_width, 32px, 42px);
   text-align: center;
   font-weight: 600;
+  font-family: 'Barriecito', 'Livvic', sans-serif;
   margin: 0;
   line-height: 1;
 }
@@ -132,5 +124,21 @@ $max-width: 1920px;
     min-width: 75%;
     min-height: 70px;
     margin: auto;
+  }
+}
+.chart-subheading__friday {
+  display: inline-block;
+  width: 60px;
+}
+
+@keyframes dashboard-boxes {
+  0% {
+    transform: translateY(0) scale(1);
+  }
+  50% {
+    transform: translateY(-50px) scale(1.01);
+  }
+  100% {
+    transform: translateY(0) scale(1);
   }
 }

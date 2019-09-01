@@ -24,6 +24,11 @@ function SongsByHour(props) {
     });
   }
 
+  let subheadMessages = [
+    <>Hey, there's that 2am jam session</>,
+    <>Let's play "Guess the Commute Time"</>,
+  ];
+
   return (
     <>
       <div className="chart-container">
@@ -32,6 +37,9 @@ function SongsByHour(props) {
           <br /> <span className="per">&mdash;by&mdash;</span> <br />
           Hour of Day
         </h1>
+        <h2 className="chart-subheading">
+          {subheadMessages[Math.floor(Math.random() * subheadMessages.length)]}
+        </h2>
         <ResponsiveContainer>
           <AreaChart data={hourDataRC}>
             <XAxis dataKey="name" />

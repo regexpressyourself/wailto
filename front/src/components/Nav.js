@@ -37,6 +37,11 @@ function Nav(props) {
       );
     }
   }
+
+  useEffect(() => {
+    setUsername(config.username);
+  }, [config.username]);
+
   useEffect(() => {
     if (!isExpanded) {
       setHelpMessage(null);
@@ -72,7 +77,7 @@ function Nav(props) {
             <p className="help-subtext">
               <Link to="/about">
                 <span id="about-link" className="clickable">
-                &mdash;&nbsp;More info&nbsp;&mdash;
+                  &mdash;&nbsp;More info&nbsp;&mdash;
                 </span>
               </Link>
             </p>
@@ -122,7 +127,7 @@ function Nav(props) {
             <p className="help-subtext">
               <Link to="/about">
                 <span id="about-link" className="clickable">
-                &mdash;&nbsp;More info&nbsp;&mdash;
+                  &mdash;&nbsp;More info&nbsp;&mdash;
                 </span>
               </Link>
             </p>

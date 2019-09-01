@@ -133,7 +133,9 @@ button.nav__toggle-btn {
   @include fluid-prop('min-width', $min_width, $max_width, 60px, 100px);
   @include fluid-prop('min-height', $min_width, $max_width, 60px, 100px);
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
-  transition: margin 1s cubic-bezier(0.25, 0.8, 0.25, 1) background-color 0.3s
+  transition: margin 1s cubic-bezier(0.25, 0.8, 0.25, 1) transform 0.4s
+    cubic-bezier(0.25, 0.8, 0.25, 1) box-shadow 0.4s
+    cubic-bezier(0.25, 0.8, 0.25, 1) background-color 0.3s
     cubic-bezier(0.25, 0.8, 0.25, 1);
   transform: scale3d(1, 1, 1);
   &.animated {
@@ -145,10 +147,33 @@ button.nav__toggle-btn {
     background-color: #aa5c9f;
     cursor: pointer;
     box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
+    transform: scale(1.01);
   }
   svg {
     min-width: 75%;
     min-height: 75%;
+  }
+}
+
+.nav--collapsed {
+  button.nav__toggle-btn {
+    &:hover {
+      svg {
+        //animation: rotate-center 0.4s ease-in-out both;
+      }
+    }
+  }
+}
+.nav--uncollapsed {
+  button.nav__toggle-btn {
+    svg {
+      //transform: rotate(45deg);
+    }
+    &:hover {
+      svg {
+        //animation: rotate-center-more 0.4s ease-in-out both;
+      }
+    }
   }
 }
 button.nav__back-btn {
@@ -298,5 +323,21 @@ button.submit-btn {
   }
   100% {
     transform: scale3d(1, 1, 1);
+  }
+}
+@keyframes rotate-center {
+  0% {
+    transform: rotate(0);
+  }
+  100% {
+    transform: rotate(180deg);
+  }
+}
+@keyframes rotate-center-more {
+  0% {
+    transform: rotate(45deg);
+  }
+  100% {
+    transform: rotate(225deg);
   }
 }

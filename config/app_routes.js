@@ -18,10 +18,6 @@ const resetDate = require('./dates').resetDate;
 require('dotenv').config();
 const LASTFM_KEY = process.env.LASTFM_KEY;
 
-const reflect = p => {
-  p.then(res => ({res, status: 'fulfilled'}), e => ({e, status: 'rejected'}));
-};
-
 const removeDuplicates = array => {
   const reducedArray = array.reduce((acc, current) => {
     const x = acc.find(item => item.id === current.id);

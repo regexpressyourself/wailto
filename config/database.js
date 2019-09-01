@@ -1,20 +1,23 @@
 const {Pool, Client} = require('pg');
 const format = require('pg-format');
 const getDateRange = require('./dates').getDateRange;
+require('dotenv').config();
+const DB_USER = process.env.DB_USER;
+const DB_PW = process.env.DB_PW;
 
 const pool = new Pool({
-  user: 'zookeeprr',
+  user: DB_USER,
   host: 'localhost',
   database: 'wailto',
-  password: '',
+  password: DB_PW,
   port: 5432,
 });
 
 const client = new Client({
-  user: 'zookeeprr',
+  user: DB_USER,
   host: 'localhost',
   database: 'wailto',
-  password: '',
+  password: DB_PW,
   port: 5432,
 });
 

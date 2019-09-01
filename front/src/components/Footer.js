@@ -1,6 +1,7 @@
 import React from 'react';
 import {GitHub} from 'react-feather';
 import './Footer.scss';
+import sm from '../assets/sm.png';
 import {Link} from 'react-router-dom';
 
 function Footer(props) {
@@ -44,11 +45,7 @@ function Footer(props) {
             href="https://smessina.com"
             rel="noopener noreferrer"
             target="_blank">
-            <img
-              className="sm-fav"
-              src="https://smessina.com/images/sm_fav.png"
-              alt="smessina.com"
-            />
+            <img className="sm-fav" src={sm} alt="smessina.com" />
           </a>
         </p>
       </div>

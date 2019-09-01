@@ -99,7 +99,7 @@ function App() {
       );
     }
     axios
-      .get('http://localhost:3011/history/', {
+      .get('/history', {
         params: {
           username: config.username,
           to: config.unixTimeEnd,

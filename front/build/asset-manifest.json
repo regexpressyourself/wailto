@@ -1,18 +1,18 @@
 {
   "files": {
-    "main.css": "/static/css/main.bc73c5dc.chunk.css",
-    "main.js": "/static/js/main.1f30f212.chunk.js",
-    "main.js.map": "/static/js/main.1f30f212.chunk.js.map",
+    "main.css": "/static/css/main.8be4f154.chunk.css",
+    "main.js": "/static/js/main.d7557206.chunk.js",
+    "main.js.map": "/static/js/main.d7557206.chunk.js.map",
     "runtime~main.js": "/static/js/runtime~main.a8a9905a.js",
     "runtime~main.js.map": "/static/js/runtime~main.a8a9905a.js.map",
     "static/css/2.bb342caa.chunk.css": "/static/css/2.bb342caa.chunk.css",
     "static/js/2.5269df4b.chunk.js": "/static/js/2.5269df4b.chunk.js",
     "static/js/2.5269df4b.chunk.js.map": "/static/js/2.5269df4b.chunk.js.map",
     "index.html": "/index.html",
-    "precache-manifest.8a7751736c447fb1c23af197a15cee18.js": "/precache-manifest.8a7751736c447fb1c23af197a15cee18.js",
+    "precache-manifest.68355b2c2b5378f50cecf9c236025028.js": "/precache-manifest.68355b2c2b5378f50cecf9c236025028.js",
     "service-worker.js": "/service-worker.js",
     "static/css/2.bb342caa.chunk.css.map": "/static/css/2.bb342caa.chunk.css.map",
-    "static/css/main.bc73c5dc.chunk.css.map": "/static/css/main.bc73c5dc.chunk.css.map",
+    "static/css/main.8be4f154.chunk.css.map": "/static/css/main.8be4f154.chunk.css.map",
     "static/media/friday.jpg": "/static/media/friday.02a1c71d.jpg",
     "static/media/sm.png": "/static/media/sm.2a3978c5.png",
     "static/media/wailto-logo.png": "/static/media/wailto-logo.4450519c.png"

@@ -144,14 +144,26 @@ let saveUserInfo = async function(userId, from, to, recentTracks) {
 };
 
 module.exports = app => {
-  app.use('/', express.static('front/public'));
-  app.use('/images', express.static('static/images'));
+  if (process.env.ENVIRONMENT !== 'dev') {
+    console.log('not dev');
+    app.use('/', express.static('../front/build'));
+    app.get('/', (req, res, next) => {
+      res.sendFile(path.join(__dirname, '../front/build/index.html'));
+      return;
+    });
+    app.use(express.static(path.join(__dirname, '/../front/build')));
+    app.get('*', (req, res) => {
+      res.sendFile(path.join(__dirname + '/../front/build/index.html'));
+    });
+  } else {
+    app.use('/', express.static('front/public'));
+    app.use('/images', express.static('static/images'));
 
-  app.get('/', (req, res, next) => {
-    res.sendFile(path.join(__dirname, '../front/public/index.html'));
-    return;
-  });
-
+    app.get('/', (req, res, next) => {
+      res.sendFile(path.join(__dirname, '../front/public/index.html'));
+      return;
+    });
+  }
   app.get('/history', cors(), (req, res, next) => {
     let request = JSON.parse(JSON.stringify(req.query));
     let username = request.username;
@@ -228,11 +240,4 @@ module.exports = app => {
     };
     main();
   });
-
-  if (process.env.ENVIRONMENT !== 'dev') {
-    app.use(express.static(path.join(__dirname, '/../front/build')));
-    app.get('*', (req, res) => {
-      res.sendFile(path.join(__dirname + '/../client/build/index.html'));
-    });
-  }
 };

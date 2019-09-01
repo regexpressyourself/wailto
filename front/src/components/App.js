@@ -4,6 +4,7 @@ import {ConfigContext, configReducer} from '../context/ConfigContext';
 import {HistoryContext, historyReducer} from '../context/HistoryContext';
 import Dashboard from './Dashboard';
 import Nav from './Nav';
+import Footer from './Footer';
 import Loading from './Loading';
 import FullHistory from './modules/FullHistory';
 import SongsByDate from './modules/SongsByDate';
@@ -29,13 +30,61 @@ function App() {
   let [content, setContent] = useState(null);
   let [userInfo, setUserInfo] = useState(null);
 
+  const appIsPopulated =
+    appState || !appState === 'tutorial' || !appState === 'updating';
+  const footer = appIsPopulated ? <Footer /> : null;
+
+  useEffect(() => {
+    if (window.location.href.includes('zookeeprr')) {
+      configDispatch({type: 'TIME_START', timeStart: initialConfig.timeStart});
+      configDispatch({type: 'TIME_END', timeEnd: initialConfig.timeEnd});
+      configDispatch({type: 'USERNAME', username: 'zookeeprr'});
+    }
+  }, []);
+
   useEffect(() => {
     setAppState(config.appState);
   }, [config.appState]);
 
   useEffect(() => {
+    if (!(config.username && config.unixTimeEnd && config.unixTimeStart)) {
+      return;
+    }
     configDispatch({type: 'APP_STATE', appState: 'updating'});
-    if (config.username && config.unixTimeEnd && config.unixTimeStart) {
+    if (config.username === 'zookeeprr') {
+      setUserInfo(
+        <section className="user-info">
+          <p className="user-info__username">{config.username}</p>
+          <div>
+            <p className="user-info__dates">
+              {accessibleJsTime(config.timeStart).date}
+              &nbsp; &mdash; &nbsp;
+              {accessibleJsTime(config.timeEnd).date}
+            </p>
+          </div>
+          <div className="user-info__zookeeprr-info">
+            <p>
+              Welcome to my dashboard! That's me, <strong>zookeeprr</strong>.
+            </p>
+            <p>
+              Check out some of my own music trends and history over the last
+              week.
+            </p>
+            <p className="judgement-free">
+              Remember, this is a judgement free zone.
+              <br />
+              <span className="shh">
+                Yup, there will never be any Jonas Brothers on here. Definitely
+                not.{' '}
+                <span aria-label="see no evil" role="img">
+                  🙈
+                </span>
+              </span>
+            </p>
+          </div>
+        </section>,
+      );
+    } else {
       setUserInfo(
         <section className="user-info">
           <p className="user-info__username">{config.username}</p>
@@ -48,21 +97,19 @@ function App() {
           </div>
         </section>,
       );
-      axios
-        .get('http://localhost:3009/history/', {
-          params: {
-            username: config.username,
-            to: config.unixTimeEnd,
-            from: config.unixTimeStart,
-          },
-        })
-        .then(data => {
-          historyDispatch({history: data.data});
-          configDispatch({type: 'APP_STATE', appState: 'dashboard'});
-        });
-    } else {
-      configDispatch({type: 'APP_STATE', appState: 'tutorial'});
     }
+    axios
+      .get('http://localhost:3009/history/', {
+        params: {
+          username: config.username,
+          to: config.unixTimeEnd,
+          from: config.unixTimeStart,
+        },
+      })
+      .then(data => {
+        historyDispatch({history: data.data});
+        configDispatch({type: 'APP_STATE', appState: 'dashboard'});
+      });
   }, [config.username, config.unixTimeEnd, config.unixTimeStart]);
 
   useEffect(() => {
@@ -94,26 +141,23 @@ function App() {
   }, [appState]);
 
   return (
-    <main
-      className={`app ${
-        appState === 'tutorial' || appState === 'updating'
-          ? 'app--unpopulated'
-          : null
-      }`}>
-      <ConfigContext.Provider value={{config, configDispatch}}>
-        <HistoryContext.Provider value={{history, historyDispatch}}>
-          {userInfo}
-          {content}
-          <Nav
-            defaultStart={initialConfig.timeStart}
-            defaultEnd={initialConfig.timeEnd}
-            showMessages={!config.username.length}
-            showBack={!!content && appState !== 'dashboard'}
-          />
-        </HistoryContext.Provider>
-      </ConfigContext.Provider>
-    </main>
+    <>
+      <main className={`app ${!appIsPopulated ? 'app--unpopulated' : ''}`}>
+        <ConfigContext.Provider value={{config, configDispatch}}>
+          <HistoryContext.Provider value={{history, historyDispatch}}>
+            {userInfo}
+            {content}
+            <Nav
+              defaultStart={initialConfig.timeStart}
+              defaultEnd={initialConfig.timeEnd}
+              showMessages={!config.username.length}
+              showBack={!!content && appState !== 'dashboard'}
+            />
+          </HistoryContext.Provider>
+        </ConfigContext.Provider>
+      </main>
+      {footer}
+    </>
   );
 }
-
 export default App;

@@ -121,7 +121,7 @@ function bucketSongTimes(bucketKey, bucketMaxSize, songList) {
    * [{ timeSlot: [Song1, Song2, ...] }, ... ]
    * where timeSlot is the bucketed property's value (day of week,
    * time of day, etc.), and Song1, Song2, etc. are the song objects
-   * from LastFM.
+   * from Last.fm.
    */
   let map = new Array(bucketMaxSize);
 

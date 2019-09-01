@@ -1,0 +1,81 @@
+@function strip-unit($value) {
+  @return $value / ($value * 0 + 1);
+}
+$min-width: 320px;
+$max-width: 1920px;
+
+@mixin fluid-prop($prop, $min-vw, $max-vw, $min-size, $max-size) {
+  $u1: unit($min-vw);
+  $u2: unit($max-vw);
+  $u3: unit($min-size);
+  $u4: unit($max-size);
+
+  @if $u1 == $u2 and $u1 == $u3 and $u1 == $u4 {
+    & {
+      #{$prop}: $min-size;
+      @media screen and (min-width: $min-vw) {
+        #{$prop}: calc(
+          #{$min-size} + #{strip-unit($max-size - $min-size)} *
+            ((100vw - #{$min-vw}) / #{strip-unit($max-vw - $min-vw)})
+        );
+      }
+      @media screen and (min-width: $max-vw) {
+        #{$prop}: $max-size;
+      }
+    }
+  }
+}
+
+footer {
+  display: flex;
+  text-align: left;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 5vw;
+  margin: 0;
+  flex-wrap: wrap;
+  border-top: 3px solid rgba(170, 92, 159, 0.5);
+  background-color: rgba(253, 208, 67, 0.1);
+  @media screen and (max-width: 768px) {
+    flex-direction: column;
+    justify-content: center;
+  }
+  & > div {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    line-height: 1;
+    @media screen and (max-width: 768px) {
+      padding: 10px 0;
+    }
+  }
+
+  .css-logo {
+    animation: none;
+    @include fluid-prop('font-size', $min_width, $max_width, 80px, 80px);
+  }
+  .css-logo__to {
+    @include fluid-prop('font-size', $min_width, $max_width, 40px, 40px);
+  }
+  .smessina-info {
+    text-align: right;
+  }
+  .footer-img {
+    margin-right: 15px;
+  }
+  .sm-fav {
+    max-width: 50px;
+    margin-right: 0;
+    margin-left: 15px;
+  }
+  .footer-gh-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    svg {
+      margin-right: 10px;
+    }
+  }
+}

@@ -47,8 +47,10 @@ function Dashboard() {
                 appState: module.componentState,
               });
             }}>
-            <div className="dashboard__module__image">{module.image}</div>
-            <p className="dashboard__module__title">{module.title}</p>
+            <div className="dashboard__module__heading">
+              <div className="dashboard__module__image">{module.image}</div>
+              <p className="dashboard__module__title">{module.title}</p>
+            </div>
             <hr />
             <p className="dashboard__module__subtitle">{module.subtitle}</p>
           </div>

@@ -38,7 +38,11 @@ function SongsByDow(props) {
         <h2 className="chart-subheading">
           <Music />
           &nbsp; Yesterday was Thursday. Today it is Friday. &nbsp;
-          <img className="chart-subheading__friday" src={Friday} />
+          <img
+            alt="Gotta get down on Friday"
+            className="chart-subheading__friday"
+            src={Friday}
+          />
         </h2>
         <ResponsiveContainer>
           <AreaChart data={dayDataRC}>
@@ -53,7 +57,6 @@ function SongsByDow(props) {
             />
           </AreaChart>
         </ResponsiveContainer>
-
       </div>
     </>
   );

@@ -1,7 +1,7 @@
 import React from 'react';
-import logo from '../assets/wailto-logo.png';
 import './Home.scss';
 import {Link} from 'react-router-dom';
+import Footer from './Footer';
 import {LineChart, ResponsiveContainer, Line} from 'recharts';
 
 function Home() {
@@ -14,6 +14,21 @@ function Home() {
           <span className="css-logo__to">to</span>
         </p>
         <h1>What Am I Listening To?</h1>
+        <div className="header__btn-container">
+          <Link className="btn-link btn-link--1" to="/app">
+            <button className="btn">Get Started</button>
+          </Link>
+          <div
+            className="btn-link btn-link--2"
+            onClick={e => {
+              document.querySelector('#get-started').scrollIntoView({
+                behavior: 'smooth',
+                block: 'start',
+              });
+            }}>
+            <button className="btn">Learn More</button>
+          </div>
+        </div>
 
         <ResponsiveContainer>
           <LineChart
@@ -51,7 +66,7 @@ function Home() {
           </LineChart>
         </ResponsiveContainer>
       </section>
-      <main class="home">
+      <main className="home">
         <section className="home__body">
           <h2>
             What Is <span className="logo-font">{inlineLogo}</span>?
@@ -61,40 +76,93 @@ function Home() {
             <strong>
               <em>What Am I Listening To</em>
             </strong>
-            ) is a way to analyze your Last.FM music listening (known as{' '}
-            <strong>
-              <em>scrobbling</em>
-            </strong>
-            ) history.
+            ) is a way to analyze your music listening history.
             <br />
             <br />
             Learn about your music listening trends, daily breakdowns, and
             history.
           </p>
           <br />
-          <h2>Get Started.</h2>
+          <div className="header__btn-container">
+            <Link className="btn-link btn-link--1" to="/app">
+              <button className="btn">Check It Out</button>
+            </Link>
+          </div>
+          <br />
+          <h2 id="get-started">Get Started.</h2>
           <p>
             <span className="body__p-header">
-              <span className="logo-font">1. SIGN UP</span> with Last.FM.
-            </span> <a href="https://www.last.fm/join" target="_blank">
+              <span className="logo-font">1. SIGN UP</span> with Last.fm.
+            </span>{' '}
+            <br />
+            <a
+              href="https://www.last.fm/join"
+              rel="noopener noreferrer"
+              target="_blank">
               (You can do that here)
             </a>
           </p>
           <p>
-            Now, I totally understand if you don't need another service in your life. Feel free to check out <Link to="">my account's dashboard</Link> if you just want to check out {inlineLogo}
+            Now, I totally understand if you don't need another service in your
+            life. Feel free to check out{' '}
+            <Link to="/zookeeprr">my account's dashboard</Link> if you just want
+            to check out {inlineLogo}
+          </p>
+          <p className="home__body__123">
+            <span className="body__p-header">
+              <span className="logo-font">2. CONNECT</span> your music player to
+              Last.fm.{' '}
+            </span>
+            <br />
+            (They support a ton of players.{' '}
+            <a
+              href="https://www.last.fm/about/trackmymusic"
+              rel="noopener noreferrer"
+              target="_blank">
+              Find yours here.
+            </a>
+            ) This will enable{' '}
+            <strong>
+              <em>scrobbling</em>
+            </strong>{' '}
+            with Last.fm.
           </p>
           <p>
+            Scrobbling allows {inlineLogo} to access your history for analysis.
+            According to Last.fm:
+          </p>
+          <blockquote>
+            Scrobbling is when Last.fm tracks the music you listen to and
+            automatically adds it to your music profile.
+          </blockquote>
+
+          <p className="home__body__123">
             <span className="body__p-header">
-              <span className="logo-font">1. CONNECT</span> your favorite music
-              <span className="logo-font"></span> your favorite music
-              application to Last.FM.
-              <a href="https://www.last.fm/about/trackmymusic" target="_blank">
-                Seriously.
-              </a>
+              <span className="logo-font">3. Listen</span> to some music!
             </span>
           </p>
+          <p>
+            {inlineLogo} needs at least a day of history to really get
+            interesting. In the meantime, feel free to check out{' '}
+            <Link to="/zookeeprr">my account's dashboard</Link>.
+          </p>
+          <br />
+          <br />
+          <h2>What Have You Been Listening To?</h2>
+          <p className="home__body__123">
+            <span className="body__p-header">
+              <span className="logo-font">Ready</span> to see what your music
+              listening looks like?
+            </span>
+          </p>
+          <div className="header__btn-container">
+            <Link className="btn-link btn-link--1" to="/app">
+              <button className="btn">Find Out Now</button>
+            </Link>
+          </div>
         </section>
       </main>
+      <Footer />
     </>
   );
 }

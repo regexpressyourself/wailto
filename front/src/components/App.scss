@@ -60,3 +60,36 @@ $max-width: 1920px;
   @include fluid-prop('font-size', $min_width, $max_width, 16px, 18px);
   font-family: 'Barriecito', 'Livvic', sans-serif;
 }
+.user-info__zookeeprr-info {
+  @include fluid-prop('font-size', $min_width, $max_width, 22px, 28px);
+  font-family: 'Livvic', sans-serif;
+  text-align: center;
+  animation: text-focus-in 1s cubic-bezier(0.55, 0.085, 0.68, 0.53) both;
+  color: rgba(226, 89, 139, 1);
+  max-width: 900px;
+  margin: auto;
+  background-info: rgba(253, 208, 67, .1);
+  border-info: 3px solid rgba(253, 208, 67, 1);
+  p {
+    line-height: 1;
+    margin: 5px auto;
+  }
+  .judgement-free {
+    margin-top: 10px;
+    font-size: 75%;
+    .shh {
+      font-size: 75%;
+    }
+  }
+}
+
+@keyframes text-focus-in {
+  0% {
+    filter: blur(12px);
+    opacity: 0;
+  }
+  100% {
+    filter: blur(0px);
+    opacity: 1;
+  }
+}

@@ -27,7 +27,7 @@ function Nav(props) {
           <p className="help-title">Let's Get Started!</p>
           <p className="help-link">Click the button to start:</p>
           <p className="help-subtext">
-            <Link to="/about">
+            <Link to="/">
               <span id="about-link" className="clickable">
                 &mdash;&nbsp;More info&nbsp;&mdash;
               </span>
@@ -49,9 +49,9 @@ function Nav(props) {
       if (props.showMessages) {
         setHelpMessage(
           <div>
-            <p className="help-title">Look up LastFM data</p>
+            <p className="help-title">Look up Last.fm data</p>
             <p className="help-link">
-              Not on LastFM?{' '}
+              Not on Last.fm?{' '}
               <span
                 className="clickable"
                 onClick={e => {
@@ -75,7 +75,7 @@ function Nav(props) {
               </span>
             </p>
             <p className="help-subtext">
-              <Link to="/about">
+              <Link to="/">
                 <span id="about-link" className="clickable">
                   &mdash;&nbsp;More info&nbsp;&mdash;
                 </span>
@@ -125,7 +125,7 @@ function Nav(props) {
             <p className="help-title">Let's Get Started!</p>
             <p className="help-link">Click the button to start:</p>
             <p className="help-subtext">
-              <Link to="/about">
+              <Link to="/">
                 <span id="about-link" className="clickable">
                   &mdash;&nbsp;More info&nbsp;&mdash;
                 </span>
@@ -164,11 +164,14 @@ function Nav(props) {
               className="nav__heading nav__heading--username"
               htmlFor="username">
               Username&nbsp;
-              <Link to="/about">
+              <a
+                href="https://www.last.fm/join"
+                rel="noopener noreferrer"
+                target="_blank">
                 <span className="clickable header-help-link">
                   (Need a username?)
                 </span>
-              </Link>
+              </a>
             </label>
             <span className="required-reminder">
               &nbsp;&mdash;&nbsp;please enter a username
@@ -176,7 +179,7 @@ function Nav(props) {
             <input
               name="username"
               className="username-input"
-              placeholder="LastFM username"
+              placeholder="Last.fm username"
               type="text"
               value={username}
               onChange={e => setUsername(e.target.value)}

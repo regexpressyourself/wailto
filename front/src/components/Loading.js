@@ -1,14 +1,15 @@
-import React, {useReducer, useState, useEffect} from 'react';
+import React from 'react';
 import './Loading.scss';
 
 function Loading() {
   return (
     <>
-    <h1 className="loading">Loading
-      <span>.</span>
-      <span>.</span>
-      <span>.</span>
-    </h1>
+      <h1 className="loading">
+        Loading
+        <span>.</span>
+        <span>.</span>
+        <span>.</span>
+      </h1>
     </>
   );
 }

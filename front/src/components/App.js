@@ -109,6 +109,9 @@ function App() {
       .then(data => {
         historyDispatch({history: data.data});
         configDispatch({type: 'APP_STATE', appState: 'dashboard'});
+      })
+      .catch(e => {
+        console.error(e);
       });
   }, [config.username, config.unixTimeEnd, config.unixTimeStart]);
 

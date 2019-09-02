@@ -5,9 +5,7 @@
   "author": "Sam Messina",
   "license": "MIT",
   "scripts": {
-    "start": "node app.js & webpack -d --watch --progress",
-    "webpack": "webpack -d --watch --progress",
-    "build": "webpack --progress -p"
+    "start": "node wailto"
   },
   "dependencies": {
     "@babel/runtime": "^7.5.5",

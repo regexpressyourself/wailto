@@ -31,12 +31,14 @@ $max-width: 1920px;
   bottom: 3vw;
   right: 3vw;
   top: auto;
-  left: 3vw;
   display: flex;
   align-items: flex-end;
   justify-content: flex-end;
   flex-direction: column;
   z-index: 100;
+  @media screen and (max-width: 768px) {
+    left: 3vw;
+  }
 }
 
 .introduce-message {
@@ -85,7 +87,7 @@ $max-width: 1920px;
 }
 
 .nav {
-  position: fixed;
+  position: absolute;
   background-color: #ffffff;
   padding: 3vw;
   transform: scale(0);
@@ -96,8 +98,9 @@ $max-width: 1920px;
   justify-content: space-between;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
   transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-  @include fluid-prop('margin-bottom', $min_width, $max_width, 75px, 120px);
-  @include fluid-prop('margin-right', $min_width, $max_width, 75px, 120px);
+  bottom: 100%;
+  right: 8vw;
+  @include fluid-prop('right', $min_width, $max_width, 60px, 100px);
   &:hover {
     box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
   }
@@ -109,13 +112,33 @@ $max-width: 1920px;
   }
 
   @media screen and (max-width: 768px) {
+    position: fixed;
     top: 0;
-    bottom: 10vw;
+    bottom: 33vw;
     left: 0;
     right: 0;
     margin-left: 0vw;
     min-width: 100vw;
     padding: 5vw;
+  }
+}
+
+.use-mine {
+  box-shadow: 0 1px 3px rgba(255, 255, 255, 0.12),
+    0 1px 2px rgba(255, 255, 255, 0.24);
+  background-color: rgba(170, 92, 159, 0.2);
+  border: 2px solid rgba(127, 71, 130, 0.2);
+  line-height: 2;
+  padding: 2px 5px;
+  border-radius: 5px;
+  color: #333;
+  animation: use-mine-animation 30s both infinite;
+  @include fluid-prop('font-size', $min_width, $max_width, 22px, 36px);
+  &:hover {
+    background-color: white;
+    cursor: pointer;
+    color: rgba(127, 71, 130, 0.2);
+    color: rgba(226, 89, 139, 1);
   }
 }
 
@@ -210,12 +233,6 @@ button.submit-btn {
   display: flex;
   justify-content: space-between;
   flex-wrap: wrap;
-  //div {
-  //width: 45%;
-  //input {
-  //@include fluid-prop('font-size', $min_width, $max_width, 18px, 34px);
-  //}
-  //}
 }
 
 .username-input {
@@ -255,12 +272,14 @@ button.submit-btn {
   transition: color 0.4s;
   &.atn--font-color {
     color: #e2598b;
+    animation: heartbeat 1.5s ease-in-out both;
   }
 }
 .username-input {
   transition: border-color 0.4s !important;
   &.atn--border-color {
     border-color: #e2598b !important;
+    animation: heartbeat 1.5s ease-in-out both;
   }
 }
 
@@ -339,5 +358,51 @@ button.submit-btn {
   }
   100% {
     transform: rotate(225deg);
+  }
+}
+@keyframes use-mine-animation {
+  0% {
+    background-color: rgba(253, 139, 123, 0.3);
+    border-color: rgba(226, 89, 139, 0.3);
+  }
+  25% {
+    background-color: rgba(253, 139, 123, 1);
+    border-color: rgba(226, 89, 139, 1);
+  }
+  50% {
+    background-color: rgba(253, 208, 67, 0.5);
+    border-color: rgba(253, 162, 67, 0.5);
+  }
+  75% {
+    background-color: rgba(253, 208, 67, 1);
+    border-color: rgba(253, 162, 67, 1);
+  }
+  100% {
+    background-color: rgba(253, 139, 123, 0.3);
+    border-color: rgba(226, 89, 139, 0.3);
+  }
+}
+
+@keyframes heartbeat {
+  from {
+    transform: scale(1);
+    transform-origin: center center;
+    animation-timing-function: ease-out;
+  }
+  10% {
+    transform: scale(0.91);
+    animation-timing-function: ease-in;
+  }
+  17% {
+    transform: scale(0.98);
+    animation-timing-function: ease-out;
+  }
+  33% {
+    transform: scale(0.87);
+    animation-timing-function: ease-in;
+  }
+  45% {
+    transform: scale(1);
+    animation-timing-function: ease-out;
   }
 }

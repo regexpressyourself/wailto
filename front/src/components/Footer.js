@@ -17,7 +17,7 @@ function Footer(props) {
         </Link>
       </div>
       <div>
-        <p>
+        <p className="footer-p">
           <a
             href="https://github.com/regexpressyourself/wailto"
             className="footer-gh-link"
@@ -29,15 +29,15 @@ function Footer(props) {
         </p>
       </div>
       <div className="smessina-info">
-        <p>
+        <p className="footer-p">
           <a
             href="https://smessina.com"
             rel="noopener noreferrer"
             target="_blank">
             Sam Messina
+            <br />
+            &copy; {new Date().getFullYear()}
           </a>
-          <br />
-          &copy; {new Date().getFullYear()}
         </p>
         <p>
           <a

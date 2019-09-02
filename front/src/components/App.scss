@@ -32,6 +32,7 @@ $max-width: 1920px;
   padding: 2% 5%;
   background-color: white;
   &.app--unpopulated {
+    min-height: 100vh;
     background-color: rgba(253, 208, 67, 0.7);
     background-image: linear-gradient(
       325deg,
@@ -68,7 +69,7 @@ $max-width: 1920px;
   color: rgba(226, 89, 139, 1);
   max-width: 900px;
   margin: auto;
-  background-info: rgba(253, 208, 67, .1);
+  background-info: rgba(253, 208, 67, 0.1);
   border-info: 3px solid rgba(253, 208, 67, 1);
   p {
     line-height: 1;

@@ -39,7 +39,10 @@ $max-width: 1920px;
   display: flex;
   justify-content: center;
   align-items: center;
-
+  @media screen and (max-width: 768px) {
+    top: 66vh;
+    bottom: unset;
+  }
   span {
     animation-name: blink;
     animation-duration: 1.4s;
@@ -89,7 +92,6 @@ $max-width: 1920px;
 }
 
 .loading-animation div {
-  /*position: absolute;*/
   width: 5rem;
   height: 5rem;
   border: 5px solid #fff;

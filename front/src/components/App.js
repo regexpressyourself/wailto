@@ -16,10 +16,12 @@ import {accessibleJsTime} from './dateMappers';
 function App() {
   let today = new Date();
   let weekAgo = new Date();
-  weekAgo.setDate(today.getDate() - 7);
+  let yesterday = new Date();
+  yesterday.setDate(today.getDate() - 1);
+  weekAgo.setDate(today.getDate() - 8);
   let initialConfig = {
     timeStart: weekAgo,
-    timeEnd: today,
+    timeEnd: yesterday,
     username: localStorage.getItem('wt-username') || '',
   };
 
@@ -121,7 +123,6 @@ function App() {
         setContent(<Loading />);
         break;
       case 'dashboard':
-        //setAppState('updating');
         setContent(<Dashboard />);
         break;
       case 'dow':
@@ -139,7 +140,6 @@ function App() {
       case 'tutorial':
       default:
         setContent(null);
-      //setAppState('updating');
     }
   }, [appState]);
 

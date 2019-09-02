@@ -51,9 +51,8 @@ function Nav(props) {
           <div>
             <p className="help-title">Look up Last.fm data</p>
             <p className="help-link">
-              Not on Last.fm?{' '}
               <span
-                className="clickable"
+                className="clickable use-mine"
                 onClick={e => {
                   document
                     .querySelector('.nav__heading--username')
@@ -71,7 +70,7 @@ function Nav(props) {
                     }, 50 * i);
                   }
                 }}>
-                Use mine!
+                Or see mine!
               </span>
             </p>
             <p className="help-subtext">
@@ -189,7 +188,12 @@ function Nav(props) {
             <label className="nav__heading">Start date:</label>
             <DayPickerInput
               style={{width: '100%'}}
-              dayPickerProps={{selectedDays: from}}
+              dayPickerProps={{
+                selectedDays: from,
+                disabledDays: day =>
+                  day > to ||
+                  day < new Date().setDate(new Date().getDate() - 62),
+              }}
               value={fromString}
               placeholder="YYYY-M-D"
               onDayChange={e => {
@@ -201,7 +205,10 @@ function Nav(props) {
             <label className="nav__heading">End date:</label>
             <DayPickerInput
               style={{width: '100%'}}
-              dayPickerProps={{selectedDays: to}}
+              dayPickerProps={{
+                selectedDays: to,
+                disabledDays: day => day > new Date() || day < from,
+              }}
               value={toString}
               placeholder="YYYY-M-D"
               onDayChange={e => {

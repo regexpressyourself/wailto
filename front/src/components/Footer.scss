@@ -31,7 +31,7 @@ footer {
   text-align: left;
   justify-content: space-between;
   align-items: center;
-  padding: 20px 5vw;
+  padding: 100px 5vw 100px;
   margin: 0;
   flex-wrap: wrap;
   border-top: 3px solid rgba(170, 92, 159, 0.5);
@@ -51,18 +51,30 @@ footer {
     }
   }
 
+  .footer-p {
+    @include fluid-prop('font-size', $min_width, $max_width, 16px, 24px);
+  }
+
   .css-logo {
     animation: none;
-    @include fluid-prop('font-size', $min_width, $max_width, 80px, 80px);
+    @include fluid-prop('font-size', $min_width, $max_width, 80px, 120px);
   }
   .css-logo__to {
-    @include fluid-prop('font-size', $min_width, $max_width, 40px, 40px);
+    @include fluid-prop('font-size', $min_width, $max_width, 40px, 60px);
   }
   .smessina-info {
     text-align: right;
   }
   .footer-img {
     margin-right: 15px;
+    &:active,
+    &:focus,
+    &:hover {
+      text-decoration: none;
+      span {
+        animation: text-shadow-drop-center 0.6s both;
+      }
+    }
   }
   .sm-fav {
     max-width: 50px;
@@ -77,5 +89,14 @@ footer {
     svg {
       margin-right: 10px;
     }
+  }
+}
+
+@keyframes text-shadow-drop-center {
+  0% {
+    text-shadow: 0 0 0 rgba(0, 0, 0, 0);
+  }
+  100% {
+    text-shadow: 0 0 18px rgba(226, 89, 139, 0.8);
   }
 }

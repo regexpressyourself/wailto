@@ -69,11 +69,13 @@ $max-width: 1920px;
     font-weight: 800;
     color: #7f4782;
   }
+
   .recharts-responsive-container {
     z-index: 0;
     height: 33vh !important;
     position: absolute;
     bottom: 0;
+    max-width: unset;
   }
 }
 .header__btn-container {

@@ -13,7 +13,6 @@ CREATE TABLE songs (
   PRIMARY KEY (id)
 );
 
-
 CREATE TABLE users (
   id serial,
   username VARCHAR(64) NOT NULL,

@@ -89,14 +89,14 @@ $max-width: 1920px;
 .nav {
   position: absolute;
   background-color: #ffffff;
-  padding: 3vw;
+  padding: 20px 50px 40px;
   transform: scale(0);
   display: flex;
   flex-direction: column;
   width: 760px;
   max-width: 85vw;
   justify-content: space-between;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.12), 0 3px 10px rgba(0, 0, 0, 0.24);
   transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
   bottom: 100%;
   right: 8vw;
@@ -113,7 +113,7 @@ $max-width: 1920px;
 
   @media screen and (max-width: 768px) {
     position: fixed;
-    top: 0;
+    top: auto;
     bottom: 33vw;
     left: 0;
     right: 0;

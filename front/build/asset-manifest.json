@@ -1,6 +1,6 @@
 {
   "files": {
-    "main.css": "/static/css/main.9fce6e57.chunk.css",
+    "main.css": "/static/css/main.98decd9e.chunk.css",
     "main.js": "/static/js/main.c96e6a7a.chunk.js",
     "main.js.map": "/static/js/main.c96e6a7a.chunk.js.map",
     "runtime~main.js": "/static/js/runtime~main.a8a9905a.js",
@@ -9,10 +9,10 @@
     "static/js/2.5269df4b.chunk.js": "/static/js/2.5269df4b.chunk.js",
     "static/js/2.5269df4b.chunk.js.map": "/static/js/2.5269df4b.chunk.js.map",
     "index.html": "/index.html",
-    "precache-manifest.f866b2399615f0f49244d1129add7a09.js": "/precache-manifest.f866b2399615f0f49244d1129add7a09.js",
+    "precache-manifest.8121b4306bff72163df18f05532f83e2.js": "/precache-manifest.8121b4306bff72163df18f05532f83e2.js",
     "service-worker.js": "/service-worker.js",
     "static/css/2.bb342caa.chunk.css.map": "/static/css/2.bb342caa.chunk.css.map",
-    "static/css/main.9fce6e57.chunk.css.map": "/static/css/main.9fce6e57.chunk.css.map",
+    "static/css/main.98decd9e.chunk.css.map": "/static/css/main.98decd9e.chunk.css.map",
     "static/media/friday.jpg": "/static/media/friday.02a1c71d.jpg",
     "static/media/sm.png": "/static/media/sm.2a3978c5.png",
     "static/media/wailto-logo.png": "/static/media/wailto-logo.4450519c.png"

@@ -132,7 +132,8 @@ $max-width: 1920px;
   padding: 2px 5px;
   border-radius: 5px;
   color: #333;
-  animation: use-mine-animation 30s both infinite;
+  background-color: rgba(253, 139, 123, 1);
+  border-color: rgba(226, 89, 139, 1);
   @include fluid-prop('font-size', $min_width, $max_width, 22px, 36px);
   &:hover {
     background-color: white;

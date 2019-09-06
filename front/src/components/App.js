@@ -28,6 +28,12 @@ function App() {
   const [config, configDispatch] = useReducer(configReducer, initialConfig);
   const [history, historyDispatch] = useReducer(historyReducer, {});
 
+  if (window.location.href.includes('zookeeprr')) {
+    configDispatch({type: 'TIME_START', timeStart: initialConfig.timeStart});
+    configDispatch({type: 'TIME_END', timeEnd: initialConfig.timeEnd});
+    configDispatch({type: 'USERNAME', username: 'zookeeprr'});
+  }
+
   let [appState, setAppState] = useState(config.appState);
   let [content, setContent] = useState(null);
   let [userInfo, setUserInfo] = useState(null);
@@ -35,14 +41,6 @@ function App() {
   const appIsPopulated =
     appState || !appState === 'tutorial' || !appState === 'updating';
   const footer = appIsPopulated ? <Footer /> : null;
-
-  useEffect(() => {
-    if (window.location.href.includes('zookeeprr')) {
-      configDispatch({type: 'TIME_START', timeStart: initialConfig.timeStart});
-      configDispatch({type: 'TIME_END', timeEnd: initialConfig.timeEnd});
-      configDispatch({type: 'USERNAME', username: 'zookeeprr'});
-    }
-  }, []);
 
   useEffect(() => {
     setAppState(config.appState);
@@ -108,11 +106,11 @@ function App() {
           from: config.unixTimeStart,
         },
       })
-      .then(data => {
+      .then((data) => {
         historyDispatch({history: data.data});
         configDispatch({type: 'APP_STATE', appState: 'dashboard'});
       })
-      .catch(e => {
+      .catch((e) => {
         console.error(e);
       });
   }, [config.username, config.unixTimeEnd, config.unixTimeStart]);

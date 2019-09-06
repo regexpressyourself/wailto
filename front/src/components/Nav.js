@@ -53,7 +53,7 @@ function Nav(props) {
             <p className="help-link">
               <span
                 className="clickable use-mine"
-                onClick={e => {
+                onClick={(e) => {
                   document
                     .querySelector('.nav__heading--username')
                     .classList.add('atn--font-color');
@@ -147,7 +147,7 @@ function Nav(props) {
   const backButton = props.showBack ? (
     <button
       className="nav__back-btn"
-      onClick={e => {
+      onClick={(e) => {
         configDispatch({type: 'APP_STATE', appState: 'dashboard'});
       }}>
       <ChevronLeft />
@@ -181,7 +181,7 @@ function Nav(props) {
               placeholder="Last.fm username"
               type="text"
               value={username}
-              onChange={e => setUsername(e.target.value)}
+              onChange={(e) => setUsername(e.target.value)}
             />
           </div>
           <div className="input-wrapper input-wrapper--start-date">
@@ -190,13 +190,13 @@ function Nav(props) {
               style={{width: '100%'}}
               dayPickerProps={{
                 selectedDays: from,
-                disabledDays: day =>
+                disabledDays: (day) =>
                   day > to ||
                   day < new Date().setDate(new Date().getDate() - 62),
               }}
               value={fromString}
               placeholder="YYYY-M-D"
-              onDayChange={e => {
+              onDayChange={(e) => {
                 setFrom(e);
               }}
             />
@@ -207,22 +207,37 @@ function Nav(props) {
               style={{width: '100%'}}
               dayPickerProps={{
                 selectedDays: to,
-                disabledDays: day => day > new Date() || day < from,
+                disabledDays: (day) => day > new Date() || day < from,
               }}
               value={toString}
               placeholder="YYYY-M-D"
-              onDayChange={e => {
+              onDayChange={(e) => {
                 setTo(e);
               }}
             />
           </div>
           <button
             className="submit-btn"
-            onClick={e => {
+            onClick={(e) => {
               if (!username) {
                 document
                   .querySelector('.nav__username')
                   .classList.add('nav__username--invalid');
+                document
+                  .querySelector('.nav__heading--username')
+                  .classList.add('atn--font-color');
+                document
+                  .querySelector('.username-input')
+                  .classList.add('atn--border-color');
+                setTimeout(() => {
+                  document
+                    .querySelector('.nav__heading--username')
+                    .classList.remove('atn--font-color');
+                  document
+                    .querySelector('.username-input')
+                    .classList.remove('atn--border-color');
+                }, 1000);
+                return;
               } else {
                 document
                   .querySelector('.nav__username')
@@ -241,7 +256,7 @@ function Nav(props) {
           <div>{helpMessage ? helpMessage : backButton}</div>
           <button
             className={`nav__toggle-btn ${buttonAnimation ? 'animated' : ''}`}
-            onClick={e => {
+            onClick={(e) => {
               setIsExpanded(!isExpanded);
             }}>
             {buttonText}

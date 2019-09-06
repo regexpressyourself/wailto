@@ -41,7 +41,6 @@ function SongsByDate(props) {
           <br /> <span className="per">&mdash;by&mdash;</span> <br />
           Date
         </h1>
-        <h2 className="chart-subheading">{`A historical look at your tunage`}</h2>
         <ResponsiveContainer>
           <AreaChart data={dateDataRC}>
             <XAxis dataKey="name" />

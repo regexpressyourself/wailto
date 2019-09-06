@@ -1,7 +1,5 @@
 import React, {useContext} from 'react';
 import './charts.scss';
-import {Music} from 'react-feather';
-import Friday from '../../assets/friday.jpg';
 import {HistoryContext} from '../../context/HistoryContext';
 import {
   ResponsiveContainer,
@@ -36,15 +34,6 @@ function SongsByDow(props) {
           <br /> <span className="per">&mdash;by&mdash;</span> <br />
           Day of Week
         </h1>
-        <h2 className="chart-subheading">
-          <Music />
-          &nbsp; Yesterday was Thursday. Today it is Friday. &nbsp;
-          <img
-            alt="Gotta get down on Friday"
-            className="chart-subheading__friday"
-            src={Friday}
-          />
-        </h2>
         <ResponsiveContainer>
           <AreaChart data={dayDataRC}>
             <XAxis dataKey="name" />

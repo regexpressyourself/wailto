@@ -90,6 +90,9 @@ $max-width: 1920px;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  @media screen and (max-width: 480px) {
+    padding: 1vh 0;
+  }
   & > label {
     flex-basis: 33%;
   }
@@ -250,6 +253,9 @@ button.submit-btn {
   display: flex;
   justify-content: space-between;
   flex-wrap: wrap;
+  @media screen and (max-width: 480px) {
+    padding: 1vh 0;
+  }
   & > * {
     flex-basis: 45%;
   }

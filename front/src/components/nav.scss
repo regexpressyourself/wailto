@@ -246,9 +246,13 @@ button.submit-btn {
 }
 
 .nav__date-pickers {
+  padding: 20px 0;
   display: flex;
   justify-content: space-between;
   flex-wrap: wrap;
+  & > * {
+    flex-basis: 45%;
+  }
 }
 
 .username-input {

@@ -195,37 +195,39 @@ function Nav(props) {
               onChange={(e) => setUsername(e.target.value)}
             />
           </div>
-          <div className="input-wrapper input-wrapper--start-date">
-            <label className="nav__heading">Start date:</label>
-            <DayPickerInput
-              style={{width: '100%'}}
-              dayPickerProps={{
-                selectedDays: from,
-                disabledDays: (day) =>
-                  day > to ||
-                  day < new Date().setDate(new Date().getDate() - 62),
-              }}
-              value={fromString}
-              placeholder="YYYY-M-D"
-              onDayChange={(e) => {
-                setFrom(e);
-              }}
-            />
-          </div>
-          <div className="input-wrapper input-wrapper--end-date">
-            <label className="nav__heading">End date:</label>
-            <DayPickerInput
-              style={{width: '100%'}}
-              dayPickerProps={{
-                selectedDays: to,
-                disabledDays: (day) => day > new Date() || day < from,
-              }}
-              value={toString}
-              placeholder="YYYY-M-D"
-              onDayChange={(e) => {
-                setTo(e);
-              }}
-            />
+          <div className="nav__date-pickers">
+            <div className="input-wrapper input-wrapper--start-date">
+              <label className="nav__heading">Start date:</label>
+              <DayPickerInput
+                style={{width: '100%'}}
+                dayPickerProps={{
+                  selectedDays: from,
+                  disabledDays: (day) =>
+                    day > to ||
+                    day < new Date().setDate(new Date().getDate() - 62),
+                }}
+                value={fromString}
+                placeholder="YYYY-M-D"
+                onDayChange={(e) => {
+                  setFrom(e);
+                }}
+              />
+            </div>
+            <div className="input-wrapper input-wrapper--end-date">
+              <label className="nav__heading">End date:</label>
+              <DayPickerInput
+                style={{width: '100%'}}
+                dayPickerProps={{
+                  selectedDays: to,
+                  disabledDays: (day) => day > new Date() || day < from,
+                }}
+                value={toString}
+                placeholder="YYYY-M-D"
+                onDayChange={(e) => {
+                  setTo(e);
+                }}
+              />
+            </div>
           </div>
           <div className="input-wrapper input-wrapper--horizontal">
             <label className="nav__heading">Genre: (optional)</label>

@@ -1,6 +1,7 @@
 import React, {useContext} from 'react';
 import './charts.scss';
 import {HistoryContext} from '../../context/HistoryContext';
+import {ConfigContext} from '../../context/ConfigContext';
 import {
   ResponsiveContainer,
   AreaChart,
@@ -13,10 +14,11 @@ import {days, bucketSongTimes} from '../dateMappers';
 
 function SongsByDow(props) {
   const {history} = useContext(HistoryContext);
+  const {config} = useContext(ConfigContext);
 
   let dayDataRC = [];
 
-  let dayMap = bucketSongTimes('dow', 7, history.history);
+  let dayMap = bucketSongTimes('dow', 7, history.history, config.genre);
 
   for (let i = 0; i <= 6; i++) {
     dayDataRC.push({

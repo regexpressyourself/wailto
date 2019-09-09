@@ -31,12 +31,17 @@ const saveSongs = (userId, history) => {
       song.image,
       song.album,
       song.artist,
+      song.artist_id,
+      song.genre1,
+      song.genre2,
+      song.genre3,
+      song.genre4,
       song.url,
     ]);
   }
 
   const songQuery = format(
-    `INSERT INTO songs (id, name, image, album, artist, url)
+    `INSERT INTO songs (id, name, image, album, artist, artist_id, genre1, genre2, genre3, genre4, url)
     VALUES %L
     ON CONFLICT (id)
     DO NOTHING
@@ -56,7 +61,7 @@ const saveHistory = (userId, history) => {
     historyValues.push({id: song.id, userId: userId, date: song.date});
   }
 
-  const dbHistoryValues = historyValues.map(historyItem => {
+  const dbHistoryValues = historyValues.map((historyItem) => {
     return [historyItem.id, historyItem.userId, historyItem.date];
   });
 
@@ -71,7 +76,7 @@ const saveCoverage = (userId, from, to) => {
   console.log('user %i:\tsave coverage', userId);
   console.log('user %i:\tlooking for day coverage', userId);
   let values = getDateRange(from, to);
-  values = values.map(value => {
+  values = values.map((value) => {
     return [userId, value];
   });
   const query = format(
@@ -163,7 +168,7 @@ const getSongHistory = async function(userId, unixFrom, unixTo) {
     let date = listen.date;
     let songId = listen.song_id;
     let newSongObj;
-    newSongObj = songInfoList.find(song => {
+    newSongObj = songInfoList.find((song) => {
       return song.id === songId;
     });
     newSongObj.date = date;

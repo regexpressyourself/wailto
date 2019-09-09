@@ -8,6 +8,7 @@ let initialConfig = {
   unixTimeStart: null,
   unixTimeEnd: null,
   username: localStorage.getItem('wt-username') || '',
+  genre: null,
   appState: 'home',
 };
 
@@ -54,6 +55,11 @@ function configReducer(state, configAction) {
       return {
         ...state,
         appState: configAction.appState,
+      };
+    case 'GENRE':
+      return {
+        ...state,
+        genre: configAction.genre,
       };
     default:
       return initialConfig;

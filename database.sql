@@ -8,8 +8,13 @@ CREATE TABLE songs (
   name VARCHAR(256),
   image VARCHAR(256),
   album VARCHAR(256),
-  artist VARCHAR(256),
   url VARCHAR(256),
+  artist VARCHAR(256),
+  artist_id VARCHAR(256),
+  genre1 VARCHAR(256),
+  genre2 VARCHAR(256),
+  genre3 VARCHAR(256),
+  genre4 VARCHAR(256),
   PRIMARY KEY (id)
 );
 

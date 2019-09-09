@@ -26,7 +26,7 @@ const months = () => {
   ];
 };
 
-const hourToAmpm = hour => {
+const hourToAmpm = (hour) => {
   let meridiem = 'am';
 
   if (hour >= 12) {
@@ -39,7 +39,7 @@ const hourToAmpm = hour => {
   return hour + meridiem;
 };
 
-const accessibleTime = unixTime => {
+const accessibleTime = (unixTime) => {
   let date = new Date(unixTime * 1000);
   let year = date.getFullYear();
   let month = months()[date.getMonth()];
@@ -71,7 +71,7 @@ const accessibleTime = unixTime => {
     seconds: seconds,
   };
 };
-const accessibleJsTime = jsDate=> {
+const accessibleJsTime = (jsDate) => {
   let date = jsDate;
   let year = date.getFullYear();
   let month = months()[date.getMonth()];
@@ -115,7 +115,7 @@ const getDatesBetween = (start, end) => {
   }
   return datesBetween;
 };
-function bucketSongTimes(bucketKey, bucketMaxSize, songList) {
+function bucketSongTimes(bucketKey, bucketMaxSize, songList, genre = null) {
   /*
    * The "map" holds an array with a definition of:
    * [{ timeSlot: [Song1, Song2, ...] }, ... ]
@@ -126,6 +126,13 @@ function bucketSongTimes(bucketKey, bucketMaxSize, songList) {
   let map = new Array(bucketMaxSize);
 
   for (let song of songList) {
+    if (
+      genre &&
+      genre !== 'any' &&
+      ![song.genre1, song.genre2, song.genre3, song.genre4].includes(genre)
+    ) {
+      continue;
+    }
     let date = song.date;
     let accessibleDate = accessibleTime(date);
     let key = accessibleDate[bucketKey];

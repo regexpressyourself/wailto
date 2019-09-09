@@ -22,7 +22,7 @@ function SongsByDate(props) {
 
   let datesBetween = getDatesBetween(start, end);
 
-  let dateMap = bucketSongTimes('date', datesBetween.length, history.history);
+  let dateMap = bucketSongTimes('date', datesBetween.length, history.history, config.genre);
 
   for (let i = 0; i < datesBetween.length; i++) {
     dateDataRC.push({

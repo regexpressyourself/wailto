@@ -8,8 +8,9 @@ function FullHistory(props) {
   const {history} = useContext(HistoryContext);
 
   let historyElements = history.history
-    .map(song => {
+    .map((song) => {
       let date = accessibleTime(song.date);
+      console.log([song.genre1, song.genre2, song.genre3, song.genre4]);
       return (
         <SongItem
           key={song.id + song.date}
@@ -17,6 +18,7 @@ function FullHistory(props) {
           album={song.album}
           artist={song.artist}
           name={song.name}
+          genres={[song.genre1, song.genre2, song.genre3, song.genre4]}
           date={date}
         />
       );

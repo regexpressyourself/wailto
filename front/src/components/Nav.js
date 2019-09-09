@@ -5,11 +5,14 @@ import {Plus, X, ChevronLeft} from 'react-feather';
 import './daypicker.scss';
 import './nav.scss';
 import {Link} from 'react-router-dom';
+import {GENRELIST} from '../GENRELIST';
+import Select from 'react-select';
 
 function Nav(props) {
   const {config, configDispatch} = useContext(ConfigContext);
 
   let [username, setUsername] = useState(config.username);
+  let [genre, setGenre] = useState(config.genre);
   let [from, setFrom] = useState(config.timeStart);
   let [to, setTo] = useState(config.timeEnd);
   let [fromString, setFromString] = useState(config.timeStart);
@@ -18,6 +21,14 @@ function Nav(props) {
   let [helpMessage, setHelpMessage] = useState(null);
   let [buttonText, setButtonText] = useState(<Plus />);
   let [buttonAnimation, setButtonAnimation] = useState(false);
+
+  let genreSelectionOptions = GENRELIST.map((genre) => {
+    return {
+      value: genre,
+      label: genre,
+    };
+  });
+  genreSelectionOptions.unshift({value: 'any', label: 'any genre'});
 
   if (props.showMessages) {
     if (!isExpanded && !helpMessage) {
@@ -216,6 +227,15 @@ function Nav(props) {
               }}
             />
           </div>
+          <div className="input-wrapper input-wrapper--horizontal">
+            <label className="nav__heading">Genre: (optional)</label>
+            <Select
+              onChange={(e) => {
+                setGenre(e.value);
+              }}
+              options={genreSelectionOptions}
+            />
+          </div>
           <button
             className="submit-btn"
             onClick={(e) => {
@@ -247,6 +267,7 @@ function Nav(props) {
               configDispatch({type: 'TIME_START', timeStart: from});
               configDispatch({type: 'TIME_END', timeEnd: to});
               configDispatch({type: 'USERNAME', username: username});
+              configDispatch({type: 'GENRE', genre: genre});
               setIsExpanded(false);
             }}>
             What Am I Listening to?

@@ -1,6 +1,7 @@
 import React, {useContext} from 'react';
 import './charts.scss';
 import {HistoryContext} from '../../context/HistoryContext';
+import {ConfigContext} from '../../context/ConfigContext';
 import {
   ResponsiveContainer,
   AreaChart,
@@ -13,9 +14,10 @@ import {hourToAmpm, bucketSongTimes} from '../dateMappers';
 
 function SongsByHour(props) {
   const {history} = useContext(HistoryContext);
+  const {config} = useContext(ConfigContext);
 
   let hourDataRC = [];
-  let hourMap = bucketSongTimes('hour', 24, history.history);
+  let hourMap = bucketSongTimes('hour', 24, history.history, config.genre);
 
   for (let i = 0; i <= 23; i++) {
     hourDataRC.push({

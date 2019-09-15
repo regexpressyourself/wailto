@@ -125,12 +125,14 @@ const fetchTracks = async function(username, key, from, to, page = 1) {
   try {
     lastFMData = await fetch(url);
   } catch (error) {
-    console.error(error);
+    console.error('ERROR: ', error);
+    return false;
   }
   try {
     lastFMData = await lastFMData.json();
   } catch (error) {
-    console.error(error);
+    console.error('ERROR: ', error);
+    return false;
   }
 
   console.log('page %i: got tracks', page);
@@ -149,7 +151,8 @@ const fetchTracks = async function(username, key, from, to, page = 1) {
       try {
         subsequentRequests.push(fetchTracks(username, key, from, to, page));
       } catch (error) {
-        console.error(error);
+        console.error('ERROR: ', error);
+        return false;
       }
     }
   }
@@ -168,9 +171,9 @@ const fetchTracks = async function(username, key, from, to, page = 1) {
         console.log(recentTracks.length);
         return recentTracks;
       })
-      .catch((e) => {
-        console.error('error waiting on batched track request ');
-        console.error(e);
+      .catch(e => {
+        console.error('ERROR: ', 'error waiting on batched track request ');
+        console.error('ERROR: ', e);
         reject(e);
       });
   }
@@ -195,9 +198,9 @@ let saveUserInfo = async function(userId, from, to, recentTracks) {
       .then((saveUserResponses) => {
         resolve(saveUserResponses);
       })
-      .catch((e) => {
-        console.error('error waiting on promises in save');
-        console.error(e);
+      .catch(e => {
+        console.error('ERROR: ', 'error waiting on promises in save');
+        console.error('ERROR: ', e);
         reject(e);
       });
   });
@@ -219,13 +222,15 @@ module.exports = (app) => {
       try {
         userRes = await getUser(username);
       } catch (error) {
-        console.error(error);
+        console.error('ERROR: ', error);
+        return false;
       }
       userId = userRes.id;
       try {
         storedCoverageValues = await getCoverageValues(userId, from, to);
       } catch (error) {
-        console.error(error);
+        console.error('ERROR: ', error);
+        return false;
       }
 
       storedCoverageValues = storedCoverageValues.rows;
@@ -247,7 +252,8 @@ module.exports = (app) => {
             resetDate(missingValues[missingValues.length - 1], true)[1],
           );
         } catch (error) {
-          console.error(error);
+          console.error('ERROR: ', error);
+          return false;
         }
         console.log('%i:\tdone fetching tracks.', userId);
         console.log('%i:\tfetching artist info.', userId);
@@ -268,7 +274,8 @@ module.exports = (app) => {
             recentTracks,
           );
         } catch (error) {
-          console.error(error);
+          console.error('ERROR: ', error);
+          return false;
         }
       }
       // all stored, serialize from db
@@ -278,7 +285,8 @@ module.exports = (app) => {
       try {
         finalResult = await getSongHistory(userId, unixFrom, unixTo);
       } catch (error) {
-        console.error(error);
+        console.error('ERROR: ', error);
+        return false;
       }
 
       finalResult = removeDuplicates(finalResult);

@@ -1,11 +1,11 @@
 import React, {useState, useEffect, useContext} from 'react';
 import DayPickerInput from 'react-day-picker/DayPickerInput';
-import {ConfigContext} from '../context/ConfigContext';
 import {Plus, X, ChevronLeft} from 'react-feather';
+import {Link} from 'react-router-dom';
+import {ConfigContext} from '../../context/ConfigContext';
 import './daypicker.scss';
 import './nav.scss';
-import {Link} from 'react-router-dom';
-import {GENRELIST} from '../GENRELIST';
+import {GENRELIST} from '../../GENRELIST';
 import Select from 'react-select';
 
 function Nav(props) {

@@ -1,7 +1,7 @@
 import React from 'react';
 import './Home.scss';
 import {Link} from 'react-router-dom';
-import Footer from './Footer';
+import Footer from './partials/Footer';
 import {LineChart, ResponsiveContainer, Line} from 'recharts';
 
 function Home() {

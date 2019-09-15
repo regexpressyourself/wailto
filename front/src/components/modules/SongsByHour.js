@@ -10,7 +10,7 @@ import {
   YAxis,
   Tooltip,
 } from 'recharts';
-import {hourToAmpm, bucketSongTimes} from '../dateMappers';
+import {hourToAmpm, bucketSongTimes} from '../../functions/dateMappers';
 
 function SongsByHour(props) {
   const {history} = useContext(HistoryContext);

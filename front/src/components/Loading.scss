@@ -30,10 +30,16 @@ $max-width: 1920px;
   font-size: 800;
   font-family: 'Barriecito', 'Livvic', sans-serif;
   position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
+  opacity: 0;
+  animation-name: fade-in;
+  animation-duration: 1.4s;
+  animation-iteration-count: 1;
+  animation-fill-mode: both;
+  animation-delay: 0.3s;
+  top: 15%;
+  bottom: 15%;
+  left: 5%;
+  right: 5%;
   margin: auto;
   z-index: 1000;
   display: flex;
@@ -111,5 +117,13 @@ $max-width: 1920px;
   }
   100% {
     transform: translateY(0);
+  }
+}
+@keyframes fade-in{
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
   }
 }

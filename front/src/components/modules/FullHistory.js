@@ -10,7 +10,6 @@ function FullHistory(props) {
   let historyElements = history.history
     .map((song) => {
       let date = accessibleTime(song.date);
-      console.log([song.genre1, song.genre2, song.genre3, song.genre4]);
       return (
         <SongItem
           key={song.id + song.date}

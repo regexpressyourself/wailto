@@ -33,15 +33,19 @@ function Dashboard() {
     },
   ];
 
-  let content = modules.map((module) => {
+  let content = modules.map(module => {
     return (
       <div
         key={module.title}
         className="dashboard__module"
-        onClick={(e) => {
+        onClick={e => {
           configDispatch({
             type: 'APP_STATE',
             appState: module.componentState,
+          });
+          configDispatch({
+            type: 'TRIGGER_STATE_UPDATE',
+            triggerStateUpdate: true,
           });
         }}>
         <div className="dashboard__module__heading">

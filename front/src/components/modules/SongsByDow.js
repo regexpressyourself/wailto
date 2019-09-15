@@ -26,7 +26,6 @@ function SongsByDow(props) {
       'Song Count': dayMap[i] ? dayMap[i].length : 0,
     });
   }
-  console.log(dayDataRC);
 
   return (
     <>

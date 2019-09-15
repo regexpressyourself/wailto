@@ -137,6 +137,10 @@ const fetchTracks = async function(username, key, from, to, page = 1) {
 
   console.log('page %i: got tracks', page);
 
+  if (!lastFMData.recenttracks) {
+    console.error('ERROR: no recent tracks');
+    return false;
+  }
   let recentTracks = lastFMData.recenttracks.track.map(serializeLastFmData);
   let totalPages = lastFMData.recenttracks['@attr'].totalPages;
 

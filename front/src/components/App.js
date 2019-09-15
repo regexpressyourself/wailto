@@ -3,15 +3,15 @@ import axios from 'axios';
 import {ConfigContext, configReducer} from '../context/ConfigContext';
 import {HistoryContext, historyReducer} from '../context/HistoryContext';
 import Dashboard from './Dashboard';
-import Nav from './Nav';
-import Footer from './Footer';
+import Nav from './partials/Nav';
+import Footer from './partials/Footer';
 import Loading from './Loading';
 import FullHistory from './modules/FullHistory';
 import SongsByDate from './modules/SongsByDate';
 import SongsByDow from './modules/SongsByDow';
 import SongsByHour from './modules/SongsByHour';
 import './App.scss';
-import {accessibleJsTime} from './dateMappers';
+import {accessibleJsTime} from '../functions/dateMappers';
 
 function App() {
   let today = new Date();

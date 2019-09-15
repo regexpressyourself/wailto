@@ -3,7 +3,7 @@ import {HistoryContext} from '../../context/HistoryContext';
 import {ConfigContext} from '../../context/ConfigContext';
 import SongItem from './SongItem.js';
 import './charts.scss';
-import {accessibleTime} from '../dateMappers';
+import {accessibleTime} from '../../functions/dateMappers';
 
 function FullHistory(props) {
   const {history} = useContext(HistoryContext);

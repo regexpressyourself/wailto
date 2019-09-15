@@ -1,8 +1,8 @@
 import React from 'react';
 import {GitHub} from 'react-feather';
-import './Footer.scss';
-import sm from '../assets/sm.png';
 import {Link} from 'react-router-dom';
+import './Footer.scss';
+import sm from '../../assets/sm.png';
 
 function Footer(props) {
   const inlineLogo = <span className="logo-font">WAILto</span>;

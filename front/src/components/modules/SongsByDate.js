@@ -1,4 +1,4 @@
-import React, {useContext} from 'react';
+import React, {useContext, useState, useEffect} from 'react';
 import './charts.scss';
 import {HistoryContext} from '../../context/HistoryContext';
 import {ConfigContext} from '../../context/ConfigContext';
@@ -16,22 +16,29 @@ function SongsByDate(props) {
   const {history} = useContext(HistoryContext);
   const {config} = useContext(ConfigContext);
 
-  let dateDataRC = [];
+  let [dateDataRC, setDateDataRC] = useState(null);
   let end = new Date(config.timeEnd);
   let start = new Date(config.timeStart);
-
   let datesBetween = getDatesBetween(start, end);
+  let dateMap = bucketSongTimes(
+    'date',
+    datesBetween.length,
+    history.history,
+    config.genre,
+  );
 
-  let dateMap = bucketSongTimes('date', datesBetween.length, history.history, config.genre);
-
-  for (let i = 0; i < datesBetween.length; i++) {
-    dateDataRC.push({
-      name: datesBetween[i],
-      'Song Count': dateMap[datesBetween[i]]
-        ? dateMap[datesBetween[i]].length
-        : 0,
-    });
-  }
+  useEffect(() => {
+    let tempDateDataRC = [];
+    for (let i = 0; i < datesBetween.length; i++) {
+      tempDateDataRC.push({
+        name: datesBetween[i],
+        'Song Count': dateMap[datesBetween[i]]
+          ? dateMap[datesBetween[i]].length
+          : 0,
+      });
+    }
+    setDateDataRC(tempDateDataRC);
+  }, []);
 
   return (
     <>
@@ -43,7 +50,7 @@ function SongsByDate(props) {
         </h1>
         <ResponsiveContainer>
           <AreaChart data={dateDataRC}>
-            <XAxis dataKey="name" />
+            <XAxis dataKey="id" />
             <YAxis />
             <Tooltip />
             <Area

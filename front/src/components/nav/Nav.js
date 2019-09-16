@@ -30,9 +30,15 @@ const disableButton = disabled => {
     }, 1000);
     return;
   } else {
-    document
-      .querySelector('.nav__username')
-      .classList.remove('nav__username--invalid');
+    if (
+      document
+        .querySelector('.nav__username')
+        .classList.contains('nav__username--invalid')
+    ) {
+      document
+        .querySelector('.nav__username')
+        .classList.remove('nav__username--invalid');
+    }
   }
 };
 
@@ -47,8 +53,10 @@ const expandNav = expanded => {
     if (document.querySelector('.recharts-wrapper')) {
       document.querySelector('.recharts-wrapper').style.zIndex = '1';
     }
-    document.querySelector('.nav').classList.add('nav--collapsed');
-    document.querySelector('.nav').classList.remove('nav--uncollapsed');
+    if (document.querySelector('.nav').classList.contains('nav--uncollapsed')) {
+      document.querySelector('.nav').classList.remove('nav--uncollapsed');
+      document.querySelector('.nav').classList.add('nav--collapsed');
+    }
   }
 };
 
@@ -56,54 +64,22 @@ function Nav(props) {
   const {config, configDispatch} = useContext(ConfigContext);
 
   let [isExpanded, setIsExpanded] = useState(null);
-  let [helpMessage, setHelpMessage] = useState(null);
+  let [helpMessageType, setHelpMessageType] = useState(null);
   let [buttonText, setButtonText] = useState(<Plus />);
   let [buttonAnimation, setButtonAnimation] = useState(false);
 
-  if (props.showMessages) {
-    if (!isExpanded && !helpMessage) {
-      setButtonAnimation(true);
-      setHelpMessage(
-        <HelpMessage
-          defaultStart={props.defaultStart}
-          defaultEnd={props.defaultEnd}
-          message="default"
-        />,
-      );
-    }
-  }
-
   useEffect(() => {
-    let messageType = isExpanded ? 'tutorial' : 'default';
-    if (props.showMessages) {
-      setHelpMessage(
-        <HelpMessage
-          defaultStart={props.defaultStart}
-          defaultEnd={props.defaultEnd}
-          message={messageType}
-        />,
-      );
-    } else {
-      setHelpMessage(null);
-    }
-  }, [props.showMessages, props.defaultStart, props.defaultEnd, isExpanded]);
+    let messageType = false;
 
-  useEffect(() => {
     if (isExpanded) {
       setButtonText(<X />);
       expandNav(true);
-    } else if (isExpanded !== null) {
+      setHelpMessageType(props.showMessages ? 'tutorial' : null);
+    } else {
+      setButtonAnimation(true);
       setButtonText(<Plus />);
       expandNav(false);
-      if (props.showMessages) {
-        setHelpMessage(
-          <HelpMessage
-            defaultStart={props.defaultStart}
-            defaultEnd={props.defaultEnd}
-            message="default"
-          />,
-        );
-      }
+      setHelpMessageType(props.showMessages ? 'default' : null);
     }
   }, [isExpanded, props.showMessages, props.defaultStart, props.defaultEnd]);
 
@@ -117,7 +93,11 @@ function Nav(props) {
           <button
             className="submit-btn"
             onClick={e => {
-              disableButton(!config.username); // check for username
+              if (!config.username) {
+                disableButton(true); // check for username
+                return;
+              }
+
               configDispatch({type: 'APP_STATE', appState: 'dashboard'});
               configDispatch({
                 type: 'TRIGGER_STATE_UPDATE',
@@ -129,8 +109,12 @@ function Nav(props) {
           </button>
         </nav>
         <div className="main-header__bottom">
-          <div>{helpMessage}</div>
-          {props.showBack ? <BackButton /> : null}
+          <HelpMessage
+            defaultStart={props.defaultStart}
+            defaultEnd={props.defaultEnd}
+            message={helpMessageType}
+          />
+          ,{props.showBack ? <BackButton /> : null}
           <button
             className={`nav__toggle-btn ${buttonAnimation ? 'animated' : ''}`}
             onClick={e => {

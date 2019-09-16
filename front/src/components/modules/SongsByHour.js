@@ -1,4 +1,4 @@
-import React, {useContext} from 'react';
+import React, {useContext, useState, useEffect} from 'react';
 import './charts.scss';
 import {HistoryContext} from '../../context/HistoryContext';
 import {ConfigContext} from '../../context/ConfigContext';
@@ -16,15 +16,19 @@ function SongsByHour(props) {
   const {history} = useContext(HistoryContext);
   const {config} = useContext(ConfigContext);
 
-  let hourDataRC = [];
+  let [hourDataRC, setHourDataRC] = useState(null);
   let hourMap = bucketSongTimes('hour', 24, history.history, config.genre);
 
-  for (let i = 0; i <= 23; i++) {
-    hourDataRC.push({
-      name: hourToAmpm(i),
-      'Song Count': hourMap[i] ? hourMap[i].length : 0,
-    });
-  }
+  useEffect(() => {
+    let tempHourDataRC = [];
+    for (let i = 0; i <= 23; i++) {
+      tempHourDataRC.push({
+        name: hourToAmpm(i),
+        'Song Count': hourMap[i] ? hourMap[i].length : 0,
+      });
+    }
+    setHourDataRC(tempHourDataRC);
+  }, []);
 
   return (
     <>

@@ -35,6 +35,7 @@ function App() {
   }
 
   let [content, setContent] = useState(null);
+  let contentStuff = null;
   let [userInfo, setUserInfo] = useState(null);
 
   const appIsPopulated =
@@ -48,8 +49,6 @@ function App() {
     if (!config.triggerStateUpdate) {
       return;
     }
-    console.log('config.appState');
-    console.log(config.appState);
     let requestedState = config.appState;
     setContent(<Loading />);
     setUserInfo(<UserInfo />);
@@ -63,7 +62,8 @@ function App() {
       })
       .then(data => {
         historyDispatch({history: data.data});
-        configDispatch({type: 'APP_STATE', appState: requestedState});
+        console.log('requestedState');
+        console.log(requestedState);
         switch (requestedState) {
           case 'updating':
             setContent(<Loading />);
@@ -87,6 +87,7 @@ function App() {
           default:
             setContent(null);
         }
+        configDispatch({type: 'APP_STATE', appState: requestedState});
         configDispatch({
           type: 'TRIGGER_STATE_UPDATE',
           triggerStateUpdate: false,

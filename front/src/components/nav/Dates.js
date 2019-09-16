@@ -32,6 +32,12 @@ function Dates(props) {
           value={formatDate(config.timeStart)}
           placeholder="YYYY-M-D"
           onDayChange={e => {
+            if (e > config.timeEnd) {
+              return config.timeEnd;
+            }
+            if (e < new Date().setDate(new Date().getDate() - 62)) {
+              return new Date().setDate(new Date().getDate() - 62);
+            }
             configDispatch({type: 'TIME_START', timeStart: e});
           }}
         />

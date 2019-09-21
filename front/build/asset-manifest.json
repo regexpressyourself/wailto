@@ -1,19 +1,19 @@
 {
   "files": {
-    "main.css": "/static/css/main.3bfe0b93.chunk.css",
-    "main.js": "/static/js/main.3e7264cb.chunk.js",
-    "main.js.map": "/static/js/main.3e7264cb.chunk.js.map",
+    "main.css": "/static/css/main.82f62a4c.chunk.css",
+    "main.js": "/static/js/main.46766ed9.chunk.js",
+    "main.js.map": "/static/js/main.46766ed9.chunk.js.map",
     "runtime~main.js": "/static/js/runtime~main.a8a9905a.js",
     "runtime~main.js.map": "/static/js/runtime~main.a8a9905a.js.map",
     "static/css/2.bb342caa.chunk.css": "/static/css/2.bb342caa.chunk.css",
-    "static/js/2.2531c6cd.chunk.js": "/static/js/2.2531c6cd.chunk.js",
-    "static/js/2.2531c6cd.chunk.js.map": "/static/js/2.2531c6cd.chunk.js.map",
+    "static/js/2.a2fad94e.chunk.js": "/static/js/2.a2fad94e.chunk.js",
+    "static/js/2.a2fad94e.chunk.js.map": "/static/js/2.a2fad94e.chunk.js.map",
     "index.html": "/index.html",
-    "precache-manifest.7bca82569a965ac3c6ea68c891044b5e.js": "/precache-manifest.7bca82569a965ac3c6ea68c891044b5e.js",
+    "precache-manifest.bdc9c9acae6034df99c30f21bd1facb8.js": "/precache-manifest.bdc9c9acae6034df99c30f21bd1facb8.js",
     "service-worker.js": "/service-worker.js",
     "static/css/2.bb342caa.chunk.css.map": "/static/css/2.bb342caa.chunk.css.map",
-    "static/css/main.3bfe0b93.chunk.css.map": "/static/css/main.3bfe0b93.chunk.css.map",
-    "static/media/sm.png": "/static/media/sm.2a3978c5.png",
-    "static/media/wailto-logo.png": "/static/media/wailto-logo.4450519c.png"
+    "static/css/main.82f62a4c.chunk.css.map": "/static/css/main.82f62a4c.chunk.css.map",
+    "static/media/index.css": "/static/media/livvic-v3-latin-regular.f3e6ea26.woff",
+    "static/media/sm.png": "/static/media/sm.2a3978c5.png"
   }
 }

@@ -13,7 +13,7 @@ let initialConfig = {
   appState: 'home',
 };
 
-let transformTimeEnd = timeEnd => {
+const transformTimeEnd = timeEnd => {
   // sets the end time to 11:59:59 on selected date
   let newEnd = new Date(timeEnd.getTime());
   newEnd.setDate(newEnd.getDate());
@@ -70,6 +70,6 @@ const configReducer = (state, configAction) => {
     default:
       return initialConfig;
   }
-}
+};
 
 export {ConfigContext, configReducer};

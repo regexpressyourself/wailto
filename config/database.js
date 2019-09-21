@@ -8,6 +8,7 @@ const Op = Sequelize.Op;
 const sequelize = new Sequelize('wailto', DB_USER, DB_PW, {
   host: 'localhost',
   dialect: 'postgres',
+  logging: false,
   define: {
     timestamps: false,
   },

@@ -1,19 +1,19 @@
 import React, {useReducer, useState, useEffect} from 'react';
 import axios from 'axios';
 import {ConfigContext, configReducer} from '../context/ConfigContext';
-import {HistoryContext, historyReducer} from '../context/HistoryContext';
+import {SongHistoryContext, songHistoryReducer} from '../context/SongHistoryContext';
 import Dashboard from './Dashboard';
 import Nav from './nav/Nav';
 import Footer from './partials/Footer';
 import Loading from './Loading';
 import UserInfo from './UserInfo';
-import FullHistory from './modules/FullHistory';
+import FullSongHistory from './modules/FullSongHistory';
 import SongsByDate from './modules/SongsByDate';
 import SongsByDow from './modules/SongsByDow';
 import SongsByHour from './modules/SongsByHour';
 import './App.scss';
 
-function App(props) {
+const App = ({appState, history}) => {
   let today = new Date();
   let weekAgo = new Date();
   let yesterday = new Date();
@@ -26,13 +26,13 @@ function App(props) {
   };
 
   const [config, configDispatch] = useReducer(configReducer, initialConfig);
-  const [history, historyDispatch] = useReducer(historyReducer, {});
+  const [songHistory, songHistoryDispatch] = useReducer(songHistoryReducer, {});
 
   if (window.location.href.includes('zookeeprr')) {
     configDispatch({type: 'TIME_START', timeStart: initialConfig.timeStart});
     configDispatch({type: 'TIME_END', timeEnd: initialConfig.timeEnd});
     configDispatch({type: 'USERNAME', username: 'zookeeprr'});
-    props.history.push('/dashboard');
+    history.push('/dashboard');
   }
 
   let [content, setContent] = useState(null);
@@ -46,8 +46,8 @@ function App(props) {
   const footer = appIsPopulated ? <Footer /> : null;
 
   useEffect(() => {
-    if (props.appState && props.appState !== config.appState) {
-      configDispatch({type: 'APP_STATE', appState: props.appState});
+    if (appState && appState !== config.appState) {
+      configDispatch({type: 'APP_STATE', appState: appState});
       configDispatch({
         type: 'TRIGGER_STATE_UPDATE',
         triggerStateUpdate: true,
@@ -69,7 +69,7 @@ function App(props) {
         },
       })
       .then(data => {
-        historyDispatch({history: data.data});
+        songHistoryDispatch({songHistory: data.data});
         switch (config.appState) {
           case 'updating':
             setContent(<Loading />);
@@ -87,7 +87,7 @@ function App(props) {
             setContent(<SongsByHour />);
             break;
           case 'history':
-            setContent(<FullHistory />);
+            setContent(<FullSongHistory />);
             break;
           case 'tutorial':
           default:
@@ -102,7 +102,7 @@ function App(props) {
         console.error(e);
       });
   }, [
-    props.appState,
+    appState,
     config.triggerStateUpdate,
     config.appState,
     config.username,
@@ -114,7 +114,7 @@ function App(props) {
     <>
       <main className={`app ${!appIsPopulated ? 'app--unpopulated' : ''}`}>
         <ConfigContext.Provider value={{config, configDispatch}}>
-          <HistoryContext.Provider value={{history, historyDispatch}}>
+          <SongHistoryContext.Provider value={{songHistory, songHistoryDispatch}}>
             {userInfo}
             {content}
             <Nav
@@ -128,7 +128,7 @@ function App(props) {
                 config.appState === 'history'
               }
             />
-          </HistoryContext.Provider>
+          </SongHistoryContext.Provider>
         </ConfigContext.Provider>
       </main>
       {footer}

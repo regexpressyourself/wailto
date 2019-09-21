@@ -19,7 +19,7 @@ const animateUsername = animate => {
   }
 };
 
-function Username(props) {
+const Username = () => {
   const {config, configDispatch} = useContext(ConfigContext);
   let [username, setUsername] = useState(config.username);
 

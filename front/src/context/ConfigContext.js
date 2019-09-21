@@ -23,7 +23,7 @@ let transformTimeEnd = timeEnd => {
   return newEnd;
 };
 
-function configReducer(state, configAction) {
+const configReducer = (state, configAction) => {
   state.timeEnd = transformTimeEnd(state.timeEnd);
   state.unixTimeStart = Math.round(state.timeStart.getTime() / 1000);
   state.unixTimeEnd = Math.round(state.timeEnd.getTime() / 1000);

@@ -2,16 +2,16 @@ import React from 'react';
 import LazyLoad from 'react-lazyload';
 import './SongItem.scss';
 
-function SongItem(props) {
-  let genres = [];
-  for (let i = 0; i < props.genres.length; i++) {
-    if (!props.genres[i]) {
+const SongItem = ({genres, image, name, artist, album, date}) => {
+  let genresString = [];
+  for (let i = 0; i < genres.length; i++) {
+    if (!genres[i]) {
       continue;
     }
-    if (i !== props.genres.length - 1) {
-      genres.push(props.genres[i] + ', ');
+    if (i !== genres.length - 1) {
+      genresString.push(genres[i] + ', ');
     } else {
-      genres.push(props.genres[i]);
+      genresString.push(genres[i]);
     }
   }
 
@@ -20,7 +20,7 @@ function SongItem(props) {
     genreSection = (
       <>
         <hr />
-        <p className="song-item__genres">{genres}</p>
+        <p className="song-item__genres">{genresString}</p>
       </>
     );
   }
@@ -28,31 +28,25 @@ function SongItem(props) {
     <div className="song-item">
       <div className="song-item__info">
         <LazyLoad>
-          <img className="song-item__img" alt="album cover" src={props.image} />
+          <img className="song-item__img" alt="album cover" src={image} />
         </LazyLoad>
         <div>
-          <p className="song-item__info__title">{props.name}</p>
+          <p className="song-item__info__title">{name}</p>
           <p className="song-item__info__content">
-            <span className="song-item__info__content__artist">
-              {props.artist}
-            </span>
+            <span className="song-item__info__content__artist">{artist}</span>
             <br />
-            &mdash; {props.album}
+            &mdash; {album}
           </p>
         </div>
       </div>
       <div className="song-item__right">
         <p className="song-item__date">
-          {props.date.dowName}
-          &nbsp;
-          {props.date.date}
-          &nbsp;
-          {props.date.time}
+          {date.dowName}&nbsp;{date.date}&nbsp;{date.time}
         </p>
         {genreSection}
       </div>
     </div>
   );
-}
+};
 
 export default SongItem;

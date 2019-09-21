@@ -14,7 +14,7 @@ const formatDate = date => {
   return [year, month, day].join('-');
 };
 
-function Dates(props) {
+const Dates = () => {
   const {config, configDispatch} = useContext(ConfigContext);
 
   return (

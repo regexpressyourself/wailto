@@ -3,7 +3,7 @@ import {ConfigContext} from '../../context/ConfigContext';
 import {GENRELIST} from '../../GENRELIST';
 import Select from 'react-select';
 
-function Genre(props) {
+const Genre = () => {
   const {configDispatch} = useContext(ConfigContext);
 
   let genreSelectionOptions = GENRELIST.map(genre => {

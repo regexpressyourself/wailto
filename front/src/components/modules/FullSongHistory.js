@@ -1,13 +1,13 @@
 import React, {useContext} from 'react';
-import {HistoryContext} from '../../context/HistoryContext';
+import {SongHistoryContext} from '../../context/SongHistoryContext';
 import SongItem from './SongItem.js';
 import './charts.scss';
 import {accessibleTime} from '../../functions/dateMappers';
 
-function FullHistory(props) {
-  const {history} = useContext(HistoryContext);
+const FullSongHistory = () => {
+  const {songHistory} = useContext(SongHistoryContext);
 
-  let historyElements = history.history
+  let songHistoryElements = songHistory.songHistory
     .map((song) => {
       let date = accessibleTime(song.date);
       return (
@@ -27,9 +27,9 @@ function FullHistory(props) {
   return (
     <>
       <h1 className="chart-heading">Every Song In History</h1>
-      {historyElements}
+      {songHistoryElements}
     </>
   );
 }
 
-export default FullHistory;
+export default FullSongHistory;

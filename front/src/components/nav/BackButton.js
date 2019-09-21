@@ -2,12 +2,12 @@ import React from 'react';
 import {withRouter} from 'react-router-dom';
 import {ChevronLeft} from 'react-feather';
 
-function BackButton(props) {
+const BackButton = ({history}) => {
   return (
     <button
       className="nav__back-btn"
       onClick={e => {
-        props.history.goBack();
+        history.goBack();
       }}>
       <ChevronLeft />
     </button>

@@ -4,7 +4,7 @@ import {ConfigContext} from '../context/ConfigContext';
 import {BookOpen, Calendar, Clock, Grid} from 'react-feather';
 import './Dashboard.scss';
 
-function Dashboard(props) {
+const Dashboard = ({history}) => {
   const {configDispatch} = useContext(ConfigContext);
 
   const modules = [
@@ -40,7 +40,7 @@ function Dashboard(props) {
         key={module.title}
         className="dashboard__module"
         onClick={e => {
-          props.history.push(`/${module.componentState}`);
+          history.push(`/${module.componentState}`);
         }}>
         <div className="dashboard__module__heading">
           <div className="dashboard__module__image">{module.image}</div>

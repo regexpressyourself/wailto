@@ -2,7 +2,7 @@ import React, {useContext} from 'react';
 import {Link} from 'react-router-dom';
 import {ConfigContext} from '../../context/ConfigContext';
 
-function HelpMessage(props) {
+const HelpMessage = ({defaultStart, defaultEnd, message}) => {
   const {configDispatch} = useContext(ConfigContext);
 
   const defaultMessage = (
@@ -32,8 +32,8 @@ function HelpMessage(props) {
               .querySelector('.username-input')
               .classList.add('atn--border-color');
 
-            configDispatch({type: 'TIME_START', timeStart: props.defaultStart});
-            configDispatch({type: 'TIME_END', timeEnd: props.defaultEnd});
+            configDispatch({type: 'TIME_START', timeStart: defaultStart});
+            configDispatch({type: 'TIME_END', timeEnd: defaultEnd});
             configDispatch({type: 'USERNAME', username: 'zookeeprr'});
           }}>
           Or see mine!
@@ -49,7 +49,7 @@ function HelpMessage(props) {
     </div>
   );
 
-  switch (props.message) {
+  switch (message) {
     case 'tutorial':
       return tutorialMessage;
     case 'default':
@@ -57,5 +57,5 @@ function HelpMessage(props) {
     default:
       return null;
   }
-}
+};
 export default HelpMessage;

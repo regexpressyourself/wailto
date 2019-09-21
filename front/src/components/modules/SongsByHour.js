@@ -1,6 +1,6 @@
 import React, {useContext, useState, useEffect} from 'react';
 import './charts.scss';
-import {HistoryContext} from '../../context/HistoryContext';
+import {SongHistoryContext} from '../../context/SongHistoryContext';
 import {ConfigContext} from '../../context/ConfigContext';
 import {
   ResponsiveContainer,
@@ -12,14 +12,14 @@ import {
 } from 'recharts';
 import {hourToAmpm, bucketSongTimes} from '../../functions/dateMappers';
 
-function SongsByHour(props) {
-  const {history} = useContext(HistoryContext);
+const SongsByHour = () => {
+  const {songHistory} = useContext(SongHistoryContext);
   const {config} = useContext(ConfigContext);
 
   let [hourDataRC, setHourDataRC] = useState(null);
 
   useEffect(() => {
-    let hourMap = bucketSongTimes('hour', 24, history.history, config.genre);
+    let hourMap = bucketSongTimes('hour', 24, songHistory.songHistory, config.genre);
     let tempHourDataRC = [];
     for (let i = 0; i <= 23; i++) {
       tempHourDataRC.push({
@@ -28,7 +28,7 @@ function SongsByHour(props) {
       });
     }
     setHourDataRC(tempHourDataRC);
-  }, [history.history, config.genre]);
+  }, [songHistory.songHistory, config.genre]);
 
   return (
     <>

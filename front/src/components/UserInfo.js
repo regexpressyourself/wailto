@@ -2,7 +2,7 @@ import React, {useContext} from 'react';
 import {ConfigContext} from '../context/ConfigContext';
 import {accessibleJsTime} from '../functions/dateMappers';
 
-function UserInfo(props) {
+const UserInfo = () => {
   const {config} = useContext(ConfigContext);
 
   let zookeeprrInfo =

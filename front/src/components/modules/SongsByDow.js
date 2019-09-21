@@ -1,6 +1,6 @@
 import React, {useContext, useState, useEffect} from 'react';
 import './charts.scss';
-import {HistoryContext} from '../../context/HistoryContext';
+import {SongHistoryContext} from '../../context/SongHistoryContext';
 import {ConfigContext} from '../../context/ConfigContext';
 import {
   ResponsiveContainer,
@@ -12,13 +12,13 @@ import {
 } from 'recharts';
 import {days, bucketSongTimes} from '../../functions/dateMappers';
 
-function SongsByDow(props) {
-  const {history} = useContext(HistoryContext);
+const SongsByDow = () => {
+  const {songHistory} = useContext(SongHistoryContext);
   const {config} = useContext(ConfigContext);
 
   let [dayDataRC, setDayDataRC] = useState(null);
 
-  let dayMap = bucketSongTimes('dow', 7, history.history, config.genre);
+  let dayMap = bucketSongTimes('dow', 7, songHistory.songHistory, config.genre);
 
   useEffect(() => {
     let tempDayDataRC = [];

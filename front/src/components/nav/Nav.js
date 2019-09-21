@@ -61,7 +61,7 @@ const expandNav = expanded => {
   }
 };
 
-function Nav(props) {
+const Nav = ({history, showMessages, showBack, defaultStart, defaultEnd}) => {
   const {config, configDispatch} = useContext(ConfigContext);
 
   let [isExpanded, setIsExpanded] = useState(null);
@@ -75,13 +75,13 @@ function Nav(props) {
     if (isExpanded) {
       setButtonText(<X />);
       expandNav(true);
-      setHelpMessageType(props.showMessages ? 'tutorial' : null);
+      setHelpMessageType(showMessages ? 'tutorial' : null);
     } else {
       setButtonText(<Plus />);
       expandNav(false);
-      setHelpMessageType(props.showMessages ? 'default' : null);
+      setHelpMessageType(showMessages ? 'default' : null);
     }
-  }, [isExpanded, props.showMessages, props.defaultStart, props.defaultEnd]);
+  }, [isExpanded, showMessages, defaultStart, defaultEnd]);
 
   return (
     <header className="main-header">
@@ -98,18 +98,18 @@ function Nav(props) {
                 return;
               }
               setIsExpanded(false);
-              props.history.push('/dashboard');
+              history.push('/dashboard');
             }}>
             What Am I Listening to?
           </button>
         </nav>
         <div className="main-header__bottom">
           <HelpMessage
-            defaultStart={props.defaultStart}
-            defaultEnd={props.defaultEnd}
+            defaultStart={defaultStart}
+            defaultEnd={defaultEnd}
             message={helpMessageType}
           />
-          ,{props.showBack ? <BackButton /> : null}
+          {showBack ? <BackButton /> : <span />}
           <button
             className={`nav__toggle-btn ${buttonAnimation ? 'animated' : ''}`}
             onClick={e => {
@@ -121,6 +121,6 @@ function Nav(props) {
       </div>
     </header>
   );
-}
+};
 
 export default withRouter(Nav);

@@ -1,6 +1,6 @@
 import React, {useContext, useState, useEffect} from 'react';
 import './charts.scss';
-import {HistoryContext} from '../../context/HistoryContext';
+import {SongHistoryContext} from '../../context/SongHistoryContext';
 import {ConfigContext} from '../../context/ConfigContext';
 import {
   ResponsiveContainer,
@@ -12,8 +12,8 @@ import {
 } from 'recharts';
 import {getDatesBetween, bucketSongTimes} from '../../functions/dateMappers';
 
-function SongsByDate(props) {
-  const {history} = useContext(HistoryContext);
+const SongsByDate = () => {
+  const {songHistory} = useContext(SongHistoryContext);
   const {config} = useContext(ConfigContext);
 
   let [dateDataRC, setDateDataRC] = useState(null);
@@ -23,7 +23,7 @@ function SongsByDate(props) {
   let dateMap = bucketSongTimes(
     'date',
     datesBetween.length,
-    history.history,
+    songHistory.songHistory,
     config.genre,
   );
 

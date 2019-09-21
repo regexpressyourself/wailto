@@ -115,7 +115,7 @@ const getDatesBetween = (start, end) => {
   }
   return datesBetween;
 };
-function bucketSongTimes(bucketKey, bucketMaxSize, songList, genre = null) {
+const bucketSongTimes = (bucketKey, bucketMaxSize, songList, genre = null) => {
   /*
    * The "map" holds an array with a definition of:
    * [{ timeSlot: [Song1, Song2, ...] }, ... ]

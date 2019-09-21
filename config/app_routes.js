@@ -5,7 +5,6 @@ const fetch = require('node-fetch');
 const cors = require('cors');
 const format = require('pg-format');
 const stringHash = require('string-hash');
-const client = require('./database').client;
 const saveSongs = require('./database').saveSongs;
 const saveHistory = require('./database').saveHistory;
 const saveCoverage = require('./database').saveCoverage;
@@ -32,10 +31,8 @@ const removeDuplicates = array => {
 };
 
 const serializeLastFmData = (track, username) => {
-  console.log(track);
   let id;
   if (track.mbid) {
-    console.log(stringHash(track.mbid + username + (track.date ? track.date.uts : '')));
     id = stringHash(track.mbid + username + (track.date ? track.date.uts : ''));
   } else if (track.artist) {
     id = stringHash(track.name + track.artist['#text']);
@@ -50,7 +47,7 @@ const serializeLastFmData = (track, username) => {
     album: track.album ? track.album['#text'] : '',
     image: track.image ? track.image[track.image.length - 1]['#text'] : '',
     artist: track.artist ? track.artist['#text'] : '',
-    artistId: track.artist ? track.artist['mbid'] : '',
+    artistid: track.artist ? track.artist['mbid'] : '',
   };
 
   return newTrack;
@@ -190,19 +187,20 @@ const fetchTracks = async function(username, key, from, to, page = 1) {
   return recentTracks;
 };
 
-let saveUserInfo = async function(userId, from, to, recentTracks) {
-  return new Promise((resolve, reject) => {
+let saveUserInfo = async function(userid, from, to, recentTracks) {
+  return new Promise(async (resolve, reject) => {
     let saveSongsPromise;
     let saveHistoryPromise;
     let saveCoveragePromise;
-    if (userId && recentTracks) {
-      saveSongsPromise = saveSongs(userId, recentTracks);
-      saveHistoryPromise = saveHistory(userId, recentTracks);
+    if (userid && from && to) {
+      saveCoveragePromise = saveCoverage(userid, from, to);
     }
-    if (userId && from && to) {
-      saveCoveragePromise = saveCoverage(userId, from, to);
+    if (userid && recentTracks) {
+      // await b/c we need songs before history for foreign key
+      saveSongsPromise = await saveSongs(userid, recentTracks);
+      saveHistoryPromise = saveHistory(userid, recentTracks);
     }
-    Promise.all([saveSongsPromise, saveHistoryPromise, saveCoveragePromise])
+    Promise.all([saveHistoryPromise, saveCoveragePromise])
       .then(saveUserResponses => {
         resolve(saveUserResponses);
       })
@@ -222,7 +220,7 @@ module.exports = app => {
     const [from, unixFrom] = resetDate(request.from);
     const [to, unixTo] = resetDate(request.to, true);
 
-    let userId;
+    let userid;
     let storedCoverageValues;
 
     let main = async function() {
@@ -233,15 +231,14 @@ module.exports = app => {
         console.error('ERROR: ', error);
         return false;
       }
-      userId = userRes.id;
+      userid = userRes.id;
       try {
-        storedCoverageValues = await getCoverageValues(userId, from, to);
+        storedCoverageValues = await getCoverageValues(userid, from, to);
       } catch (error) {
         console.error('ERROR: ', error);
         return false;
       }
 
-      storedCoverageValues = storedCoverageValues.rows;
       if (storedCoverageValues.length < getDateRange(from, to).length) {
         console.log('need to fetch some tracks');
         // some missing data, fetch certain days
@@ -263,12 +260,12 @@ module.exports = app => {
           console.error('ERROR: ', error);
           return false;
         }
-        console.log('%i:\tdone fetching tracks.', userId);
-        console.log('%i:\tfetching artist info.', userId);
+        console.log('%i:\tdone fetching tracks.', userid);
+        console.log('%i:\tfetching artist info.', userid);
 
         let artistInfoHash = {};
         for (let track of recentTracks) {
-          artistInfoHash[track.artist] = {id: track.artistId};
+          artistInfoHash[track.artist] = {id: track.artistid};
         }
 
         recentTracks = await fetchArtistInfo(artistInfoHash, recentTracks);
@@ -276,7 +273,7 @@ module.exports = app => {
         let saveUserResponses;
         try {
           saveUserResponses = await saveUserInfo(
-            userId,
+            userid,
             from,
             to,
             recentTracks,
@@ -291,7 +288,7 @@ module.exports = app => {
       console.log('getting songs in date range');
       let finalResult;
       try {
-        finalResult = await getSongHistory(userId, unixFrom, unixTo);
+        finalResult = await getSongHistory(userid, unixFrom, unixTo);
       } catch (error) {
         console.error('ERROR: ', error);
         return false;

@@ -1,176 +1,177 @@
-const {Pool, Client} = require('pg');
-const format = require('pg-format');
 const getDateRange = require('./dates').getDateRange;
 require('dotenv').config();
 const DB_USER = process.env.DB_USER;
 const DB_PW = process.env.DB_PW;
+const Sequelize = require('sequelize');
+const Op = Sequelize.Op;
 
-const pool = new Pool({
-  user: DB_USER,
+const sequelize = new Sequelize('wailto', DB_USER, DB_PW, {
   host: 'localhost',
-  database: 'wailto',
-  password: DB_PW,
-  port: 5432,
+  dialect: 'postgres',
+  define: {
+    timestamps: false,
+  },
 });
 
-const client = new Client({
-  user: DB_USER,
-  host: 'localhost',
-  database: 'wailto',
-  password: DB_PW,
-  port: 5432,
-});
+const HistCoverageModel = require('../models/histcoverage.js');
+const SongHistoryModel = require('../models/songhistory.js');
+const SongsModel = require('../models/songs.js');
+const UsersModel = require('../models/users.js');
 
-const saveSongs = (userId, history) => {
-  console.log('user %i:\tsave songs', userId);
+sequelize.sync();
+
+const HistCoverage = HistCoverageModel(sequelize, Sequelize);
+const SongHistory = SongHistoryModel(sequelize, Sequelize);
+const Songs = SongsModel(sequelize, Sequelize);
+const Users = UsersModel(sequelize, Sequelize);
+
+const saveSongs = (userid, history) => {
+  console.log('user %i:\tsave songs', userid);
   let songValues = [];
   for (let song of history) {
-    songValues.push([
-      song.id,
-      song.name,
-      song.image,
-      song.album,
-      song.artist,
-      song.artist_id,
-      song.genre1,
-      song.genre2,
-      song.genre3,
-      song.genre4,
-      song.url,
-    ]);
+    songValues.push({
+      id: song.id,
+      name: song.name,
+      image: song.image,
+      album: song.album,
+      artist: song.artist,
+      artistid: song.artistid,
+      genre1: song.genre1,
+      genre2: song.genre2,
+      genre3: song.genre3,
+      genre4: song.genre4,
+      url: song.url,
+    });
   }
 
-  const songQuery = format(
-    `INSERT INTO songs (id, name, image, album, artist, artist_id, genre1, genre2, genre3, genre4, url)
-    VALUES %L
-    ON CONFLICT (id)
-    DO NOTHING
-    RETURNING id;`,
-    songValues,
-  );
-  return client.query(songQuery);
+  return Songs.bulkCreate(songValues);
 };
 
-const saveHistory = (userId, history) => {
-  console.log('user %i:\tsave history', userId);
+const saveHistory = (userid, history) => {
+  console.log('user %i:\tsave history', userid);
   let historyValues = [];
   for (let song of history) {
-    if (!song.id || !userId || !song.date) {
+    if (!song.id || !userid || !song.date) {
       continue;
     }
-    historyValues.push({id: song.id, userId: userId, date: song.date});
+    historyValues.push({songid: song.id, userid: userid, unixdate: song.date});
   }
 
-  const dbHistoryValues = historyValues.map((historyItem) => {
-    return [historyItem.id, historyItem.userId, historyItem.date];
-  });
-
-  const historyQuery = format(
-    'INSERT INTO song_history (song_id, user_id, unix_date ) VALUES %L ON CONFLICT DO NOTHING;',
-    dbHistoryValues,
-  );
-  return client.query(historyQuery);
+  return SongHistory.bulkCreate(historyValues);
 };
 
-const saveCoverage = (userId, from, to) => {
-  console.log('user %i:\tsave coverage', userId);
-  console.log('user %i:\tlooking for day coverage', userId);
+const saveCoverage = (userid, from, to) => {
+  console.log('user %i:\tsave coverage', userid);
+  console.log('user %i:\tlooking for day coverage', userid);
   let values = getDateRange(from, to);
-  values = values.map((value) => {
-    return [userId, value];
+  values = values.map(value => {
+    return {userid: userid, day: value};
   });
-  const query = format(
-    'INSERT INTO hist_coverage (user_id, day) VALUES %L',
-    values,
-  );
-  return client.query(query);
+
+  return HistCoverage.bulkCreate(values);
 };
 
-const getCoverageValues = (userId, from, to) => {
+const getCoverageValues = (userid, from, to) => {
   let unixFrom = Math.round(from.getTime() / 1000);
   let unixTo = Math.round(to.getTime() / 1000);
-  const coverageQuery = format(
-    `SELECT * FROM hist_coverage WHERE day IN (%L) AND user_id = ${userId};`,
-    getDateRange(from, to),
-  );
-  return client.query(coverageQuery);
+  return HistCoverage.findAll({
+    where: {
+      userid: userid,
+      day: {
+        [Op.or]: getDateRange(from, to),
+      },
+    },
+  });
 };
 
 const getUser = async function(username) {
   console.log('get user');
-  let query = `SELECT * FROM users WHERE username = '${username}';`;
   let getExistingUserRes;
   try {
-    getExistingUserRes = await client.query(query);
+    getExistingUserRes = await Users.findAll({
+      where: {
+        username: username,
+      },
+    });
   } catch (error) {
     console.error(error);
   }
-  if (getExistingUserRes.rows.length > 0) {
+  if (getExistingUserRes.length > 0) {
     console.log('got stored user ');
-    return getExistingUserRes.rows[0];
-  } else if (getExistingUserRes.rows.length === 0) {
+    return getExistingUserRes[0];
+  } else if (getExistingUserRes.length === 0) {
     console.log('user not found -- creating user');
-    let insertUserQuery = `INSERT INTO users (username) VALUES ( '${username}' ) RETURNING id;`;
     let saveConfirmationRes;
     try {
-      saveConfirmationRes = await client.query(insertUserQuery);
+      saveConfirmationRes = await Users.create({username: username});
     } catch (error) {
       console.error(error);
     }
-    console.log('user created id: ', saveConfirmationRes.rows[0].id);
-    return saveConfirmationRes.rows[0];
+    console.log('user created id: ', saveConfirmationRes.dataValues);
+    return saveConfirmationRes.dataValues;
   }
 };
 
-const getSongHistory = async function(userId, unixFrom, unixTo) {
-  const listeningHistoryQuery = `SELECT * FROM song_history
-                                 WHERE unix_date >= ${unixFrom} AND
-                                 unix_date <= ${unixTo} AND
-                                 user_id = ${userId};`;
-
-  console.log('user %i:\tgetting song history', userId);
+const getSongHistory = async function(userid, unixFrom, unixTo) {
+  console.log('user %i:\tgetting song history', userid);
   let listeningHistoryRes;
   try {
-    listeningHistoryRes = await client.query(listeningHistoryQuery);
+    listeningHistoryRes = await SongHistory.findAll({
+      [Op.and]: [
+        {
+          unixdate: {
+            [Op.gte]: unixFrom,
+          },
+        },
+        {
+          unixdate: {
+            [Op.lte]: unixTo,
+          },
+        },
+        {userid: userid},
+      ],
+    });
   } catch (error) {
     console.error(error);
   }
-  console.log('user %i:\tgot song history', userId);
+  console.log('user %i:\tgot song history', userid);
 
   let listeningHistoryList = [];
   let listeningHistoryIds = [];
 
-  for (let song of listeningHistoryRes.rows) {
+  for (let song of listeningHistoryRes) {
     listeningHistoryList.push({
-      song_id: song.song_id,
-      date: song.unix_date,
+      songid: song.dataValues.songid,
+      date: song.dataValues.unixdate,
     });
-    listeningHistoryIds.push(song.song_id);
+    listeningHistoryIds.push(song.songid);
   }
   if (listeningHistoryIds.length === 0) {
     return [];
   }
 
-  console.log("%i:\tgetting songs' info", userId);
-  const songInfoQuery = format(
-    `SELECT * FROM songs WHERE id IN (%L)`,
-    listeningHistoryIds,
-  );
+  console.log("%i:\tgetting songs' info", userid);
+
   let songInfoRes;
   try {
-    songInfoRes = await client.query(songInfoQuery);
+    songInfoRes = await Songs.findAll({
+      where: {
+        id: {
+          [Op.or]: listeningHistoryIds,
+        },
+      },
+    });
   } catch (error) {
     console.error(error);
   }
-  let songInfoList = songInfoRes.rows;
   let finalArray = [];
   for (let listen of listeningHistoryList) {
     let date = listen.date;
-    let songId = listen.song_id;
+    let songid = listen.songid;
     let newSongObj;
-    newSongObj = songInfoList.find((song) => {
-      return song.id === songId;
-    });
+    newSongObj = songInfoRes.find(song => {
+      return song.dataValues.id === songid;
+    }).dataValues;
     newSongObj.date = date;
     finalArray.push(newSongObj);
   }
@@ -180,9 +181,6 @@ const getSongHistory = async function(userId, unixFrom, unixTo) {
   return finalArray;
 };
 
-client.connect();
-
-exports.client = client;
 exports.saveSongs = saveSongs;
 exports.saveHistory = saveHistory;
 exports.saveCoverage = saveCoverage;

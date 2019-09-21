@@ -24,9 +24,10 @@
     "node-sass": "^4.12.0",
     "path": "^0.12.7",
     "pg": "^7.12.1",
-    "pg-format": "^1.0.4",
+    "pg-hstore": "^2.3.3",
     "recharts": "^1.6.2",
     "request": "^2.88.0",
+    "sequelize": "^5.19.0",
     "string-hash": "^1.1.3"
   }
 }

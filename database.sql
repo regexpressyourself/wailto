@@ -1,5 +1,5 @@
-DROP TABLE hist_coverage;
-DROP TABLE song_history;
+DROP TABLE histcoverage;
+DROP TABLE songhistory;
 DROP TABLE songs;
 DROP TABLE users;
 
@@ -10,7 +10,7 @@ CREATE TABLE songs (
   album VARCHAR(256),
   url VARCHAR(256),
   artist VARCHAR(256),
-  artist_id VARCHAR(256),
+  artistid VARCHAR(256),
   genre1 VARCHAR(256),
   genre2 VARCHAR(256),
   genre3 VARCHAR(256),
@@ -24,20 +24,20 @@ CREATE TABLE users (
   PRIMARY KEY (id)
 );
 
-CREATE TABLE hist_coverage (
+CREATE TABLE histcoverage (
   id serial,
   day int,
-  user_id int NOT NULL,
-  CONSTRAINT fk_user_id FOREIGN KEY (user_id) REFERENCES users (id),
+  userid int NOT NULL,
+  CONSTRAINT fkUserId FOREIGN KEY (userid) REFERENCES users (id),
   PRIMARY KEY (id)
 );
 
-CREATE TABLE song_history (
+CREATE TABLE songhistory (
   id serial,
-  song_id bigint NOT NULL,
-  user_id int NOT NULL,
-  unix_date int,
+  songId bigint NOT NULL,
+  userid int NOT NULL,
+  unixDate int,
   PRIMARY KEY (id),
-  CONSTRAINT fk_song_id FOREIGN KEY (song_id) REFERENCES songs (id),
-  CONSTRAINT fk_user_id FOREIGN KEY (user_id) REFERENCES users (id)
+  CONSTRAINT fksongid FOREIGN KEY (songid) REFERENCES songs (id),
+  CONSTRAINT fkuserid FOREIGN KEY (userid) REFERENCES users (id)
 );

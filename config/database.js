@@ -8,7 +8,6 @@ const Op = Sequelize.Op;
 const sequelize = new Sequelize('wailto', DB_USER, DB_PW, {
   host: 'localhost',
   dialect: 'postgres',
-  logging: false,
   define: {
     timestamps: false,
   },
@@ -118,19 +117,21 @@ const getSongHistory = async function(userid, unixFrom, unixTo) {
   let listeningHistoryRes;
   try {
     listeningHistoryRes = await SongHistory.findAll({
-      [Op.and]: [
-        {
-          unixdate: {
-            [Op.gte]: unixFrom,
+      where: {
+        [Op.and]: [
+          {
+            unixdate: {
+              [Op.gte]: unixFrom,
+            },
           },
-        },
-        {
-          unixdate: {
-            [Op.lte]: unixTo,
+          {
+            unixdate: {
+              [Op.lte]: unixTo,
+            },
           },
-        },
-        {userid: userid},
-      ],
+          {userid: userid},
+        ],
+      },
     });
   } catch (error) {
     console.error(error);

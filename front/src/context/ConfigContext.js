@@ -30,9 +30,7 @@ const configReducer = (state, configAction) => {
 
   switch (configAction.type) {
     case 'USERNAME':
-      if (configAction.username !== 'zookeeprr') {
-        localStorage.setItem('wt-username', configAction.username);
-      }
+      localStorage.setItem('wt-username', configAction.username);
       return {
         ...state,
         username: configAction.username,

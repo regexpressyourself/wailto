@@ -1,21 +1,16 @@
-import React, {useContext} from 'react';
+import React from 'react';
+import {withRouter} from 'react-router-dom';
 import {ChevronLeft} from 'react-feather';
-import {ConfigContext} from '../../context/ConfigContext';
 
 function BackButton(props) {
-  const {configDispatch} = useContext(ConfigContext);
   return (
     <button
       className="nav__back-btn"
       onClick={e => {
-        configDispatch({type: 'APP_STATE', appState: 'dashboard'});
-        configDispatch({
-          type: 'TRIGGER_STATE_UPDATE',
-          triggerStateUpdate: true,
-        });
+        props.history.goBack();
       }}>
       <ChevronLeft />
     </button>
   );
 }
-export default BackButton;
+export default withRouter(BackButton);

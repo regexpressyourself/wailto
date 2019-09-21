@@ -50,7 +50,7 @@ function SongsByDate(props) {
         </h1>
         <ResponsiveContainer>
           <AreaChart data={dateDataRC}>
-            <XAxis dataKey="id" />
+            <XAxis dataKey="name" />
             <YAxis />
             <Tooltip />
             <Area

@@ -13,7 +13,7 @@ import SongsByDow from './modules/SongsByDow';
 import SongsByHour from './modules/SongsByHour';
 import './App.scss';
 
-function App() {
+function App(props) {
   let today = new Date();
   let weekAgo = new Date();
   let yesterday = new Date();
@@ -22,7 +22,7 @@ function App() {
   let initialConfig = {
     timeStart: weekAgo,
     timeEnd: yesterday,
-    username: '', //localStorage.getItem('wt-username') || '',
+    username: localStorage.getItem('wt-username') || '',
   };
 
   const [config, configDispatch] = useReducer(configReducer, initialConfig);
@@ -32,10 +32,10 @@ function App() {
     configDispatch({type: 'TIME_START', timeStart: initialConfig.timeStart});
     configDispatch({type: 'TIME_END', timeEnd: initialConfig.timeEnd});
     configDispatch({type: 'USERNAME', username: 'zookeeprr'});
+    props.history.push('/dashboard');
   }
 
   let [content, setContent] = useState(null);
-  let contentStuff = null;
   let [userInfo, setUserInfo] = useState(null);
 
   const appIsPopulated =
@@ -46,10 +46,18 @@ function App() {
   const footer = appIsPopulated ? <Footer /> : null;
 
   useEffect(() => {
+    if (props.appState && props.appState !== config.appState) {
+      configDispatch({type: 'APP_STATE', appState: props.appState});
+      configDispatch({
+        type: 'TRIGGER_STATE_UPDATE',
+        triggerStateUpdate: true,
+      });
+    }
+
     if (!config.triggerStateUpdate) {
       return;
     }
-    let requestedState = config.appState;
+
     setContent(<Loading />);
     setUserInfo(<UserInfo />);
     axios
@@ -62,9 +70,7 @@ function App() {
       })
       .then(data => {
         historyDispatch({history: data.data});
-        console.log('requestedState');
-        console.log(requestedState);
-        switch (requestedState) {
+        switch (config.appState) {
           case 'updating':
             setContent(<Loading />);
             break;
@@ -87,7 +93,6 @@ function App() {
           default:
             setContent(null);
         }
-        configDispatch({type: 'APP_STATE', appState: requestedState});
         configDispatch({
           type: 'TRIGGER_STATE_UPDATE',
           triggerStateUpdate: false,
@@ -97,6 +102,7 @@ function App() {
         console.error(e);
       });
   }, [
+    props.appState,
     config.triggerStateUpdate,
     config.appState,
     config.username,

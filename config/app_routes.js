@@ -19,9 +19,9 @@ const GENRELIST = require('./GENRELIST').GENRELIST;
 require('dotenv').config();
 const LASTFM_KEY = process.env.LASTFM_KEY;
 
-const removeDuplicates = (array) => {
+const removeDuplicates = array => {
   const reducedArray = array.reduce((acc, current) => {
-    const x = acc.find((item) => item.id === current.id);
+    const x = acc.find(item => item.id === current.id);
     if (!x) {
       return acc.concat([current]);
     } else {
@@ -31,10 +31,12 @@ const removeDuplicates = (array) => {
   return reducedArray;
 };
 
-const serializeLastFmData = (track) => {
+const serializeLastFmData = (track, username) => {
+  console.log(track);
   let id;
   if (track.mbid) {
-    id = stringHash(track.mbid);
+    console.log(stringHash(track.mbid + username + (track.date ? track.date.uts : '')));
+    id = stringHash(track.mbid + username + (track.date ? track.date.uts : ''));
   } else if (track.artist) {
     id = stringHash(track.name + track.artist['#text']);
   } else {
@@ -65,7 +67,7 @@ const fetchArtistInfo = async function(artistInfoHash, recentTracks) {
     artistInfoRequests.push(fetch(url));
   }
   recentTracks = await Promise.all(artistInfoRequests)
-    .then(async (allArtistInfo) => {
+    .then(async allArtistInfo => {
       console.log('batched artist info requests succeeded:');
       console.log('getting top tags');
       for (let artistInfoResponse of allArtistInfo) {
@@ -88,7 +90,7 @@ const fetchArtistInfo = async function(artistInfoHash, recentTracks) {
       }
       console.log('adding genre to track info');
 
-      recentTracks = recentTracks.map((track) => {
+      recentTracks = recentTracks.map(track => {
         if (!artistInfoHash[track.artist].genres) {
           return track;
         }
@@ -109,7 +111,7 @@ const fetchArtistInfo = async function(artistInfoHash, recentTracks) {
 
       return recentTracks;
     })
-    .catch((e) => {
+    .catch(e => {
       console.error('error waiting on batched artist info request ');
       console.error(e);
       reject(e);
@@ -141,7 +143,9 @@ const fetchTracks = async function(username, key, from, to, page = 1) {
     console.error('ERROR: no recent tracks');
     return false;
   }
-  let recentTracks = lastFMData.recenttracks.track.map(serializeLastFmData);
+  let recentTracks = lastFMData.recenttracks.track.map(track => {
+    return serializeLastFmData(track, username);
+  });
   let totalPages = lastFMData.recenttracks['@attr'].totalPages;
 
   let subsequentRequests = [];
@@ -163,7 +167,7 @@ const fetchTracks = async function(username, key, from, to, page = 1) {
 
   if (subsequentRequests.length) {
     recentTracks = await Promise.all(subsequentRequests)
-      .then((allTrackLists) => {
+      .then(allTrackLists => {
         // allTrackLists is an array of trackLists
         console.log('batched track requests succeeded:');
         for (let trackList of allTrackLists) {
@@ -199,7 +203,7 @@ let saveUserInfo = async function(userId, from, to, recentTracks) {
       saveCoveragePromise = saveCoverage(userId, from, to);
     }
     Promise.all([saveSongsPromise, saveHistoryPromise, saveCoveragePromise])
-      .then((saveUserResponses) => {
+      .then(saveUserResponses => {
         resolve(saveUserResponses);
       })
       .catch(e => {
@@ -210,7 +214,7 @@ let saveUserInfo = async function(userId, from, to, recentTracks) {
   });
 };
 
-module.exports = (app) => {
+module.exports = app => {
   app.get('/history', cors(), (req, res, next) => {
     let request = JSON.parse(JSON.stringify(req.query));
     let username = request.username;
@@ -244,7 +248,7 @@ module.exports = (app) => {
         let recentTracks;
         let missingValues = [];
         for (let date of getDateRange(from, to)) {
-          if (!storedCoverageValues.find((covVal) => covVal.day === date)) {
+          if (!storedCoverageValues.find(covVal => covVal.day === date)) {
             missingValues.push(date);
           }
         }

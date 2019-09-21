@@ -7,7 +7,7 @@ let initialConfig = {
   timeEnd: null,
   unixTimeStart: null,
   unixTimeEnd: null,
-  username: '', //localStorage.getItem('wt-username') || '',
+  username: localStorage.getItem('wt-username') || '',
   genre: null,
   triggerStateUpdate: false,
   appState: 'home',
@@ -31,7 +31,7 @@ function configReducer(state, configAction) {
   switch (configAction.type) {
     case 'USERNAME':
       if (configAction.username !== 'zookeeprr') {
-        //localStorage.setItem('wt-username', configAction.username);
+        localStorage.setItem('wt-username', configAction.username);
       }
       return {
         ...state,

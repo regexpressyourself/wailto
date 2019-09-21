@@ -1,9 +1,10 @@
 import React, {useContext} from 'react';
+import {withRouter} from 'react-router-dom';
 import {ConfigContext} from '../context/ConfigContext';
 import {BookOpen, Calendar, Clock, Grid} from 'react-feather';
 import './Dashboard.scss';
 
-function Dashboard() {
+function Dashboard(props) {
   const {configDispatch} = useContext(ConfigContext);
 
   const modules = [
@@ -39,14 +40,7 @@ function Dashboard() {
         key={module.title}
         className="dashboard__module"
         onClick={e => {
-          configDispatch({
-            type: 'APP_STATE',
-            appState: module.componentState,
-          });
-          configDispatch({
-            type: 'TRIGGER_STATE_UPDATE',
-            triggerStateUpdate: true,
-          });
+          props.history.push(`/${module.componentState}`);
         }}>
         <div className="dashboard__module__heading">
           <div className="dashboard__module__image">{module.image}</div>
@@ -61,4 +55,4 @@ function Dashboard() {
   return <section className="dashboard">{content}</section>;
 }
 
-export default Dashboard;
+export default withRouter(Dashboard);

@@ -1,4 +1,5 @@
 import React, {useState, useEffect, useContext} from 'react';
+import {withRouter} from 'react-router-dom';
 import {Plus, X} from 'react-feather';
 import {ConfigContext} from '../../context/ConfigContext';
 import BackButton from './BackButton';
@@ -76,7 +77,6 @@ function Nav(props) {
       expandNav(true);
       setHelpMessageType(props.showMessages ? 'tutorial' : null);
     } else {
-      setButtonAnimation(true);
       setButtonText(<Plus />);
       expandNav(false);
       setHelpMessageType(props.showMessages ? 'default' : null);
@@ -97,13 +97,8 @@ function Nav(props) {
                 disableButton(true); // check for username
                 return;
               }
-
-              configDispatch({type: 'APP_STATE', appState: 'dashboard'});
-              configDispatch({
-                type: 'TRIGGER_STATE_UPDATE',
-                triggerStateUpdate: true,
-              });
               setIsExpanded(false);
+              props.history.push('/dashboard');
             }}>
             What Am I Listening to?
           </button>
@@ -128,4 +123,4 @@ function Nav(props) {
   );
 }
 
-export default Nav;
+export default withRouter(Nav);

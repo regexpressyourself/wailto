@@ -17,9 +17,9 @@ function SongsByHour(props) {
   const {config} = useContext(ConfigContext);
 
   let [hourDataRC, setHourDataRC] = useState(null);
-  let hourMap = bucketSongTimes('hour', 24, history.history, config.genre);
 
   useEffect(() => {
+    let hourMap = bucketSongTimes('hour', 24, history.history, config.genre);
     let tempHourDataRC = [];
     for (let i = 0; i <= 23; i++) {
       tempHourDataRC.push({
@@ -28,7 +28,7 @@ function SongsByHour(props) {
       });
     }
     setHourDataRC(tempHourDataRC);
-  }, []);
+  }, [history.history, config.genre]);
 
   return (
     <>

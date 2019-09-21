@@ -3,7 +3,6 @@ const express = require('express');
 const request = require('request');
 const fetch = require('node-fetch');
 const cors = require('cors');
-const format = require('pg-format');
 const stringHash = require('string-hash');
 const saveSongs = require('./database').saveSongs;
 const saveHistory = require('./database').saveHistory;

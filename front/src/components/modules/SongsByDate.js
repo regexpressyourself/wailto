@@ -29,7 +29,7 @@ const SongsByDate = () => {
       });
     }
     setDateDataRC(tempDateDataRC);
-  }, [songHistory.songHistory, config.genre, config.timeStart, config.timeEnd]);
+  }, [songHistory.songHistory, config.genre]);
 
   return (
     <>

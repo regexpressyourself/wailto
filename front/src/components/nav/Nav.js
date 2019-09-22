@@ -17,11 +17,9 @@ const Nav = ({history, showMessages, showBack, defaultStart, defaultEnd}) => {
   let [isExpanded, setIsExpanded] = useState(null);
   let [helpMessageType, setHelpMessageType] = useState(null);
   let [buttonText, setButtonText] = useState(<Plus />);
-  let [buttonAnimation, setButtonAnimation] = useState(false);
+  let [buttonAnimation, setButtonAnimation] = useState(!localStorage.getItem('wt-username'));
 
   useEffect(() => {
-    let messageType = false;
-
     if (isExpanded) {
       setButtonText(<X />);
       expandNav(true);
@@ -68,6 +66,7 @@ const Nav = ({history, showMessages, showBack, defaultStart, defaultEnd}) => {
             className={`nav__toggle-btn ${buttonAnimation ? 'animated' : ''}`}
             onClick={e => {
               setIsExpanded(!isExpanded);
+              setButtonAnimation(false);
             }}>
             {buttonText}
           </button>

@@ -2,14 +2,7 @@ import React, {useContext, useState, useEffect} from 'react';
 import './charts.scss';
 import {SongHistoryContext} from '../../context/SongHistoryContext';
 import {ConfigContext} from '../../context/ConfigContext';
-import {
-  ResponsiveContainer,
-  AreaChart,
-  Area,
-  XAxis,
-  YAxis,
-  Tooltip,
-} from 'recharts';
+import {ResponsiveContainer, AreaChart, Area, XAxis, YAxis, Tooltip} from 'recharts';
 import {getDatesBetween, bucketSongTimes} from '../../functions/dateMappers';
 
 const SongsByDate = () => {
@@ -17,28 +10,26 @@ const SongsByDate = () => {
   const {config} = useContext(ConfigContext);
 
   let [dateDataRC, setDateDataRC] = useState(null);
-  let end = new Date(config.timeEnd);
-  let start = new Date(config.timeStart);
-  let datesBetween = getDatesBetween(start, end);
-  let dateMap = bucketSongTimes(
-    'date',
-    datesBetween.length,
-    songHistory.songHistory,
-    config.genre,
-  );
 
   useEffect(() => {
+    let end = new Date(config.timeEnd);
+    let start = new Date(config.timeStart);
+    let datesBetween = getDatesBetween(start, end);
+    let dateMap = bucketSongTimes(
+      'date',
+      datesBetween.length,
+      songHistory.songHistory,
+      config.genre,
+    );
     let tempDateDataRC = [];
     for (let i = 0; i < datesBetween.length; i++) {
       tempDateDataRC.push({
         name: datesBetween[i],
-        'Song Count': dateMap[datesBetween[i]]
-          ? dateMap[datesBetween[i]].length
-          : 0,
+        'Song Count': dateMap[datesBetween[i]] ? dateMap[datesBetween[i]].length : 0,
       });
     }
     setDateDataRC(tempDateDataRC);
-  }, []);
+  }, [songHistory.songHistory, config.genre, config.timeStart, config.timeEnd]);
 
   return (
     <>
@@ -53,17 +44,12 @@ const SongsByDate = () => {
             <XAxis dataKey="name" />
             <YAxis />
             <Tooltip />
-            <Area
-              type="monotone"
-              dataKey="Song Count"
-              stroke="#7f4782"
-              fill="#aa5c9f"
-            />
+            <Area type="monotone" dataKey="Song Count" stroke="#7f4782" fill="#aa5c9f" />
           </AreaChart>
         </ResponsiveContainer>
       </div>
     </>
   );
-}
+};
 
 export default SongsByDate;

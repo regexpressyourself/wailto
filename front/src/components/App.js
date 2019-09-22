@@ -32,6 +32,7 @@ const App = ({appState, history}) => {
   if (window.location.href.includes('zookeeprr')) {
     configDispatch({type: 'TIME_START', timeStart: initialConfig.timeStart});
     configDispatch({type: 'TIME_END', timeEnd: initialConfig.timeEnd});
+    configDispatch({type: 'GENRE', genre: initialConfig.genre});
     configDispatch({type: 'USERNAME', username: 'zookeeprr'});
     history.push('/dashboard');
   }

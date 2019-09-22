@@ -1,11 +1,9 @@
-import React, {useContext} from 'react';
+import React from 'react';
 import {withRouter} from 'react-router-dom';
-import {ConfigContext} from '../context/ConfigContext';
 import {BookOpen, Calendar, Clock, Grid} from 'react-feather';
 import './Dashboard.scss';
 
 const Dashboard = ({history}) => {
-  const {configDispatch} = useContext(ConfigContext);
 
   const modules = [
     {

@@ -1,32 +1,11 @@
 const days = () => {
-  return [
-    'Sunday',
-    'Monday',
-    'Tuesday',
-    'Wednesday',
-    'Thursday',
-    'Friday',
-    'Saturday',
-  ];
+  return ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 };
 const months = () => {
-  return [
-    'Jan',
-    'Feb',
-    'Mar',
-    'Apr',
-    'May',
-    'Jun',
-    'Jul',
-    'Aug',
-    'Sep',
-    'Oct',
-    'Nov',
-    'Dec',
-  ];
+  return ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 };
 
-const hourToAmpm = (hour) => {
+const hourToAmpm = hour => {
   let meridiem = 'am';
 
   if (hour >= 12) {
@@ -39,7 +18,7 @@ const hourToAmpm = (hour) => {
   return hour + meridiem;
 };
 
-const accessibleTime = (unixTime) => {
+const accessibleTime = unixTime => {
   let date = new Date(unixTime * 1000);
   let year = date.getFullYear();
   let month = months()[date.getMonth()];
@@ -71,7 +50,7 @@ const accessibleTime = (unixTime) => {
     seconds: seconds,
   };
 };
-const accessibleJsTime = (jsDate) => {
+const accessibleJsTime = jsDate => {
   let date = jsDate;
   let year = date.getFullYear();
   let month = months()[date.getMonth()];
@@ -115,6 +94,7 @@ const getDatesBetween = (start, end) => {
   }
   return datesBetween;
 };
+
 const bucketSongTimes = (bucketKey, bucketMaxSize, songList, genre = null) => {
   /*
    * The "map" holds an array with a definition of:
@@ -144,7 +124,7 @@ const bucketSongTimes = (bucketKey, bucketMaxSize, songList, genre = null) => {
     }
   }
   return map;
-}
+};
 
 export {
   days,

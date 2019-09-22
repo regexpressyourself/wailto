@@ -1,15 +1,22 @@
 import React, {useContext} from 'react';
 import {SongHistoryContext} from '../../context/SongHistoryContext';
+import {ConfigContext} from '../../context/ConfigContext';
 import SongItem from './SongItem.js';
 import './charts.scss';
 import {accessibleTime} from '../../functions/dateMappers';
 
 const FullSongHistory = () => {
   const {songHistory} = useContext(SongHistoryContext);
+  const {config} = useContext(ConfigContext);
 
   let songHistoryElements = songHistory.songHistory
-    .map((song) => {
+    .map(song => {
       let date = accessibleTime(song.date);
+      let genres = [song.genre1, song.genre2, song.genre3, song.genre4];
+
+      if (config.genre && config.genre !== 'any' && !genres.includes(config.genre)) {
+        return null;
+      }
       return (
         <SongItem
           key={song.id + song.date}
@@ -17,7 +24,7 @@ const FullSongHistory = () => {
           album={song.album}
           artist={song.artist}
           name={song.name}
-          genres={[song.genre1, song.genre2, song.genre3, song.genre4]}
+          genres={genres}
           date={date}
         />
       );
@@ -30,6 +37,6 @@ const FullSongHistory = () => {
       {songHistoryElements}
     </>
   );
-}
+};
 
 export default FullSongHistory;

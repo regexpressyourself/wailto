@@ -25,6 +25,7 @@ const App = ({appState, history}) => {
     timeEnd: localStorage.getItem('wt-timeEnd') || yesterday,
     username: localStorage.getItem('wt-username') || '',
     genre: localStorage.getItem('wt-genre') || '',
+    genre2: localStorage.getItem('wt-genre2') || '',
   };
 
   const [config, configDispatch] = useReducer(configReducer, initialConfig);

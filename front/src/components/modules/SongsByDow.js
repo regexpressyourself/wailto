@@ -12,16 +12,19 @@ const SongsByDow = () => {
   let [dayDataRC, setDayDataRC] = useState(null);
 
   useEffect(() => {
-    let dayMap = bucketSongTimes('dow', 7, songHistory.songHistory, config.genre);
+    let dayMap = bucketSongTimes('dow', 7, songHistory.songHistory, config.genre, config.genre2);
     let tempDayDataRC = [];
     for (let i = 0; i <= 6; i++) {
-      tempDayDataRC.push({
+      let newDayObject = {
         name: `${days()[i]}s`,
-        'Song Count': dayMap[i] ? dayMap[i].length : 0,
-      });
+      };
+      newDayObject[config.genre] = dayMap.genre[i] ? dayMap.genre[i].length : 0;
+      newDayObject[config.genre2] = dayMap.genre2[i] ? dayMap.genre2[i].length : 0;
+
+      tempDayDataRC.push(newDayObject);
     }
     setDayDataRC(tempDayDataRC);
-  }, [songHistory.songHistory, config.genre]);
+  }, [songHistory.songHistory, config.genre, config.genre2]);
 
   return (
     <>
@@ -36,7 +39,8 @@ const SongsByDow = () => {
             <XAxis dataKey="name" />
             <YAxis />
             <Tooltip />
-            <Area type="monotone" dataKey="Song Count" stroke="#7f4782" fill="#aa5c9f" />
+            <Area type="monotone" dataKey={config.genre} stroke="#7f4782" fill="#aa5c9f" />
+            <Area type="monotone" dataKey={config.genre2} stroke="#fd8b7b" fill="#e2598b" />
           </AreaChart>
         </ResponsiveContainer>
       </div>

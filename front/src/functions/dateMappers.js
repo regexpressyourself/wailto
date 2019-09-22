@@ -95,24 +95,21 @@ const getDatesBetween = (start, end) => {
   return datesBetween;
 };
 
-const bucketSongTimes = (bucketKey, bucketMaxSize, songList, genre = null) => {
-  /*
-   * The "map" holds an array with a definition of:
-   * [{ timeSlot: [Song1, Song2, ...] }, ... ]
-   * where timeSlot is the bucketed property's value (day of week,
-   * time of day, etc.), and Song1, Song2, etc. are the song objects
-   * from Last.fm.
-   */
-  let map = new Array(bucketMaxSize);
+const matchGenre = (song, genre) => {
+  if (
+    genre &&
+    genre !== 'any' &&
+    ![song.genre1, song.genre2, song.genre3, song.genre4].includes(genre)
+  ) {
+    return null;
+  } else {
+    return song;
+  }
+};
 
+const serializeSongList = (songList, bucketMaxSize, bucketKey) => {
+  let map = new Array(bucketMaxSize);
   for (let song of songList) {
-    if (
-      genre &&
-      genre !== 'any' &&
-      ![song.genre1, song.genre2, song.genre3, song.genre4].includes(genre)
-    ) {
-      continue;
-    }
     let date = song.date;
     let accessibleDate = accessibleTime(date);
     let key = accessibleDate[bucketKey];
@@ -124,6 +121,25 @@ const bucketSongTimes = (bucketKey, bucketMaxSize, songList, genre = null) => {
     }
   }
   return map;
+};
+
+const bucketSongTimes = (bucketKey, bucketMaxSize, songList, genre = null, genre2 = null) => {
+  /*
+   * The "map" holds an array with a definition of:
+   * [{ timeSlot: [Song1, Song2, ...] }, ... ]
+   * where timeSlot is the bucketed property's value (day of week,
+   * time of day, etc.), and Song1, Song2, etc. are the song objects
+   * from Last.fm.
+   */
+
+  let songList1 = songList.filter(song => matchGenre(song, genre));
+  let songList2 = songList.filter(song => matchGenre(song, genre2));
+  let map1 = serializeSongList(songList1, bucketMaxSize, bucketKey);
+  let map2 = serializeSongList(songList2, bucketMaxSize, bucketKey);
+  return {
+    genre: map1,
+    genre2: map2,
+  };
 };
 
 export {

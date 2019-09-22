@@ -14,9 +14,18 @@ const FullSongHistory = () => {
       let date = accessibleTime(song.date);
       let genres = [song.genre1, song.genre2, song.genre3, song.genre4];
 
-      if (config.genre && config.genre !== 'any' && !genres.includes(config.genre)) {
-        return null;
+      if (config.genre && config.genre !== 'any') {
+        if (!genres.includes(config.genre)) {
+          if (config.genre2) {
+            if (config.genre2 !== 'any' && !genres.includes(config.genre2)) {
+              return null;
+            }
+          } else {
+            return null;
+          }
+        }
       }
+
       return (
         <SongItem
           key={song.id + song.date}

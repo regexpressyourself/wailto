@@ -11,6 +11,7 @@ let initialConfig = {
   genre: localStorage.getItem('wt-genre') || '',
   triggerStateUpdate: false,
   appState: 'home',
+  configState: 1,
 };
 
 const transformTimeEnd = timeEnd => {
@@ -30,6 +31,9 @@ const configReducer = (state, configAction) => {
   if (typeof state.timeStart === 'string') {
     state.timeStart = new Date(state.timeStart);
   }
+  if (typeof state.prevTimeStart === 'string') {
+    state.prevTimeStart = new Date(state.prevTimeStart);
+  }
   state.timeEnd = transformTimeEnd(state.timeEnd);
   state.unixTimeStart = Math.round(state.timeStart.getTime() / 1000);
   state.unixTimeEnd = Math.round(state.timeEnd.getTime() / 1000);
@@ -40,6 +44,14 @@ const configReducer = (state, configAction) => {
       return {
         ...state,
         username: configAction.username,
+      };
+    case 'PREV_TIME_START':
+      let unixPrevTimeStart = Math.round(configAction.prevTimeStart.getTime() / 1000);
+      localStorage.setItem('wt-prevTimeStart', configAction.prevTimeStart);
+      return {
+        ...state,
+        prevTimeStart: configAction.prevTimeStart,
+        unixPrevTimeStart: unixPrevTimeStart,
       };
     case 'TIME_START':
       let unixTimeStart = Math.round(configAction.timeStart.getTime() / 1000);
@@ -58,16 +70,22 @@ const configReducer = (state, configAction) => {
         timeEnd: newEnd,
         unixTimeEnd: unixTimeEnd,
       };
-    case 'APP_STATE':
-      return {
-        ...state,
-        appState: configAction.appState,
-      };
     case 'GENRE':
       localStorage.setItem('wt-genre', configAction.genre);
       return {
         ...state,
         genre: configAction.genre,
+      };
+    case 'GENRE2':
+      localStorage.setItem('wt-genre2', configAction.genre2);
+      return {
+        ...state,
+        genre2: configAction.genre2,
+      };
+    case 'APP_STATE':
+      return {
+        ...state,
+        appState: configAction.appState,
       };
     case 'TRIGGER_STATE_UPDATE':
       return {

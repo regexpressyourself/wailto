@@ -223,7 +223,7 @@ $max-width: 1920px;
 .DayPickerInput {
   display: inline-block;
   input {
-    @include fluid-type($min_width, $max_width, 22px, 34px);
+    @include fluid-type($min_width, $max_width, 18px, 34px);
     &:focus {
       background-color: #fff;
       border-color: mix(#fdd043, #fff);

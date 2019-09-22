@@ -46,10 +46,7 @@ const Nav = ({history, showMessages, showBack, defaultStart, defaultEnd}) => {
                 return;
               }
               setIsExpanded(false);
-              configDispatch({
-                type: 'TRIGGER_STATE_UPDATE',
-                triggerStateUpdate: true,
-              });
+              history.push('/dashboard');
             }}>
             What Am I Listening to?
           </button>

@@ -3,12 +3,12 @@ import React from 'react';
 const ConfigContext = React.createContext();
 
 let initialConfig = {
-  timeStart: null,
-  timeEnd: null,
+  timeStart: localStorage.getItem('wt-timeStart') || new Date(),
+  timeEnd: localStorage.getItem('wt-timeEnd') || new Date(),
   unixTimeStart: null,
   unixTimeEnd: null,
   username: localStorage.getItem('wt-username') || '',
-  genre: null,
+  genre: localStorage.getItem('wt-genre') || '',
   triggerStateUpdate: false,
   appState: 'home',
 };
@@ -24,6 +24,12 @@ const transformTimeEnd = timeEnd => {
 };
 
 const configReducer = (state, configAction) => {
+  if (typeof state.timeEnd === 'string') {
+    state.timeEnd = new Date(state.timeEnd);
+  }
+  if (typeof state.timeStart === 'string') {
+    state.timeStart = new Date(state.timeStart);
+  }
   state.timeEnd = transformTimeEnd(state.timeEnd);
   state.unixTimeStart = Math.round(state.timeStart.getTime() / 1000);
   state.unixTimeEnd = Math.round(state.timeEnd.getTime() / 1000);
@@ -37,6 +43,7 @@ const configReducer = (state, configAction) => {
       };
     case 'TIME_START':
       let unixTimeStart = Math.round(configAction.timeStart.getTime() / 1000);
+      localStorage.setItem('wt-timeStart', configAction.timeStart);
       return {
         ...state,
         timeStart: configAction.timeStart,
@@ -45,6 +52,7 @@ const configReducer = (state, configAction) => {
     case 'TIME_END':
       let newEnd = transformTimeEnd(configAction.timeEnd);
       let unixTimeEnd = Math.round(newEnd.getTime() / 1000);
+      localStorage.setItem('wt-timeEnd', configAction.timeEnd);
       return {
         ...state,
         timeEnd: newEnd,
@@ -56,6 +64,7 @@ const configReducer = (state, configAction) => {
         appState: configAction.appState,
       };
     case 'GENRE':
+      localStorage.setItem('wt-genre', configAction.genre);
       return {
         ...state,
         genre: configAction.genre,

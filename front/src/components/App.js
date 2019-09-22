@@ -20,9 +20,10 @@ const App = ({appState, history}) => {
   yesterday.setDate(today.getDate() - 1);
   weekAgo.setDate(today.getDate() - 8);
   let initialConfig = {
-    timeStart: weekAgo,
-    timeEnd: yesterday,
+    timeStart: localStorage.getItem('wt-timeStart') || weekAgo,
+    timeEnd: localStorage.getItem('wt-timeEnd') || yesterday,
     username: localStorage.getItem('wt-username') || '',
+    genre: localStorage.getItem('wt-genre') || '',
   };
 
   const [config, configDispatch] = useReducer(configReducer, initialConfig);
@@ -39,9 +40,7 @@ const App = ({appState, history}) => {
   let [userInfo, setUserInfo] = useState(null);
 
   const appIsPopulated =
-    config.appState ||
-    !config.appState === 'tutorial' ||
-    !config.appState === 'updating';
+    config.appState || !config.appState === 'tutorial' || !config.appState === 'updating';
 
   const footer = appIsPopulated ? <Footer /> : null;
 
@@ -134,5 +133,5 @@ const App = ({appState, history}) => {
       {footer}
     </>
   );
-}
+};
 export default App;

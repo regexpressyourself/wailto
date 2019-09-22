@@ -43,14 +43,15 @@ const Nav = ({history, showMessages, showBack, defaultStart, defaultEnd}) => {
           <button
             className="submit-btn"
             onClick={e => {
-              console.log('config.username');
-              console.log(config.username);
               if (!config.username) {
                 disableButton(true); // check for username
                 return;
               }
               setIsExpanded(false);
-              history.push('/dashboard');
+              configDispatch({
+                type: 'TRIGGER_STATE_UPDATE',
+                triggerStateUpdate: true,
+              });
             }}>
             What Am I Listening to?
           </button>
@@ -60,6 +61,7 @@ const Nav = ({history, showMessages, showBack, defaultStart, defaultEnd}) => {
             defaultStart={defaultStart}
             defaultEnd={defaultEnd}
             message={helpMessageType}
+            history={history}
           />
           {showBack ? <BackButton /> : <span />}
           <button

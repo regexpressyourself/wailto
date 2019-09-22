@@ -2,7 +2,7 @@ import React, {useContext} from 'react';
 import {Link} from 'react-router-dom';
 import {ConfigContext} from '../../context/ConfigContext';
 
-const HelpMessage = ({defaultStart, defaultEnd, message}) => {
+const HelpMessage = ({message, history}) => {
   const {configDispatch} = useContext(ConfigContext);
 
   const defaultMessage = (
@@ -25,16 +25,12 @@ const HelpMessage = ({defaultStart, defaultEnd, message}) => {
         <span
           className="clickable use-mine"
           onClick={e => {
-            document
-              .querySelector('.nav__heading--username')
-              .classList.add('atn--font-color');
-            document
-              .querySelector('.username-input')
-              .classList.add('atn--border-color');
-
-            configDispatch({type: 'TIME_START', timeStart: defaultStart});
-            configDispatch({type: 'TIME_END', timeEnd: defaultEnd});
+            document.querySelector('.nav__heading--username').classList.add('atn--font-color');
+            document.querySelector('.username-input').classList.add('atn--border-color');
             configDispatch({type: 'USERNAME', username: 'zookeeprr'});
+            if (window.location.href !== 'dashboard') {
+              history.push('/dashboard');
+            }
           }}>
           Or see mine!
         </span>

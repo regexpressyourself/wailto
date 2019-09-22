@@ -40,7 +40,7 @@ const Dashboard = ({history}) => {
         key={module.title}
         className="dashboard__module"
         onClick={e => {
-          history.push(`/${module.componentState}`);
+          history.push(`dashboard/${module.componentState}`);
         }}>
         <div className="dashboard__module__heading">
           <div className="dashboard__module__image">{module.image}</div>

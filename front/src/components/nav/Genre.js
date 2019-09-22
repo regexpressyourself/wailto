@@ -4,7 +4,7 @@ import {GENRELIST} from '../../GENRELIST';
 import Select from 'react-select';
 
 const Genre = () => {
-  const {configDispatch} = useContext(ConfigContext);
+  const {config, configDispatch} = useContext(ConfigContext);
 
   let genreSelectionOptions = GENRELIST.map(genre => {
     return {
@@ -18,6 +18,10 @@ const Genre = () => {
     <div className="input-wrapper input-wrapper--horizontal">
       <label className="nav__heading">Genre: (optional)</label>
       <Select
+        value={{
+          value: config.genre,
+          label: config.genre,
+        }}
         onChange={e => {
           configDispatch({type: 'GENRE', genre: e.value});
         }}
@@ -25,5 +29,5 @@ const Genre = () => {
       />
     </div>
   );
-}
+};
 export default Genre;

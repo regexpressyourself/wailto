@@ -35,13 +35,7 @@ const expandNav = expanded => {
   if (expanded) {
     document.querySelector('.nav').classList.remove('nav--collapsed');
     document.querySelector('.nav').classList.add('nav--uncollapsed');
-    if (document.querySelector('.recharts-wrapper')) {
-      document.querySelector('.recharts-wrapper').style.zIndex = '-1';
-    }
   } else {
-    if (document.querySelector('.recharts-wrapper')) {
-      document.querySelector('.recharts-wrapper').style.zIndex = '1';
-    }
     if (document.querySelector('.nav').classList.contains('nav--uncollapsed')) {
       document.querySelector('.nav').classList.remove('nav--uncollapsed');
       document.querySelector('.nav').classList.add('nav--collapsed');

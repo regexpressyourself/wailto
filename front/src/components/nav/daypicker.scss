@@ -250,12 +250,12 @@ $max-width: 1920px;
   bottom: top;
   right: 0;
   left: unset;
-  z-index: 1;
+  z-index: 9000;
   animation: scale-up-ver-top 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
   background: white;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
   @media screen and (max-width: 768px) {
-  animation: scale-in-br 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+    animation: scale-in-br 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
     left: 0;
     bottom: 0;
     right: 0;

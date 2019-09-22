@@ -1,7 +1,7 @@
 const path = require('path');
+const axios = require('axios');
 const express = require('express');
 const request = require('request');
-const fetch = require('node-fetch');
 const cors = require('cors');
 const stringHash = require('string-hash');
 const saveSongs = require('./database').saveSongs;
@@ -52,85 +52,92 @@ const serializeLastFmData = (track, username) => {
   return newTrack;
 };
 
-const fetchArtistInfo = async function(artistInfoHash, recentTracks) {
+const fetchArtistInfo = async function(artistInfoHash) {
   console.log('fetching tags');
 
   let artistInfoRequests = [];
   for (let artist in artistInfoHash) {
     console.log('getting artist: ' + artist);
-    let url = `
-  https://ws.audioscrobbler.com/2.0/?method=artist.gettoptags&artist=${artist}&mbid=${artistInfoHash[artist].id}&api_key=${LASTFM_KEY}&format=json`;
-    artistInfoRequests.push(fetch(url));
+    artistInfoRequests.push(
+      axios.get('https://ws.audioscrobbler.com/2.0/', {
+        params: {
+          method: 'artist.gettoptags',
+          artist: artist,
+          mbid: artistInfoHash[artist].id,
+          api_key: LASTFM_KEY,
+          format: 'json',
+        },
+      }),
+    );
   }
-  recentTracks = await Promise.all(artistInfoRequests)
+  artistInfoHash = await Promise.all(artistInfoRequests)
     .then(async allArtistInfo => {
       console.log('batched artist info requests succeeded:');
       console.log('getting top tags');
       for (let artistInfoResponse of allArtistInfo) {
-        artistInfoResponse = await artistInfoResponse.json();
+        artistInfoResponse = artistInfoResponse.data;
         if (artistInfoResponse.toptags) {
+          /*
+           * if any genres were returned, assign to hash:
+           *
+           * artistInfoHash: {
+           *   <artistName>: {
+           *     id: <artistId>,
+           *     genres: [<genre1>, <genre2>, <genre3>, <genre4>]
+           *   }
+           * }
+           **/
+
+          //get artist name
           let artistName = artistInfoResponse.toptags['@attr'].artist;
+
+          // get top 4 approved genres
+          let artistTags = artistInfoResponse.toptags.tag;
           let topTags = [];
           let i = 0;
-          let artistTags = artistInfoResponse.toptags.tag;
           while (topTags.length < 4 && artistTags[i]) {
             if (GENRELIST.includes(artistTags[i].name.toLowerCase())) {
               topTags.push(artistTags[i].name.toLowerCase());
             }
             i++;
           }
-          artistInfoHash[artistName]
-            ? (artistInfoHash[artistName].genres = topTags)
-            : null;
+
+          // assign to hash
+          artistInfoHash[artistName] ? (artistInfoHash[artistName].genres = topTags) : null;
         }
       }
-      console.log('adding genre to track info');
-
-      recentTracks = recentTracks.map(track => {
-        if (!artistInfoHash[track.artist].genres) {
-          return track;
-        }
-        track.genre1 = artistInfoHash[track.artist].genres[0]
-          ? artistInfoHash[track.artist].genres[0]
-          : '';
-        track.genre2 = artistInfoHash[track.artist].genres[1]
-          ? artistInfoHash[track.artist].genres[1]
-          : '';
-        track.genre3 = artistInfoHash[track.artist].genres[2]
-          ? artistInfoHash[track.artist].genres[2]
-          : '';
-        track.genre4 = artistInfoHash[track.artist].genres[3]
-          ? artistInfoHash[track.artist].genres[3]
-          : '';
-        return track;
-      });
-
-      return recentTracks;
+      return artistInfoHash;
     })
     .catch(e => {
       console.error('error waiting on batched artist info request ');
       console.error(e);
       reject(e);
     });
-  return recentTracks;
+  return artistInfoHash;
 };
 const fetchTracks = async function(username, key, from, to, page = 1) {
   console.log('page %i: fetching tracks', page);
 
-  let url = `https://ws.audioscrobbler.com/2.0/?method=user.getRecentTracks&user=${username}&api_key=${key}&limit=200&extended=0&page=1&format=json&to=${to}&from=${from}&page=${page}`;
-
   let lastFMData;
   try {
-    lastFMData = await fetch(url);
+    lastFMData = await axios.get('https://ws.audioscrobbler.com/2.0/', {
+      params: {
+        method: 'user.getRecentTracks',
+        user: username,
+        api_key: key,
+        limit: 200,
+        extended: 0,
+        page: 1,
+        format: 'json',
+        to: to,
+        from: from,
+        page: page,
+      },
+    });
+    lastFMData = lastFMData.data;
   } catch (error) {
     console.error('ERROR: ', error);
-    return false;
-  }
-  try {
-    lastFMData = await lastFMData.json();
-  } catch (error) {
-    console.error('ERROR: ', error);
-    return false;
+    throw new Error(error);
   }
 
   console.log('page %i: got tracks', page);
@@ -149,13 +156,12 @@ const fetchTracks = async function(username, key, from, to, page = 1) {
     console.log('HIT LIMIT -- getting more tracks ');
     while (page < totalPages) {
       page = page + 1;
-      console.log(
-        `getting page ${page} of ${lastFMData.recenttracks['@attr'].totalPages}`,
-      );
+      console.log(`getting page ${page} of ${lastFMData.recenttracks['@attr'].totalPages}`);
       try {
         subsequentRequests.push(fetchTracks(username, key, from, to, page));
       } catch (error) {
         console.error('ERROR: ', error);
+        throw new Error(error);
         return false;
       }
     }
@@ -196,7 +202,11 @@ let saveUserInfo = async function(userid, from, to, recentTracks) {
     }
     if (userid && recentTracks) {
       // await b/c we need songs before history for foreign key
-      saveSongsPromise = await saveSongs(userid, recentTracks);
+      try {
+        saveSongsPromise = await saveSongs(userid, recentTracks);
+      } catch (e) {
+        reject(e);
+      }
       saveHistoryPromise = saveHistory(userid, recentTracks);
     }
     Promise.all([saveHistoryPromise, saveCoveragePromise])
@@ -211,93 +221,125 @@ let saveUserInfo = async function(userid, from, to, recentTracks) {
   });
 };
 
+const attachArtistInfo = async recentTracks => {
+  let artistInfoHash = {};
+  for (let track of recentTracks) {
+    artistInfoHash[track.artist] = {id: track.artistid};
+  }
+
+  artistInfoHash = await fetchArtistInfo(artistInfoHash);
+
+  recentTracks = recentTracks.map(track => {
+    let genres = artistInfoHash[track.artist].genres;
+    if (!genres) {
+      return track;
+    }
+    track.genre1 = genres[0] ? genres[0] : '';
+    track.genre2 = genres[1] ? genres[1] : '';
+    track.genre3 = genres[2] ? genres[2] : '';
+    track.genre4 = genres[3] ? genres[3] : '';
+    return track;
+  });
+
+  return recentTracks;
+};
+
+const fetchNewTrackInfo = async (username, from, to, storedCoverageValues) => {
+  let recentTracks;
+  let missingValues = [];
+  for (let date of getDateRange(from, to)) {
+    if (!storedCoverageValues.find(covVal => covVal.day === date)) {
+      missingValues.push(date);
+    }
+  }
+  try {
+    recentTracks = await fetchTracks(
+      username,
+      LASTFM_KEY,
+      missingValues[0],
+      resetDate(missingValues[missingValues.length - 1], true)[1],
+    );
+  } catch (error) {
+    console.error('ERROR: ', error);
+    throw new Error(error);
+    return false;
+  }
+
+  return recentTracks;
+};
+
 module.exports = app => {
-  app.get('/history', cors(), (req, res, next) => {
+  app.get('/history', cors(), async (req, res, next) => {
     let request = JSON.parse(JSON.stringify(req.query));
     let username = request.username;
-
     const [from, unixFrom] = resetDate(request.from);
     const [to, unixTo] = resetDate(request.to, true);
 
     let userid;
     let storedCoverageValues;
 
-    let main = async function() {
-      let userRes;
+    let userRes;
+
+    try {
+      userRes = await getUser(username);
+    } catch (error) {
+      console.error('ERROR: ', error.stack);
+      res.status(500).send('Error getting user');
+      return false;
+    }
+    userid = userRes.id;
+
+    // check if user has already stored the requested data
+    try {
+      storedCoverageValues = await getCoverageValues(userid, from, to);
+    } catch (error) {
+      console.error('ERROR: ', error.stack);
+      res.status(500).send('Error getting saved songs');
+      return false;
+    }
+
+    // some missing data, fetch certain days
+    if (storedCoverageValues.length < getDateRange(from, to).length) {
+      let recentTracks;
+
       try {
-        userRes = await getUser(username);
+        recentTracks = await fetchNewTrackInfo(username, from, to, storedCoverageValues);
       } catch (error) {
-        console.error('ERROR: ', error);
-        return false;
-      }
-      userid = userRes.id;
-      try {
-        storedCoverageValues = await getCoverageValues(userid, from, to);
-      } catch (error) {
-        console.error('ERROR: ', error);
-        return false;
-      }
-
-      if (storedCoverageValues.length < getDateRange(from, to).length) {
-        console.log('need to fetch some tracks');
-        // some missing data, fetch certain days
-        let recentTracks;
-        let missingValues = [];
-        for (let date of getDateRange(from, to)) {
-          if (!storedCoverageValues.find(covVal => covVal.day === date)) {
-            missingValues.push(date);
-          }
-        }
-        try {
-          recentTracks = await fetchTracks(
-            username,
-            LASTFM_KEY,
-            missingValues[0],
-            resetDate(missingValues[missingValues.length - 1], true)[1],
-          );
-        } catch (error) {
-          console.error('ERROR: ', error);
-          return false;
-        }
-        console.log('%i:\tdone fetching tracks.', userid);
-        console.log('%i:\tfetching artist info.', userid);
-
-        let artistInfoHash = {};
-        for (let track of recentTracks) {
-          artistInfoHash[track.artist] = {id: track.artistid};
-        }
-
-        recentTracks = await fetchArtistInfo(artistInfoHash, recentTracks);
-
-        let saveUserResponses;
-        try {
-          saveUserResponses = await saveUserInfo(
-            userid,
-            from,
-            to,
-            recentTracks,
-          );
-        } catch (error) {
-          console.error('ERROR: ', error);
-          return false;
-        }
-      }
-      // all stored, serialize from db
-      console.log('starting db  serialization');
-      console.log('getting songs in date range');
-      let finalResult;
-      try {
-        finalResult = await getSongHistory(userid, unixFrom, unixTo);
-      } catch (error) {
-        console.error('ERROR: ', error);
+        console.error('ERROR: ', error.stack);
+        res.status(500).send('Error checking for saved track info');
         return false;
       }
 
-      finalResult = removeDuplicates(finalResult);
+      try {
+        recentTracks = await attachArtistInfo(recentTracks);
+      } catch (error) {
+        console.error('ERROR: ', error.stack);
+        res.status(500).send('Error getting artist info');
+        return false;
+      }
 
-      res.json(finalResult);
-    };
-    main();
+      let saveUserResponses;
+      try {
+        saveUserResponses = await saveUserInfo(userid, from, to, recentTracks);
+      } catch (error) {
+        console.error('ERROR: ', error.stack);
+        res.status(500).send('Error saving new info');
+        return false;
+      }
+    }
+
+    // all stored, serialize from db
+    let finalResult;
+    try {
+      finalResult = await getSongHistory(userid, unixFrom, unixTo);
+    } catch (error) {
+      console.error('ERROR: ', error.stack);
+      res.status(500).send('Error retrieving saved songs');
+      return false;
+    }
+
+    finalResult = removeDuplicates(finalResult);
+    res.json(finalResult);
   });
 
   app.use('/', express.static('../front/build'));

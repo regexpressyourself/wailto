@@ -11,6 +11,7 @@ import FullSongHistory from './modules/FullSongHistory';
 import SongsByDate from './modules/SongsByDate';
 import SongsByDow from './modules/SongsByDow';
 import SongsByHour from './modules/SongsByHour';
+import Error from './Error';
 import './App.scss';
 
 const App = ({appState, history}) => {
@@ -99,7 +100,14 @@ const App = ({appState, history}) => {
         });
       })
       .catch(e => {
-        console.error(e);
+        console.log('oops');
+        console.error(e.response);
+        try {
+          document.querySelector('footer').style.display = 'none';
+          document.querySelector('.main-header').style.display = 'none';
+          document.querySelector('.user-info').style.display = 'none';
+        } catch (e) {}
+        setContent(<Error errorMessage={e.response.data} />);
       });
   }, [
     appState,

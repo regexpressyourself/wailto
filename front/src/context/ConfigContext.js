@@ -71,16 +71,23 @@ const configReducer = (state, configAction) => {
         unixTimeEnd: unixTimeEnd,
       };
     case 'GENRE':
+      //if (configAction.genre === null) {
+        //return {...state};
+      //}
       localStorage.setItem('wt-genre', configAction.genre);
       return {
         ...state,
         genre: configAction.genre,
       };
     case 'GENRE2':
-      localStorage.setItem('wt-genre2', configAction.genre2);
+      let genre2 = configAction.genre2;
+      if (genre2 === null || genre2 === 'null') {
+        genre2 = null;
+      }
+      localStorage.setItem('wt-genre2', genre2);
       return {
         ...state,
-        genre2: configAction.genre2,
+        genre2: genre2,
       };
     case 'APP_STATE':
       return {

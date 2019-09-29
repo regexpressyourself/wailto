@@ -88,7 +88,7 @@ $max-width: 1920px;
   padding: 20px 0;
   display: flex;
   justify-content: space-between;
-  align-items: flex-end;
+  align-items: center;
   @media screen and (max-width: 480px) {
     padding: 1vh 0;
   }
@@ -101,6 +101,13 @@ $max-width: 1920px;
       @include fluid-prop('font-size', $min_width, $max_width, 18px, 34px);
     }
   }
+}
+div.input-wrapper--checkbox {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  flex-basis: 100%;
+  padding: 0;
 }
 
 .input-wrapper--end-date {
@@ -257,7 +264,7 @@ button.submit-btn {
 }
 
 .nav__date-pickers {
-  padding: 20px 0;
+  padding: 10px 0;
   display: flex;
   justify-content: space-between;
   flex-wrap: wrap;
@@ -283,7 +290,7 @@ button.submit-btn {
 .nav__heading {
   font-weight: 600;
   line-height: 1.1;
-  margin: 5px auto;
+  margin: 5px 0;
   @include fluid-prop('font-size', $min_width, $max_width, 18px, 34px);
   display: block;
   .header-help-link {

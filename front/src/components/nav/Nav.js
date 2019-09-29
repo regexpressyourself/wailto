@@ -46,7 +46,14 @@ const Nav = ({history, showMessages, showBack, defaultStart, defaultEnd}) => {
                 return;
               }
               setIsExpanded(false);
-              history.push('/dashboard');
+              configDispatch({type: 'APP_STATE', appState: config.appState});
+              configDispatch({
+                type: 'TRIGGER_STATE_UPDATE',
+                triggerStateUpdate: true,
+              });
+              if (window.location.href !== 'dashboard') {
+                history.push('/dashboard');
+              }
             }}>
             What Am I Listening to?
           </button>

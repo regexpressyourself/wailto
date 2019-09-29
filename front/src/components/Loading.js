@@ -2,7 +2,6 @@ import React from 'react';
 import './Loading.scss';
 
 const Loading = () => {
-  console.log('in loading')
   return (
     <>
       <h1 className="loading">

@@ -98,7 +98,7 @@ const getDatesBetween = (start, end) => {
 const matchGenre = (song, genre) => {
   if (
     genre &&
-    genre !== 'any' &&
+    genre !== 'any genre' &&
     ![song.genre1, song.genre2, song.genre3, song.genre4].includes(genre)
   ) {
     return null;
@@ -123,7 +123,7 @@ const serializeSongList = (songList, bucketMaxSize, bucketKey) => {
   return map;
 };
 
-const bucketSongTimes = (bucketKey, bucketMaxSize, songList, genre = null, genre2 = null) => {
+const bucketSongTimes = (bucketKey, bucketMaxSize, songList, genre = null) => {
   /*
    * The "map" holds an array with a definition of:
    * [{ timeSlot: [Song1, Song2, ...] }, ... ]
@@ -132,14 +132,8 @@ const bucketSongTimes = (bucketKey, bucketMaxSize, songList, genre = null, genre
    * from Last.fm.
    */
 
-  let songList1 = songList.filter(song => matchGenre(song, genre));
-  let songList2 = songList.filter(song => matchGenre(song, genre2));
-  let map1 = serializeSongList(songList1, bucketMaxSize, bucketKey);
-  let map2 = serializeSongList(songList2, bucketMaxSize, bucketKey);
-  return {
-    genre: map1,
-    genre2: map2,
-  };
+  songList = songList.filter(song => matchGenre(song, genre));
+  return serializeSongList(songList, bucketMaxSize, bucketKey);
 };
 
 export {

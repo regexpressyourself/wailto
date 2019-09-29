@@ -19,12 +19,14 @@ const Genre = () => {
       label: genre,
     };
   });
-  genreSelectionOptions.unshift({value: 'any', label: 'any genre'});
+  genreSelectionOptions.unshift({value: 'any genre', label: 'any genre'});
 
   useEffect(() => {
-    setShowGenre(config.genre && config.genre !== 'any');
+    setShowGenre(config.genre);
     setShowGenre2(
-      config.genre && config.genre !== 'any' && config.genre2 && config.genre2 !== 'any',
+      config.genre &&
+        config.genre2 &&
+        config.genre2 !== 'any genre',
     );
   }, [config.genre, config.genre2]);
 
@@ -70,11 +72,6 @@ const Genre = () => {
               label: config.genre,
             }}
             onChange={e => {
-              if (e.value === 'any') {
-                setShowGenre(false);
-                setShowGenre2(false);
-                configDispatch({type: 'GENRE2', genre2: 'any'});
-              }
               configDispatch({type: 'GENRE', genre: e.value});
             }}
             options={genreSelectionOptions}
@@ -100,10 +97,12 @@ const Genre = () => {
               label: config.genre2,
             }}
             onChange={e => {
-              if (e.value === 'any') {
+              if (e.value === 'any genre') {
                 setShowGenre2(false);
+                configDispatch({type: 'GENRE2', genre2: 'any genre'});
+              } else {
+                configDispatch({type: 'GENRE2', genre2: e.value});
               }
-              configDispatch({type: 'GENRE2', genre2: e.value});
             }}
             options={genreSelectionOptions}
           />

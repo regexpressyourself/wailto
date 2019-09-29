@@ -1,5 +1,9 @@
 .genre-toggle {
   display: block;
+  cursor: pointer;
+  &:hover {
+    text-decoration: underline;
+  }
 }
 .genre-toggle--1 {
 }

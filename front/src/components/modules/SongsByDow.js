@@ -5,21 +5,52 @@ import {ConfigContext} from '../../context/ConfigContext';
 import {ResponsiveContainer, AreaChart, Area, XAxis, YAxis, Tooltip} from 'recharts';
 import {days, bucketSongTimes} from '../../functions/dateMappers';
 
+const getInitialKey = (genre, genre2) => {
+  if (genre) {
+    if (genre === 'any genre' && !genre2) {
+      return 'Song Count';
+    } else {
+      return genre;
+    }
+  } else {
+    return 'Song Count';
+  }
+};
+
 const SongsByDow = () => {
   const {songHistory} = useContext(SongHistoryContext);
   const {config} = useContext(ConfigContext);
 
   let [dayDataRC, setDayDataRC] = useState(null);
 
+  let [initialKey, setInitialKey] = useState(getInitialKey(config.genre, config.genre2));
+  let [secondaryKey, setSecondaryKey] = useState(
+    config.genre2 && !(config.genre2 === 'any genre') ? config.genre2 : null,
+  );
+
   useEffect(() => {
-    let dayMap = bucketSongTimes('dow', 7, songHistory.songHistory, config.genre, config.genre2);
+    let map = {};
+    let tempInitialKey = getInitialKey(config.genre, config.genre2);
+    let tempSecondaryKey = config.genre2 && config.genre2 !== 'any genre' ? config.genre2 : null;
+    setInitialKey(tempInitialKey);
+    setSecondaryKey(tempSecondaryKey);
+
+    map[tempInitialKey] = bucketSongTimes('dow', 7, songHistory.songHistory, config.genre);
+
+    if (config.genre2) {
+      map[tempSecondaryKey] = bucketSongTimes('dow', 7, songHistory.songHistory, config.genre2);
+    }
+
     let tempDayDataRC = [];
     for (let i = 0; i <= 6; i++) {
       let newDayObject = {
         name: `${days()[i]}s`,
       };
-      newDayObject[config.genre] = dayMap.genre[i] ? dayMap.genre[i].length : 0;
-      newDayObject[config.genre2] = dayMap.genre2[i] ? dayMap.genre2[i].length : 0;
+
+      newDayObject[tempInitialKey] = map[tempInitialKey][i] ? map[tempInitialKey][i].length : 0;
+
+      newDayObject[tempSecondaryKey] =
+        map[tempSecondaryKey] && map[tempSecondaryKey][i] ? map[tempSecondaryKey][i].length : 0;
 
       tempDayDataRC.push(newDayObject);
     }
@@ -39,8 +70,10 @@ const SongsByDow = () => {
             <XAxis dataKey="name" />
             <YAxis />
             <Tooltip />
-            <Area type="monotone" dataKey={config.genre} stroke="#7f4782" fill="#aa5c9f" />
-            <Area type="monotone" dataKey={config.genre2} stroke="#fd8b7b" fill="#e2598b" />
+            <Area type="monotone" dataKey={initialKey} stroke="#7f4782" fill="#aa5c9f" />
+            {secondaryKey ? (
+              <Area type="monotone" dataKey={secondaryKey} stroke="#fd8b7b" fill="#e2598b" />
+            ) : null}
           </AreaChart>
         </ResponsiveContainer>
       </div>

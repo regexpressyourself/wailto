@@ -20,12 +20,15 @@ const App = ({appState, history}) => {
   let yesterday = new Date();
   yesterday.setDate(today.getDate() - 1);
   weekAgo.setDate(today.getDate() - 8);
+  let genre2 =
+    localStorage.getItem('wt-genre2') === 'null' ? null : localStorage.getItem('wt-genre2');
+
   let initialConfig = {
     timeStart: localStorage.getItem('wt-timeStart') || weekAgo,
     timeEnd: localStorage.getItem('wt-timeEnd') || yesterday,
     username: localStorage.getItem('wt-username') || '',
     genre: localStorage.getItem('wt-genre') || '',
-    genre2: localStorage.getItem('wt-genre2') || '',
+    genre2: genre2 || '',
   };
 
   const [config, configDispatch] = useReducer(configReducer, initialConfig);
@@ -101,8 +104,6 @@ const App = ({appState, history}) => {
         });
       })
       .catch(e => {
-        console.log('oops');
-        console.error(e.response);
         try {
           document.querySelector('footer').style.display = 'none';
           document.querySelector('.main-header').style.display = 'none';

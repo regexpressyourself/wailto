@@ -37,7 +37,7 @@ const UserInfo = () => {
           {accessibleJsTime(config.timeEnd).date}
         </p>
       </div>
-      {zookeeprrInfo}
+      {null}
     </section>
   );
 }

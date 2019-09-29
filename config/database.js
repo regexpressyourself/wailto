@@ -1,4 +1,5 @@
 const getDateRange = require('./dates').getDateRange;
+const stringHash = require('string-hash');
 require('dotenv').config();
 const DB_USER = process.env.DB_USER;
 const DB_PW = process.env.DB_PW;
@@ -30,7 +31,7 @@ const saveSongs = (userid, history) => {
   let songValues = [];
   for (let song of history) {
     songValues.push({
-      id: song.id,
+      id: song.id ? song.id : stringHash(song.name),
       name: song.name,
       image: song.image,
       album: song.album,
@@ -54,7 +55,8 @@ const saveHistory = (userid, history) => {
     if (!song.id || !userid || !song.date) {
       continue;
     }
-    historyValues.push({songid: song.id, userid: userid, unixdate: song.date});
+    historyValues.push({
+      songid: song.id ? song.id : stringHash(song.name) , userid: userid, unixdate: song.date});
   }
 
   return SongHistory.bulkCreate(historyValues);

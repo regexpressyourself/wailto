@@ -19,8 +19,8 @@ const FullSongHistory = () => {
 
           if (config.genre && config.genre !== 'any genre') {
             if (!genres.includes(config.genre)) {
-              if (config.genre2) {
-                if (config.genre2 !== 'any genre' && !genres.includes(config.genre2)) {
+              if (config.genre2 && config.genre2 !== 'any genre') {
+                if (!genres.includes(config.genre2)) {
                   return null;
                 }
               } else {

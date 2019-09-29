@@ -45,13 +45,13 @@ const SongsByDate = () => {
       'date',
       datesBetween.length,
       songHistory.songHistory,
-      tempInitialKey,
+      config.genre,
     );
     map[tempSecondaryKey] = bucketSongTimes(
       'date',
       datesBetween.length,
       songHistory.songHistory,
-      tempSecondaryKey,
+      config.genre2,
     );
 
     let tempDateDataRC = [];

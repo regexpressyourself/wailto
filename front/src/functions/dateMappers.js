@@ -96,11 +96,10 @@ const getDatesBetween = (start, end) => {
 };
 
 const matchGenre = (song, genre) => {
-  if (
-    genre &&
-    genre !== 'any genre' &&
-    ![song.genre1, song.genre2, song.genre3, song.genre4].includes(genre)
-  ) {
+  if (genre === 'any genre') {
+    return song;
+  }
+  if (genre && ![song.genre1, song.genre2, song.genre3, song.genre4].includes(genre)) {
     return null;
   } else {
     return song;

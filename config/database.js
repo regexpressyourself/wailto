@@ -9,6 +9,7 @@ const Op = Sequelize.Op;
 const sequelize = new Sequelize('wailto', DB_USER, DB_PW, {
   host: 'localhost',
   dialect: 'postgres',
+  logging: false,
   define: {
     timestamps: false,
   },
@@ -45,7 +46,7 @@ const saveSongs = (userid, history) => {
     });
   }
 
-  return Songs.bulkCreate(songValues);
+  return Songs.bulkCreate(songValues, {ignoreDuplicates: true});
 };
 
 const saveHistory = (userid, history) => {
@@ -56,10 +57,13 @@ const saveHistory = (userid, history) => {
       continue;
     }
     historyValues.push({
-      songid: song.id ? song.id : stringHash(song.name) , userid: userid, unixdate: song.date});
+      songid: song.id ? song.id : stringHash(song.name),
+      userid: userid,
+      unixdate: song.date,
+    });
   }
 
-  return SongHistory.bulkCreate(historyValues);
+  return SongHistory.bulkCreate(historyValues, {ignoreDuplicates: true});
 };
 
 const saveCoverage = (userid, from, to) => {
@@ -70,7 +74,7 @@ const saveCoverage = (userid, from, to) => {
     return {userid: userid, day: value};
   });
 
-  return HistCoverage.bulkCreate(values);
+  return HistCoverage.bulkCreate(values, {ignoreDuplicates: true});
 };
 
 const getCoverageValues = (userid, from, to) => {

@@ -197,17 +197,20 @@ let saveUserInfo = async function(userid, from, to, recentTracks) {
     let saveSongsPromise;
     let saveHistoryPromise;
     let saveCoveragePromise;
-    if (userid && from && to) {
-      saveCoveragePromise = saveCoverage(userid, from, to);
-    }
     if (userid && recentTracks) {
       // await b/c we need songs before history for foreign key
-      try {
-        saveSongsPromise = await saveSongs(userid, recentTracks);
-      } catch (e) {
-        reject(e);
-      }
-      saveHistoryPromise = saveHistory(userid, recentTracks);
+      saveSongs(userid, recentTracks)
+        .then(saveSongsPromise => {
+          saveHistoryPromise = saveHistory(userid, recentTracks);
+          if (userid && from && to) {
+            saveCoveragePromise = saveCoverage(userid, from, to);
+          }
+        })
+        .catch(e => {
+          console.error('ERROR: ', 'error waiting on songs in save');
+          console.error('ERROR: ', e);
+          reject(e);
+        });
     }
     Promise.all([saveHistoryPromise, saveCoveragePromise])
       .then(saveUserResponses => {

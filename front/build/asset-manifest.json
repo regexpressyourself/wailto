@@ -1,18 +1,18 @@
 {
   "files": {
-    "main.css": "/static/css/main.24111e54.chunk.css",
-    "main.js": "/static/js/main.bcc41156.chunk.js",
-    "main.js.map": "/static/js/main.bcc41156.chunk.js.map",
+    "main.css": "/static/css/main.7650d181.chunk.css",
+    "main.js": "/static/js/main.b9a1ef7b.chunk.js",
+    "main.js.map": "/static/js/main.b9a1ef7b.chunk.js.map",
     "runtime~main.js": "/static/js/runtime~main.a8a9905a.js",
     "runtime~main.js.map": "/static/js/runtime~main.a8a9905a.js.map",
     "static/css/2.bb342caa.chunk.css": "/static/css/2.bb342caa.chunk.css",
     "static/js/2.4e4e260a.chunk.js": "/static/js/2.4e4e260a.chunk.js",
     "static/js/2.4e4e260a.chunk.js.map": "/static/js/2.4e4e260a.chunk.js.map",
     "index.html": "/index.html",
-    "precache-manifest.6645592d1b9ddb737395748542356c9f.js": "/precache-manifest.6645592d1b9ddb737395748542356c9f.js",
+    "precache-manifest.663abaa442ed4f01952608991f48d911.js": "/precache-manifest.663abaa442ed4f01952608991f48d911.js",
     "service-worker.js": "/service-worker.js",
     "static/css/2.bb342caa.chunk.css.map": "/static/css/2.bb342caa.chunk.css.map",
-    "static/css/main.24111e54.chunk.css.map": "/static/css/main.24111e54.chunk.css.map",
+    "static/css/main.7650d181.chunk.css.map": "/static/css/main.7650d181.chunk.css.map",
     "static/media/index.css": "/static/media/livvic-v3-latin-regular.f3e6ea26.woff",
     "static/media/sm.png": "/static/media/sm.2a3978c5.png"
   }

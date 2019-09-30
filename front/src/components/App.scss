@@ -31,6 +31,12 @@ $max-width: 1920px;
   transition: background 1s;
   padding: 2% 5%;
   background-color: white;
+  background-color: rgba(253, 208, 67, 0.7);
+  background-image: linear-gradient(
+    325deg,
+    rgba(253, 208, 67, 0.2) 0%,
+    rgba(226, 89, 139, 0.7) 100%
+  );
   &.app--unpopulated {
     min-height: 100vh;
     background-color: rgba(253, 208, 67, 0.7);
@@ -40,6 +46,34 @@ $max-width: 1920px;
       rgba(226, 89, 139, 0.7) 100%
     );
   }
+
+  .user-info,
+  .dashboard,
+  .chart-container {
+    background-color: white;
+    border-radius: 5px;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25) !important;
+    max-width: 1200px;
+    padding: 2vw;
+  }
+  .user-info {
+    margin-bottom: 10px;
+  }
+  .chart-container,
+  .dashboard {
+    margin: 10px auto 0;
+    &,
+    & * {
+      animation: fade-in 0.4s cubic-bezier(0.39, 0.575, 0.565, 1) both;
+    }
+    .recharts-responsive-container {
+
+      margin-left: -1vw;
+      @media screen and (max-width: 768px) {
+      margin-left: -3vw;
+    }
+    }
+  }
 }
 
 .user-info {
@@ -47,6 +81,9 @@ $max-width: 1920px;
   align-items: center;
   justify-content: center;
   flex-direction: column;
+  margin-bottom: 0;
+  padding-bottom: 15px;
+
   p {
     margin: 0;
   }
@@ -91,6 +128,15 @@ $max-width: 1920px;
   }
   100% {
     filter: blur(0px);
+    opacity: 1;
+  }
+}
+
+@keyframes fade-in {
+  0% {
+    opacity: 0;
+  }
+  100% {
     opacity: 1;
   }
 }

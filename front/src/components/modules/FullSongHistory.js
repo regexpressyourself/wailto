@@ -46,10 +46,10 @@ const FullSongHistory = () => {
   }, [config.genre, config.timeStart, config.timeEnd, songHistory.songHistory]);
 
   return (
-    <>
+    <div className="chart-container">
       <h1 className="chart-heading">Every Song In History</h1>
       {songHistoryElements}
-    </>
+    </div>
   );
 };
 

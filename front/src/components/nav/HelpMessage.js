@@ -21,7 +21,7 @@ const HelpMessage = ({message, history}) => {
   const tutorialMessage = (
     <div>
       <p className="help-title">Look up Last.fm data</p>
-      <p className="help-link">
+      <p className="help-link help-link--use-mine">
         <span
           className="clickable use-mine"
           onClick={e => {

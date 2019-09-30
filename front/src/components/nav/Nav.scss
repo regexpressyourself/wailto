@@ -136,14 +136,19 @@ div.input-wrapper--checkbox {
   bottom: 100%;
   right: 8vw;
   @include fluid-prop('right', $min_width, $max_width, 60px, 100px);
+
+  //transform: translateX(2000px) scaleX(2) scaleY(0.2);
+  //transform-origin: 0% 50%;
+  //filter: blur(40px);
+  //opacity: 0;
   &:hover {
     box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
   }
   &.nav--uncollapsed {
-    animation: scale-in-br 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+    animation: slide-in-blurred-right 0.4s cubic-bezier(0.23, 1, 0.32, 1) both;
   }
   &.nav--collapsed {
-    animation: scale-out-br 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+    animation: slide-out-blurred-right 0.3s cubic-bezier(0.755, 0.05, 0.855, 0.06) both;
   }
 
   @media screen and (max-width: 768px) {
@@ -157,7 +162,9 @@ div.input-wrapper--checkbox {
     padding: 5vw;
   }
 }
-
+.help-link--use-mine {
+  animation: jello-horizontal 1s both 3;
+}
 .use-mine {
   box-shadow: 0 1px 3px rgba(255, 255, 255, 0.12), 0 1px 2px rgba(255, 255, 255, 0.24);
   background-color: rgba(170, 92, 159, 0.2);
@@ -165,7 +172,8 @@ div.input-wrapper--checkbox {
   line-height: 2;
   padding: 2px 5px;
   border-radius: 5px;
-  color: #333;
+  color: white;
+  font-weight: 600;
   background-color: rgba(253, 139, 123, 1);
   border-color: rgba(226, 89, 139, 1);
   @include fluid-prop('font-size', $min_width, $max_width, 22px, 36px);
@@ -446,5 +454,35 @@ button.submit-btn {
   45% {
     transform: scale(1);
     animation-timing-function: ease-out;
+  }
+}
+
+@keyframes slide-in-blurred-right {
+  0% {
+    transform: translateX(1000px) scaleX(2.5) scaleY(0.2);
+    transform-origin: 0% 50%;
+    filter: blur(20px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(0) scaleY(1) scaleX(1);
+    transform-origin: 50% 50%;
+    filter: blur(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slide-out-blurred-right {
+  0% {
+    transform: translateX(0) scaleY(1) scaleX(1);
+    transform-origin: 50% 50%;
+    filter: blur(0);
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(1000px) scaleX(2) scaleY(0.2);
+    transform-origin: 0% 50%;
+    filter: blur(40px);
+    opacity: 0;
   }
 }

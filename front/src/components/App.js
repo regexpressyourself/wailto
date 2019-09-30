@@ -15,6 +15,7 @@ import Error from './Error';
 import './App.scss';
 
 const App = ({appState, history}) => {
+  window.scrollTo(0, 0);
   let today = new Date();
   let weekAgo = new Date();
   let yesterday = new Date();

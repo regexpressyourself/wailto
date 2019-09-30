@@ -66,7 +66,9 @@ const SongsByHour = () => {
             <YAxis />
             <Tooltip />
             <Area type="monotone" dataKey={initialKey} stroke="#7f4782" fill="#aa5c9f" />
-            <Area type="monotone" dataKey={secondaryKey} stroke="#fd8b7b" fill="#e2598b" />
+            {secondaryKey ? (
+              <Area type="monotone" dataKey={secondaryKey} stroke="#fd8b7b" fill="#e2598b" />
+            ) : null}
           </AreaChart>
         </ResponsiveContainer>
       </div>

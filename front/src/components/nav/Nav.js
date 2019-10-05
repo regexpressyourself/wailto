@@ -19,6 +19,39 @@ const Nav = ({history, showMessages, showBack, defaultStart, defaultEnd}) => {
   let [buttonText, setButtonText] = useState(<Plus />);
   let [buttonAnimation, setButtonAnimation] = useState(!localStorage.getItem('wt-username'));
 
+  const enterListener = e => {
+    var key = e.which || e.keyCode;
+    if (key === 13) {
+      triggerUpdate();
+    }
+    return false;
+  };
+
+  const triggerUpdate = () => {
+    if (!config.username) {
+      disableButton(true); // check for username
+      return;
+    }
+    setIsExpanded(false);
+    if (window.location.href.includes('dashboard')) {
+      configDispatch({type: 'APP_STATE', appState: config.appState});
+    } else {
+      history.push('/dashboard');
+    }
+    configDispatch({
+      type: 'TRIGGER_STATE_UPDATE',
+      triggerStateUpdate: true,
+    });
+  };
+
+  useEffect(() => {
+    if (isExpanded) {
+      document.addEventListener('keypress', enterListener);
+    } else {
+      document.removeEventListener('keypress', enterListener);
+    }
+  }, [isExpanded]);
+
   useEffect(() => {
     if (isExpanded) {
       setButtonText(<X />);
@@ -41,20 +74,7 @@ const Nav = ({history, showMessages, showBack, defaultStart, defaultEnd}) => {
           <button
             className="submit-btn"
             onClick={e => {
-              if (!config.username) {
-                disableButton(true); // check for username
-                return;
-              }
-              setIsExpanded(false);
-              if (window.location.href.includes('dashboard')) {
-                configDispatch({type: 'APP_STATE', appState: config.appState});
-              } else {
-                history.push('/dashboard');
-              }
-              configDispatch({
-                type: 'TRIGGER_STATE_UPDATE',
-                triggerStateUpdate: true,
-              });
+              triggerUpdate();
             }}>
             What Am I Listening to?
           </button>

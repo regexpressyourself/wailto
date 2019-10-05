@@ -205,6 +205,15 @@ let saveUserInfo = async function(userid, from, to, recentTracks) {
           if (userid && from && to) {
             saveCoveragePromise = saveCoverage(userid, from, to);
           }
+          Promise.all([saveHistoryPromise, saveCoveragePromise])
+            .then(saveUserResponses => {
+              resolve(saveUserResponses);
+            })
+            .catch(e => {
+              console.error('ERROR: ', 'error waiting on promises in save');
+              console.error('ERROR: ', e);
+              reject(e);
+            });
         })
         .catch(e => {
           console.error('ERROR: ', 'error waiting on songs in save');
@@ -212,15 +221,6 @@ let saveUserInfo = async function(userid, from, to, recentTracks) {
           reject(e);
         });
     }
-    Promise.all([saveHistoryPromise, saveCoveragePromise])
-      .then(saveUserResponses => {
-        resolve(saveUserResponses);
-      })
-      .catch(e => {
-        console.error('ERROR: ', 'error waiting on promises in save');
-        console.error('ERROR: ', e);
-        reject(e);
-      });
   });
 };
 
@@ -249,19 +249,8 @@ const attachArtistInfo = async recentTracks => {
 
 const fetchNewTrackInfo = async (username, from, to, storedCoverageValues) => {
   let recentTracks;
-  let missingValues = [];
-  for (let date of getDateRange(from, to)) {
-    if (!storedCoverageValues.find(covVal => covVal.day === date)) {
-      missingValues.push(date);
-    }
-  }
   try {
-    recentTracks = await fetchTracks(
-      username,
-      LASTFM_KEY,
-      missingValues[0],
-      resetDate(missingValues[missingValues.length - 1], true)[1],
-    );
+    recentTracks = await fetchTracks(username, LASTFM_KEY, from, to);
   } catch (error) {
     console.error('ERROR: ', error);
     throw new Error(error);
@@ -275,8 +264,10 @@ module.exports = app => {
   app.get('/history', cors(), async (req, res, next) => {
     let request = JSON.parse(JSON.stringify(req.query));
     let username = request.username;
-    const [from, unixFrom] = resetDate(request.from);
-    const [to, unixTo] = resetDate(request.to, true);
+    const from = resetDate(request.from).jsTime;
+    const unixFrom = resetDate(request.from).unixTime;
+    const to = resetDate(request.to, true).jsTime;
+    const unixTo = resetDate(request.to, true).unixTime;
 
     let userid;
     let storedCoverageValues;
@@ -287,7 +278,7 @@ module.exports = app => {
       userRes = await getUser(username);
     } catch (error) {
       console.error('ERROR: ', error.stack);
-      res.status(500).send('Error getting user');
+      res.status(502).send('Error getting user');
       return false;
     }
     userid = userRes.id;
@@ -297,19 +288,46 @@ module.exports = app => {
       storedCoverageValues = await getCoverageValues(userid, from, to);
     } catch (error) {
       console.error('ERROR: ', error.stack);
-      res.status(500).send('Error getting saved songs');
+      res.status(502).send('Error getting saved songs');
       return false;
     }
 
+    // find any missing values from the db
+    let missingValues = [];
+    for (let date of getDateRange(from, to)) {
+      if (!storedCoverageValues.find(covVal => covVal.day === date)) {
+        missingValues.push(date);
+      }
+    }
+
     // some missing data, fetch certain days
-    if (storedCoverageValues.length < getDateRange(from, to).length) {
+    if (missingValues.length) {
+      /*
+       * Right now, I just re-request every day starting with the first unknown day through to the
+       * last unknown day.
+       *
+       * This is not smart.
+       *
+       * I can easily run into use cases where I re-request already-stored data. Unfortunately
+       * for my API key, writing a better algorithm sounds annoying and there's
+       * more fun stuff to do.
+       */
+
+      let missingFrom = missingValues[0];
+      let missingTo = resetDate(missingValues[missingValues.length - 1], true).unixTime;
+
       let recentTracks;
 
       try {
-        recentTracks = await fetchNewTrackInfo(username, from, to, storedCoverageValues);
+        recentTracks = await fetchNewTrackInfo(
+          username,
+          missingFrom,
+          missingTo,
+          storedCoverageValues,
+        );
       } catch (error) {
         console.error('ERROR: ', error.stack);
-        res.status(500).send('Error checking for saved track info');
+        res.status(502).send('Error checking for saved track info');
         return false;
       }
 
@@ -317,7 +335,7 @@ module.exports = app => {
         recentTracks = await attachArtistInfo(recentTracks);
       } catch (error) {
         console.error('ERROR: ', error.stack);
-        res.status(500).send('Error getting artist info');
+        res.status(502).send('Error getting artist info');
         return false;
       }
 
@@ -326,7 +344,7 @@ module.exports = app => {
         saveUserResponses = await saveUserInfo(userid, from, to, recentTracks);
       } catch (error) {
         console.error('ERROR: ', error.stack);
-        res.status(500).send('Error saving new info');
+        res.status(502).send('Error saving new info');
         return false;
       }
     }
@@ -337,11 +355,12 @@ module.exports = app => {
       finalResult = await getSongHistory(userid, unixFrom, unixTo);
     } catch (error) {
       console.error('ERROR: ', error.stack);
-      res.status(500).send('Error retrieving saved songs');
+      res.status(502).send('Error retrieving saved songs');
       return false;
     }
 
     finalResult = removeDuplicates(finalResult);
+    console.log('sending data');
     res.json(finalResult);
   });
 

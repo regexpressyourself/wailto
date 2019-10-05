@@ -110,7 +110,13 @@ const App = ({appState, history}) => {
           document.querySelector('.main-header').style.display = 'none';
           document.querySelector('.user-info').style.display = 'none';
         } catch (e) {}
-        setContent(<Error errorMessage={e.response.data} />);
+        if (e.response.status !== 502) {
+          setContent(
+            <Error errorMessage={"Actually we have no idea. Our bad. Maybe the server's down?"} />,
+          );
+        } else {
+          setContent(<Error errorMessage={e.response.data} />);
+        }
       });
   }, [
     appState,

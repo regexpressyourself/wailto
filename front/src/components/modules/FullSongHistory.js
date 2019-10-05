@@ -4,6 +4,7 @@ import {ConfigContext} from '../../context/ConfigContext';
 import SongItem from './SongItem.js';
 import './charts.scss';
 import {accessibleTime} from '../../functions/dateMappers';
+import LazyLoad from 'react-lazyload';
 
 const FullSongHistory = () => {
   const {songHistory} = useContext(SongHistoryContext);
@@ -29,15 +30,17 @@ const FullSongHistory = () => {
           }
 
           return (
-            <SongItem
-              key={song.id + song.date}
-              image={song.image}
-              album={song.album}
-              artist={song.artist}
-              name={song.name}
-              genres={genres}
-              date={date}
-            />
+            <LazyLoad height={100}>
+              <SongItem
+                key={song.id + song.date}
+                image={song.image}
+                album={song.album}
+                artist={song.artist}
+                name={song.name}
+                genres={genres}
+                date={date}
+              />
+            </LazyLoad>
           );
         })
         .reverse(),

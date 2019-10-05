@@ -145,7 +145,7 @@ div.input-wrapper--checkbox {
     box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
   }
   &.nav--uncollapsed {
-    animation: slide-in-blurred-right 0.4s cubic-bezier(0.23, 1, 0.32, 1) both;
+    animation: slide-in-blurred-right 0.3s cubic-bezier(.55,.06,.68,.19) both;
   }
   &.nav--collapsed {
     animation: slide-out-blurred-right 0.3s cubic-bezier(0.755, 0.05, 0.855, 0.06) both;

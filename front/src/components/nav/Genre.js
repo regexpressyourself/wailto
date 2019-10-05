@@ -22,12 +22,18 @@ const Genre = () => {
   genreSelectionOptions.unshift({value: 'any genre', label: 'any genre'});
 
   useEffect(() => {
-    setShowGenre(config.genre);
-    setShowGenre2(
-      config.genre &&
-        config.genre2 &&
-        config.genre2 !== 'any genre',
-    );
+    if (config.genre) {
+      if (config.genre === 'any genre' && (config.genre2 && config.genre2 !== 'any genre')) {
+        setShowGenre(true);
+      } else if (config.genre && config.genre !== 'any genre') {
+        setShowGenre(true);
+      } else {
+        setShowGenre(false);
+      }
+    } else {
+      setShowGenre(false);
+    }
+    setShowGenre2(config.genre && config.genre2 && config.genre2 !== 'any genre');
   }, [config.genre, config.genre2]);
 
   useEffect(() => {

@@ -4,6 +4,7 @@ import {ConfigContext} from '../../context/ConfigContext';
 import SongItem from './SongItem.js';
 import './charts.scss';
 import {accessibleTime} from '../../functions/dateMappers';
+import {isGenre1, isGenre2} from '../../functions/genres';
 
 const FullSongHistory = () => {
   const {songHistory} = useContext(SongHistoryContext);
@@ -16,7 +17,6 @@ const FullSongHistory = () => {
         .map(song => {
           let date = accessibleTime(song.date);
           let genres = [song.genre1, song.genre2, song.genre3, song.genre4];
-
           if (config.genre && config.genre !== 'any genre') {
             if (!genres.includes(config.genre)) {
               if (config.genre2 && config.genre2 !== 'any genre') {

@@ -38,7 +38,9 @@ const Dates = () => {
               if (e < new Date().setDate(new Date().getDate() - 62)) {
                 return new Date().setDate(new Date().getDate() - 62);
               }
-              configDispatch({type: 'TIME_START', timeStart: e});
+              if (e) {
+                configDispatch({type: 'TIME_START', timeStart: e});
+              }
             }}
           />
         </div>
@@ -53,7 +55,9 @@ const Dates = () => {
             value={formatDate(config.timeEnd)}
             placeholder="YYYY-M-D"
             onDayChange={e => {
-              configDispatch({type: 'TIME_END', timeEnd: e});
+              if (e) {
+                configDispatch({type: 'TIME_END', timeEnd: e});
+              }
             }}
           />
         </div>

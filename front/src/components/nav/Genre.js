@@ -2,6 +2,7 @@ import React, {useState, useEffect, useContext} from 'react';
 import Select from 'react-select';
 import {ConfigContext} from '../../context/ConfigContext';
 import {GENRELIST} from '../../GENRELIST';
+import {isGenre1, isGenre2} from '../../functions/genres';
 import './Genre.scss';
 
 const Genre = () => {
@@ -22,18 +23,8 @@ const Genre = () => {
   genreSelectionOptions.unshift({value: 'any genre', label: 'any genre'});
 
   useEffect(() => {
-    if (config.genre) {
-      if (config.genre === 'any genre' && (config.genre2 && config.genre2 !== 'any genre')) {
-        setShowGenre(true);
-      } else if (config.genre && config.genre !== 'any genre') {
-        setShowGenre(true);
-      } else {
-        setShowGenre(false);
-      }
-    } else {
-      setShowGenre(false);
-    }
-    setShowGenre2(config.genre && config.genre2 && config.genre2 !== 'any genre');
+    isGenre1(config.genre, config.genre2) ? setShowGenre(true) : setShowGenre(false);
+    isGenre2(config.genre, config.genre2) ? setShowGenre2(true) : setShowGenre2(false);
   }, [config.genre, config.genre2]);
 
   useEffect(() => {

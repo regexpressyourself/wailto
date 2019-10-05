@@ -4,27 +4,14 @@ import {SongHistoryContext} from '../../context/SongHistoryContext';
 import {ConfigContext} from '../../context/ConfigContext';
 import {ResponsiveContainer, AreaChart, Area, XAxis, YAxis, Tooltip} from 'recharts';
 import {getDatesBetween, bucketSongTimes} from '../../functions/dateMappers';
-
-const getInitialKey = (genre, genre2) => {
-  if (genre) {
-    if (genre === 'any genre' && !genre2) {
-      return 'Song Count';
-    } else {
-      return genre;
-    }
-  } else {
-    return 'Song Count';
-  }
-};
+import {getGenreKey, getGenre2Key} from '../../functions/genres';
 
 const SongsByDate = () => {
   const {songHistory} = useContext(SongHistoryContext);
   const {config} = useContext(ConfigContext);
   let [dateDataRC, setDateDataRC] = useState(null);
-  let [initialKey, setInitialKey] = useState(getInitialKey(config.genre, config.genre2));
-  let [secondaryKey, setSecondaryKey] = useState(
-    config.genre2 && !(config.genre2 === 'any genre') ? config.genre2 : null,
-  );
+  let [initialKey, setInitialKey] = useState(getGenreKey(config.genre, config.genre2));
+  let [secondaryKey, setSecondaryKey] = useState(getGenre2Key(config.genre, config.genre2));
   let [timeEnd, setTimeEnd] = useState(new Date(config.timeEnd));
   let [timeStart, setTimeStart] = useState(new Date(config.timeStart));
 
@@ -36,8 +23,8 @@ const SongsByDate = () => {
   useEffect(() => {
     let datesBetween = getDatesBetween(timeStart, timeEnd);
     let map = {};
-    let tempInitialKey = getInitialKey(config.genre, config.genre2);
-    let tempSecondaryKey = config.genre2 && config.genre2 !== 'any genre' ? config.genre2 : null;
+    let tempInitialKey = getGenreKey(config.genre, config.genre2);
+    let tempSecondaryKey = getGenre2Key(config.genre, config.genre2);
     setInitialKey(tempInitialKey);
     setSecondaryKey(tempSecondaryKey);
 

@@ -52,26 +52,26 @@ $max-width: 1920px;
   .chart-container {
     background-color: white;
     border-radius: 5px;
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25) !important;
     max-width: 1200px;
     padding: 2vw;
   }
   .user-info {
-    margin-bottom: 10px;
+    margin-bottom: 3vh;
+    box-shadow: 0 12px 25px -6px rgba(0, 0, 0, 0.25) !important;
   }
   .chart-container,
   .dashboard {
-    margin: 10px auto 0;
+    margin: 3vh auto 0;
+    box-shadow: 0 12px 25px -6px rgba(0, 0, 0, 0.25) !important;
     &,
     & * {
       animation: fade-in 0.4s cubic-bezier(0.39, 0.575, 0.565, 1) both;
     }
     .recharts-responsive-container {
-
       margin-left: -1vw;
       @media screen and (max-width: 768px) {
-      margin-left: -3vw;
-    }
+        margin-left: -3vw;
+      }
     }
   }
 }

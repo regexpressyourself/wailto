@@ -137,10 +137,6 @@ div.input-wrapper--checkbox {
   right: 8vw;
   @include fluid-prop('right', $min_width, $max_width, 60px, 100px);
 
-  //transform: translateX(2000px) scaleX(2) scaleY(0.2);
-  //transform-origin: 0% 50%;
-  //filter: blur(40px);
-  //opacity: 0;
   &:hover {
     box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
   }

@@ -131,26 +131,30 @@ $max-width: 1920px;
     }
   }
 
-    .exit-btn {
-      position: absolute;
-      padding: 5%;
-      margin: -15% -20%;
-      color: white;
-      border-radius: 50%;
-      border: 3px solid #e2598b;
-      background-color: #e2598b;
-      transition: color 0.3s, background-color 0.3s;
-      cursor: pointer;
-      &:hover {
-        background-color: white;
-        color: #e2598b;
-      }
+  .exit-btn {
+    position: absolute;
+    padding: 5%;
+    margin: -15% -20%;
+    color: white;
+    border-radius: 50%;
+    border: 3px solid #e2598b;
+    background-color: #e2598b;
+    transition: color 0.3s, background-color 0.3s;
+    cursor: pointer;
+    &:hover {
+      background-color: white;
+      color: #e2598b;
+    }
 
-      svg {
-        height: 50px;
-        width: 50px;
+    svg {
+      height: 40px;
+      width: 40px;
+      @media screen and (max-width: 480px) {
+        height: 10vw;
+        width: 10vw;
       }
     }
+  }
   .btn-link--demo {
     z-index: 9000;
     &,

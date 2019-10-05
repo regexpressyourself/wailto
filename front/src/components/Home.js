@@ -13,7 +13,7 @@ const Home = () => {
       if (localStorage.getItem('wt-username') === null) {
         document.querySelector('.btn-link--demo').classList.add('entry');
       }
-    }, 10000);
+    }, 100);
   }, []);
 
   return (

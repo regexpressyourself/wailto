@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useContext} from 'react';
+import React, {useState, useRef, useCallback, useEffect, useContext} from 'react';
 import {withRouter} from 'react-router-dom';
 import {Plus, X} from 'react-feather';
 import {ConfigContext} from '../../context/ConfigContext';
@@ -19,20 +19,14 @@ const Nav = ({history, showMessages, showBack, defaultStart, defaultEnd}) => {
   let [buttonText, setButtonText] = useState(<Plus />);
   let [buttonAnimation, setButtonAnimation] = useState(!localStorage.getItem('wt-username'));
 
-  const enterListener = e => {
-    var key = e.which || e.keyCode;
-    if (key === 13) {
-      triggerUpdate();
-    }
-    return false;
-  };
+  const navToggleBtn = useRef(null);
 
-  const triggerUpdate = () => {
+  const triggerUpdate = useCallback(() => {
     if (!config.username) {
       disableButton(true); // check for username
-      return;
+      return false;
     }
-    setIsExpanded(false);
+
     if (window.location.href.includes('dashboard')) {
       configDispatch({type: 'APP_STATE', appState: config.appState});
     } else {
@@ -42,27 +36,36 @@ const Nav = ({history, showMessages, showBack, defaultStart, defaultEnd}) => {
       type: 'TRIGGER_STATE_UPDATE',
       triggerStateUpdate: true,
     });
-  };
 
-  useEffect(() => {
-    if (isExpanded) {
-      document.addEventListener('keypress', enterListener);
-    } else {
-      document.removeEventListener('keypress', enterListener);
-    }
-  }, [isExpanded]);
+    return true;
+  }, [config.appState, config.username, history, configDispatch]);
+
+  const enterListener = useCallback(
+    event => {
+      const {target, keyCode} = event;
+      // if you hit enter on the nav toggle button, don't trigger update
+      if (keyCode === 13 && target !== navToggleBtn.current) {
+        if (triggerUpdate()) {
+          setIsExpanded(false);
+        }
+      }
+    },
+    [triggerUpdate],
+  );
 
   useEffect(() => {
     if (isExpanded) {
       setButtonText(<X />);
       expandNav(true);
       setHelpMessageType(showMessages ? 'tutorial' : null);
+      window.addEventListener('keydown', enterListener);
     } else {
+      window.removeEventListener('keydown', enterListener);
       setButtonText(<Plus />);
       expandNav(false);
       setHelpMessageType(showMessages ? 'default' : null);
     }
-  }, [isExpanded, showMessages, defaultStart, defaultEnd]);
+  }, [isExpanded, showMessages, enterListener]);
 
   return (
     <header className="main-header">
@@ -74,7 +77,9 @@ const Nav = ({history, showMessages, showBack, defaultStart, defaultEnd}) => {
           <button
             className="submit-btn"
             onClick={e => {
-              triggerUpdate();
+              if (triggerUpdate()) {
+                setIsExpanded(false);
+              }
             }}>
             What Am I Listening to?
           </button>
@@ -88,6 +93,7 @@ const Nav = ({history, showMessages, showBack, defaultStart, defaultEnd}) => {
           />
           {showBack ? <BackButton /> : <span />}
           <button
+            ref={navToggleBtn}
             className={`nav__toggle-btn ${buttonAnimation ? 'animated' : ''}`}
             onClick={e => {
               setIsExpanded(!isExpanded);

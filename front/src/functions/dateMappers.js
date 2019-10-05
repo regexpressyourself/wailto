@@ -84,7 +84,7 @@ const accessibleJsTime = jsDate => {
 };
 const getDatesBetween = (start, end) => {
   let datesBetween = [];
-  while (start < end) {
+  while (start <= end) {
     let year = start.getFullYear();
     let month = months()[start.getMonth()];
     let day = start.getDate();

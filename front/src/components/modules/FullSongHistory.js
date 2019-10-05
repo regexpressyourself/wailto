@@ -30,9 +30,8 @@ const FullSongHistory = () => {
           }
 
           return (
-            <LazyLoad height={100}>
+            <LazyLoad key={song.id + song.date} height={100}>
               <SongItem
-                key={song.id + song.date}
                 image={song.image}
                 album={song.album}
                 artist={song.artist}

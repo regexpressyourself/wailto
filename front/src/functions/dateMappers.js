@@ -106,12 +106,18 @@ const matchGenre = (song, genre) => {
   }
 };
 
-const serializeSongList = (songList, bucketMaxSize, bucketKey) => {
-  let map = new Array(bucketMaxSize);
+const serializeSongList = (songList, bucketKeyValues, bucketKey) => {
+  let map = new Array(bucketKeyValues.length);
   for (let song of songList) {
     let date = song.date;
     let accessibleDate = accessibleTime(date);
     let key = accessibleDate[bucketKey];
+    //console.log('accessibleDate');
+    //console.log(accessibleDate);
+    //console.log('accessibleDate[key]');
+    //console.log(accessibleDate[key]);
+    //console.log('key');
+    //console.log(key);
 
     if (map[key]) {
       map[key].push(song);
@@ -119,10 +125,12 @@ const serializeSongList = (songList, bucketMaxSize, bucketKey) => {
       map[key] = [song];
     }
   }
+  //console.log(bucketKey);
+  //console.log(map);
   return map;
 };
 
-const bucketSongTimes = (bucketKey, bucketMaxSize, songList, genre = null) => {
+const bucketSongTimes = (bucketKey, bucketKeyValues, songList, genre = null) => {
   /*
    * The "map" holds an array with a definition of:
    * [{ timeSlot: [Song1, Song2, ...] }, ... ]
@@ -132,7 +140,7 @@ const bucketSongTimes = (bucketKey, bucketMaxSize, songList, genre = null) => {
    */
 
   songList = songList.filter(song => matchGenre(song, genre));
-  return serializeSongList(songList, bucketMaxSize, bucketKey);
+  return serializeSongList(songList, bucketKeyValues, bucketKey);
 };
 
 export {

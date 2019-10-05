@@ -1,46 +1,62 @@
-const disableButton = disabled => {
+const inputAttention = (disabled, input) => {
+  let inputWrap;
+  if (input === 'username') {
+    inputWrap = document.querySelector('.nav__username');
+  } else if (input === 'dates') {
+    inputWrap = document.querySelector('.nav__date-pickers');
+  } else {
+    return;
+  }
+
   if (disabled) {
-    document
-      .querySelector('.nav__username')
-      .classList.add('nav__username--invalid');
-    document
-      .querySelector('.nav__heading--username')
-      .classList.add('atn--font-color');
-    document
-      .querySelector('.username-input')
-      .classList.add('atn--border-color');
+    inputWrap.classList.add('atn');
+    inputWrap.classList.add('atn--anim');
+
     setTimeout(() => {
-      document
-        .querySelector('.nav__heading--username')
-        .classList.remove('atn--font-color');
-      document
-        .querySelector('.username-input')
-        .classList.remove('atn--border-color');
-    }, 1000);
+      inputWrap.classList.remove('atn--anim');
+    }, 1500);
+
     return;
   } else {
-    if (
-      document
-        .querySelector('.nav__username')
-        .classList.contains('nav__username--invalid')
-    ) {
-      document
-        .querySelector('.nav__username')
-        .classList.remove('nav__username--invalid');
-    }
+    inputWrap.classList.remove('atn');
+    inputWrap.classList.remove('atn--anim');
   }
 };
 
 const expandNav = expanded => {
+  let nav = document.querySelector('.nav');
   if (expanded) {
-    document.querySelector('.nav').classList.remove('nav--collapsed');
-    document.querySelector('.nav').classList.add('nav--uncollapsed');
+    nav.classList.remove('nav--collapsed');
+    nav.classList.add('nav--uncollapsed');
   } else {
-    if (document.querySelector('.nav').classList.contains('nav--uncollapsed')) {
-      document.querySelector('.nav').classList.remove('nav--uncollapsed');
-      document.querySelector('.nav').classList.add('nav--collapsed');
+    if (nav.classList.contains('nav--uncollapsed')) {
+      nav.classList.remove('nav--uncollapsed');
+      nav.classList.add('nav--collapsed');
     }
   }
 };
 
-export {expandNav, disableButton};
+
+const formIsValid = ({username, timeStart, timeEnd}) => {
+  let isValid = true;
+
+  // check username
+  if (!username) {
+    inputAttention(true, 'username');
+    isValid = false;
+  } else {
+    inputAttention(false, 'username');
+  }
+
+  // check dates
+  //if (timeStart > timeEnd || typeof timeStart === 'string' || typeof timeEnd === 'string') {
+  if (new Date(timeStart) > new Date(timeEnd)) {
+    inputAttention(true, 'dates');
+    isValid = false;
+  } else {
+    inputAttention(false, 'dates');
+  }
+
+  return isValid;
+};
+export {expandNav, inputAttention, formIsValid};

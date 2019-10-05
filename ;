@@ -2,14 +2,6 @@ import React, {useContext} from 'react';
 import DayPickerInput from 'react-day-picker/DayPickerInput';
 import {ConfigContext} from '../../context/ConfigContext';
 
-const getPrevTime = (timeStart, timeEnd) => {
-  let distance = Math.abs(timeEnd - timeStart);
-  let daysDistance = Math.floor(distance / (1000 * 60 * 60 * 24 + 1)) + 1;
-  let prevTime = new Date(timeStart);
-  prevTime.setDate(prevTime.getDate() - daysDistance);
-  return prevTime;
-};
-
 const formatDate = date => {
   let d = new Date(date),
     month = '' + (d.getMonth() + 1),
@@ -24,6 +16,7 @@ const formatDate = date => {
 
 const Dates = () => {
   const {config, configDispatch} = useContext(ConfigContext);
+
   return (
     <>
       <div className="nav__date-pickers nav__date-pickers--dates">
@@ -40,6 +33,15 @@ const Dates = () => {
             placeholder="YYYY-M-D"
             onDayChange={e => {
               if (e) {
+                let distance = Math.abs(new Date(config.timeEnd) - new Date(e));
+                let daysDistance = Math.floor(distance / (1000 * 60 * 60 * 24 + 1)) + 1;
+                console.log(daysDistance);
+                console.log((new Date(e).getDate() ));
+                console.log(new Date(new Date(e).getDate() - daysDistance));
+                configDispatch({
+                  type: 'PREV_TIME_START',
+                  prevTimeStart: new Date(new Date(e).getDate() - daysDistance),
+                });
                 configDispatch({type: 'TIME_START', timeStart: new Date(e)});
               }
             }}
@@ -62,22 +64,11 @@ const Dates = () => {
             }}
           />
         </div>
-        <div className="input-wrapper input-wrapper--checkbox">
-          <input
-            onChange={e => {
-              if (e.target.checked) {
-                let prevTime = getPrevTime(new Date(config.timeStart), new Date(config.timeEnd));
-                configDispatch({type: 'PREV_TIME_START', prevTimeStart: prevTime});
-              } else {
-                configDispatch({type: 'PREV_TIME_START', prevTimeStart: null});
-              }
-            }}
-            id="prev-time-checkbox"
-            name="prev-time-checkbox"
-            type="checkbox"
-          />
+        {/*<div className="input-wrapper input-wrapper--checkbox">
+          <input id="prev-time-checkbox" name="prev-time-checkbox" type="checkbox" />
           <label htmlFor="prev-time-checkbox">&nbsp;Compare to previous period?</label>
         </div>
+        */}
       </div>
     </>
   );

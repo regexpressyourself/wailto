@@ -50,7 +50,10 @@ const configReducer = (state, configAction) => {
         username: configAction.username,
       };
     case 'PREV_TIME_START':
-      let unixPrevTimeStart = Math.round(stringToDate(configAction.prevTimeStart.getTime()) / 1000);
+      let unixPrevTimeStart = null;
+      if (configAction.prevTimeStart !== null) {
+        unixPrevTimeStart = Math.round(stringToDate(configAction.prevTimeStart.getTime()) / 1000);
+      }
       localStorage.setItem('wt-prevTimeStart', configAction.prevTimeStart);
       return {
         ...state,
@@ -66,6 +69,8 @@ const configReducer = (state, configAction) => {
         unixTimeStart: unixTimeStart,
       };
     case 'TIME_END':
+      //console.log('configAction.timeEnd');
+      //console.log(configAction.timeEnd);
       let newEnd = transformTimeEnd(stringToDate(configAction.timeEnd));
       let unixTimeEnd = Math.round(newEnd.getTime() / 1000);
       localStorage.setItem('wt-timeEnd', configAction.timeEnd);

@@ -3,13 +3,11 @@
 }
 $min-width: 320px;
 $max-width: 1920px;
-
 @mixin fluid-prop($prop, $min-vw, $max-vw, $min-size, $max-size) {
   $u1: unit($min-vw);
   $u2: unit($max-vw);
   $u3: unit($min-size);
   $u4: unit($max-size);
-
   @if $u1 == $u2 and $u1 == $u3 and $u1 == $u4 {
     & {
       #{$prop}: $min-size;
@@ -25,7 +23,6 @@ $max-width: 1920px;
     }
   }
 }
-
 .main-header__inner {
   position: fixed;
   bottom: 3vw;
@@ -40,7 +37,6 @@ $max-width: 1920px;
     left: 3vw;
   }
 }
-
 .introduce-message {
   @media screen and (min-width: 768px) {
     transform: translate(-30vw, -30vh);
@@ -77,7 +73,6 @@ $max-width: 1920px;
     @include fluid-prop('font-size', $min_width, $max_width, 16px, 20px);
   }
 }
-
 .input-wrapper {
   padding: 10px 0;
   @media screen and (max-width: 768px) {
@@ -109,7 +104,6 @@ div.input-wrapper--checkbox {
   flex-basis: 100%;
   padding: 0;
 }
-
 .input-wrapper--end-date {
   display: flex;
   flex-direction: column;
@@ -120,7 +114,6 @@ div.input-wrapper--checkbox {
     width: 100%;
   }
 }
-
 .nav {
   position: absolute;
   background-color: #ffffff;
@@ -136,7 +129,6 @@ div.input-wrapper--checkbox {
   bottom: 100%;
   right: 8vw;
   @include fluid-prop('right', $min_width, $max_width, 60px, 100px);
-
   &:hover {
     box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
   }
@@ -146,7 +138,6 @@ div.input-wrapper--checkbox {
   &.nav--collapsed {
     animation: slide-out-blurred-right 0.3s cubic-bezier(0.755, 0.05, 0.855, 0.06) both;
   }
-
   @media screen and (max-width: 768px) {
     position: fixed;
     top: auto;
@@ -180,7 +171,6 @@ div.input-wrapper--checkbox {
     color: rgba(226, 89, 139, 1);
   }
 }
-
 button.nav__back-btn,
 button.nav__toggle-btn {
   align-self: flex-end;
@@ -215,7 +205,6 @@ button.nav__toggle-btn {
     min-height: 75%;
   }
 }
-
 button.nav__toggle-btn {
   svg {
     transform: scale(1);
@@ -228,7 +217,6 @@ button.nav__toggle-btn {
     }
   }
 }
-
 button.nav__back-btn {
   svg {
     transform: scale(1);
@@ -243,7 +231,6 @@ button.nav__back-btn {
     }
   }
 }
-
 button.submit-btn {
   background-color: #fdd043;
   border: 3px solid #fdd043;
@@ -260,7 +247,6 @@ button.submit-btn {
     color: #f3f3f3;
   }
 }
-
 .nav__date-pickers {
   padding: 10px 0;
   display: flex;
@@ -274,7 +260,6 @@ button.submit-btn {
     flex-basis: 45%;
   }
 }
-
 .username-input {
   @include fluid-prop('font-size', $min_width, $max_width, 18px, 34px);
 }
@@ -295,7 +280,6 @@ button.submit-btn {
     @include fluid-prop('font-size', $min_width, $max_width, 16px, 20px);
   }
 }
-
 .nav__username--invalid {
   .required-reminder {
     display: inline-block;
@@ -310,19 +294,21 @@ button.submit-btn {
 }
 .nav__heading--username {
   transition: color 0.4s;
-  &.atn--font-color {
+}
+*.atn {
+  label {
     color: #e2598b;
-    animation: heartbeat 1.5s ease-in-out both;
   }
+  input {
+    border-color: #e2598b !important;
+  }
+}
+*.atn--anim > * {
+  animation: heartbeat 1.5s ease-in-out both;
 }
 .username-input {
   transition: border-color 0.4s !important;
-  &.atn--border-color {
-    border-color: #e2598b !important;
-    animation: heartbeat 1.5s ease-in-out both;
-  }
 }
-
 @keyframes introduce-message {
   0% {
     transform: scale(1.4);
@@ -381,7 +367,6 @@ button.submit-btn {
     animation-timing-function: ease-out;
   }
 }
-
 @keyframes slide-in-blurred-right {
   0% {
     transform: translateX(1000px) scaleX(2.5) scaleY(0.2);
@@ -402,7 +387,6 @@ button.submit-btn {
     opacity: 1;
   }
 }
-
 @keyframes slide-out-blurred-right {
   0% {
     transform: translateX(0) scaleY(1) scaleX(1);

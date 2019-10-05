@@ -391,6 +391,12 @@ button.submit-btn {
     filter: blur(20px);
     opacity: 0;
   }
+  20% {
+    filter: blur(10px);
+  }
+  50% {
+    filter: blur(0);
+  }
   100% {
     transform: translateX(0) scaleY(1) scaleX(1);
     transform-origin: 50% 50%;

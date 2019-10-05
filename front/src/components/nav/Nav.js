@@ -51,9 +51,6 @@ const Nav = ({history, showMessages, showBack, defaultStart, defaultEnd}) => {
                 type: 'TRIGGER_STATE_UPDATE',
                 triggerStateUpdate: true,
               });
-              if (window.location.href !== 'dashboard') {
-                history.push('/dashboard');
-              }
             }}>
             What Am I Listening to?
           </button>

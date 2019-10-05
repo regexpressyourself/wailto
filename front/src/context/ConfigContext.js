@@ -75,9 +75,6 @@ const configReducer = (state, configAction) => {
         unixTimeEnd: unixTimeEnd,
       };
     case 'GENRE':
-      //if (configAction.genre === null) {
-      //return {...state};
-      //}
       localStorage.setItem('wt-genre', configAction.genre);
       return {
         ...state,

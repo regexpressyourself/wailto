@@ -1,11 +1,21 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import './Home.scss';
 import {Link} from 'react-router-dom';
 import Footer from './partials/Footer';
+import {X} from 'react-feather';
 import {LineChart, ResponsiveContainer, Line} from 'recharts';
 
 const Home = () => {
   const inlineLogo = <span className="logo-font">WAILto</span>;
+
+  useEffect(() => {
+    setTimeout(() => {
+      if (localStorage.getItem('wt-username') === null) {
+        document.querySelector('.btn-link--demo').classList.add('entry');
+      }
+    }, 10000);
+  }, []);
+
   return (
     <>
       <section className="home__header">
@@ -68,13 +78,24 @@ const Home = () => {
       </section>
       <main className="home">
         <div className="header__btn-container">
-          <Link className="btn-link btn-link--1" to="/zookeeprr">
-            <button className="btn">
-              Demo {inlineLogo}
-              <br />
-              <span className="sub-button">(spoiler: it's my account)</span>
-            </button>
-          </Link>
+          <div className="btn-link btn-link--demo">
+            <span
+              id="exit-btn"
+              onClick={e => {
+                document.querySelector('.btn-link--demo').classList.remove('entry');
+                localStorage.setItem('wt-username', '');
+              }}
+              className="exit-btn">
+              <X />
+            </span>
+            <Link to="/zookeeprr">
+              <button className="btn btn--demo-cta">
+                TRY {inlineLogo}
+                <br />
+                <span className="sub-button">(spoiler: it's my account)</span>
+              </button>
+            </Link>
+          </div>
         </div>
         <section className="home__body">
           <h2>

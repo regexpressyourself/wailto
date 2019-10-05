@@ -98,6 +98,8 @@ $max-width: 1920px;
     @include fluid-prop('font-size', $min_width, $max_width, 22px, 36px);
     & > .sub-button {
       @include fluid-prop('font-size', $min_width, $max_width, 14px, 24px);
+      font-weight: 400;
+      line-height: 1;
     }
     &:hover {
       background-color: white;
@@ -111,11 +113,58 @@ $max-width: 1920px;
       color: rgba(226, 89, 139, 1);
     }
   }
+  .btn-link--demo .btn,
   .btn-link--2 .btn {
     background-color: rgba(170, 92, 159, 1);
     border: 2px solid rgba(127, 71, 130, 1);
     &:hover {
       color: rgba(127, 71, 130, 1);
+    }
+  }
+
+  .btn-link--demo .btn {
+    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.12), 0 1px 5px rgba(0, 0, 0, 0.24);
+    @include fluid-prop('font-size', $min_width, $max_width, 28px, 48px);
+    line-height: 1;
+    & * {
+      margin: 0;
+    }
+  }
+
+    .exit-btn {
+      position: absolute;
+      padding: 5%;
+      margin: -15% -20%;
+      color: white;
+      border-radius: 50%;
+      border: 3px solid #e2598b;
+      background-color: #e2598b;
+      transition: color 0.3s, background-color 0.3s;
+      cursor: pointer;
+      &:hover {
+        background-color: white;
+        color: #e2598b;
+      }
+
+      svg {
+        height: 50px;
+        width: 50px;
+      }
+    }
+  .btn-link--demo {
+    z-index: 9000;
+    &,
+    .btn {
+      border-radius: 4px 0 0 0;
+    }
+
+    margin: 0;
+    position: fixed;
+    right: -100%;
+    bottom: 0;
+    transition: right 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    &.entry {
+      right: 0;
     }
   }
 }

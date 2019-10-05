@@ -36,11 +36,17 @@ const App = ({appState, history}) => {
   const [songHistory, songHistoryDispatch] = useReducer(songHistoryReducer, {});
 
   if (window.location.href.includes('zookeeprr')) {
+    console.log('zoo');
     configDispatch({type: 'TIME_START', timeStart: initialConfig.timeStart});
     configDispatch({type: 'TIME_END', timeEnd: initialConfig.timeEnd});
     configDispatch({type: 'GENRE', genre: initialConfig.genre});
     configDispatch({type: 'USERNAME', username: 'zookeeprr'});
-    history.push('/dashboard');
+    configDispatch({type: 'APP_STATE', appState: 'dashboard'});
+    configDispatch({
+      type: 'TRIGGER_STATE_UPDATE',
+      triggerStateUpdate: true,
+    });
+    history.replace('/dashboard');
   }
 
   let [content, setContent] = useState(null);

@@ -67,6 +67,15 @@ const Home = () => {
         </ResponsiveContainer>
       </section>
       <main className="home">
+        <div className="header__btn-container">
+          <Link className="btn-link btn-link--1" to="/zookeeprr">
+            <button className="btn">
+              Demo {inlineLogo}
+              <br />
+              <span className="sub-button">(spoiler: it's my account)</span>
+            </button>
+          </Link>
+        </div>
         <section className="home__body">
           <h2>
             What Is <span className="logo-font">{inlineLogo}</span>?
@@ -79,8 +88,7 @@ const Home = () => {
             ) is a way to analyze your music listening history.
             <br />
             <br />
-            Learn about your music listening trends, daily breakdowns, and
-            history.
+            Learn about your music listening trends, daily breakdowns, and history.
           </p>
           <br />
           <div className="header__btn-container">
@@ -95,23 +103,18 @@ const Home = () => {
               <span className="logo-font">1. SIGN UP</span> with Last.fm.
             </span>{' '}
             <br />
-            <a
-              href="https://www.last.fm/join"
-              rel="noopener noreferrer"
-              target="_blank">
+            <a href="https://www.last.fm/join" rel="noopener noreferrer" target="_blank">
               (You can do that here)
             </a>
           </p>
           <p>
-            Now, I totally understand if you don't need another service in your
-            life. Feel free to check out{' '}
-            <Link to="/zookeeprr">my account's dashboard</Link> if you just want
-            to check out {inlineLogo}
+            Now, I totally understand if you don't need another service in your life. Feel free to
+            check out <Link to="/zookeeprr">my account's dashboard</Link> if you just want to check
+            out {inlineLogo}
           </p>
           <p className="home__body__123">
             <span className="body__p-header">
-              <span className="logo-font">2. CONNECT</span> your music player to
-              Last.fm.{' '}
+              <span className="logo-font">2. CONNECT</span> your music player to Last.fm.{' '}
             </span>
             <br />
             (They support a ton of players.{' '}
@@ -128,12 +131,12 @@ const Home = () => {
             with Last.fm.
           </p>
           <p>
-            Scrobbling allows {inlineLogo} to access your history for analysis.
-            According to Last.fm:
+            Scrobbling allows {inlineLogo} to access your history for analysis. According to
+            Last.fm:
           </p>
           <blockquote>
-            Scrobbling is when Last.fm tracks the music you listen to and
-            automatically adds it to your music profile.
+            Scrobbling is when Last.fm tracks the music you listen to and automatically adds it to
+            your music profile.
           </blockquote>
 
           <p className="home__body__123">
@@ -142,17 +145,15 @@ const Home = () => {
             </span>
           </p>
           <p>
-            {inlineLogo} needs at least a day of history to really get
-            interesting. In the meantime, feel free to check out{' '}
-            <Link to="/zookeeprr">my account's dashboard</Link>.
+            {inlineLogo} needs at least a day of history to really get interesting. In the meantime,
+            feel free to check out <Link to="/zookeeprr">my account's dashboard</Link>.
           </p>
           <br />
           <br />
           <h2>What Have You Been Listening To?</h2>
           <p className="home__body__123">
             <span className="body__p-header">
-              <span className="logo-font">Ready</span> to see what your music
-              listening looks like?
+              <span className="logo-font">Ready</span> to see what your music listening looks like?
             </span>
           </p>
           <div className="header__btn-container">
@@ -165,6 +166,6 @@ const Home = () => {
       <Footer />
     </>
   );
-}
+};
 
 export default Home;

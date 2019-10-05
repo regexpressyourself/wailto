@@ -60,8 +60,7 @@ $max-width: 1920px;
   }
   h1 {
     @include fluid-prop('font-size', $min_width, $max_width, 28px, 90px);
-    animation: tracking-in-contract 0.8s cubic-bezier(0.215, 0.61, 0.355, 1)
-      both;
+    animation: tracking-in-contract 0.8s cubic-bezier(0.215, 0.61, 0.355, 1) both;
     margin: 0;
     line-height: 1;
     margin-top: -25px;
@@ -94,9 +93,12 @@ $max-width: 1920px;
     }
   }
   .btn-link .btn {
-    //color: #333;
     font-weight: 800;
+    line-height: 1.2;
     @include fluid-prop('font-size', $min_width, $max_width, 22px, 36px);
+    & > .sub-button {
+      @include fluid-prop('font-size', $min_width, $max_width, 14px, 24px);
+    }
     &:hover {
       background-color: white;
       cursor: pointer;
@@ -146,8 +148,7 @@ main.home {
 
   h2 {
     @include fluid-prop('font-size', $min_width, $max_width, 42px, 90px);
-    animation: tracking-in-contract--mini 0.8s
-      cubic-bezier(0.215, 0.61, 0.355, 1) both;
+    animation: tracking-in-contract--mini 0.8s cubic-bezier(0.215, 0.61, 0.355, 1) both;
     animation-delay: 1s;
     line-height: 1;
     font-weight: 800;

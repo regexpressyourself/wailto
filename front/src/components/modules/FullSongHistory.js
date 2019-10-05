@@ -4,7 +4,6 @@ import {ConfigContext} from '../../context/ConfigContext';
 import SongItem from './SongItem.js';
 import './charts.scss';
 import {accessibleTime} from '../../functions/dateMappers';
-import {isGenre1, isGenre2} from '../../functions/genres';
 
 const FullSongHistory = () => {
   const {songHistory} = useContext(SongHistoryContext);
@@ -43,7 +42,7 @@ const FullSongHistory = () => {
         })
         .reverse(),
     );
-  }, [config.genre, config.timeStart, config.timeEnd, songHistory.songHistory]);
+  }, [config.genre, config.genre2, config.timeStart, config.timeEnd, songHistory.songHistory]);
 
   return (
     <div className="chart-container">

@@ -14,6 +14,7 @@ const SongsByDate = () => {
   let [secondaryKey, setSecondaryKey] = useState(getGenre2Key(config.genre, config.genre2));
   let [timeEnd, setTimeEnd] = useState(new Date(config.timeEnd));
   let [timeStart, setTimeStart] = useState(new Date(config.timeStart));
+  let [datesBetween] = useState(getDatesBetween(timeStart, timeEnd));
 
   useEffect(() => {
     setTimeEnd(new Date(config.timeEnd));
@@ -21,7 +22,6 @@ const SongsByDate = () => {
   }, [config.timeEnd, config.timeStart]);
 
   useEffect(() => {
-    let datesBetween = getDatesBetween(timeStart, timeEnd);
     let map = {};
     let tempInitialKey = getGenreKey(config.genre, config.genre2);
     let tempSecondaryKey = getGenre2Key(config.genre, config.genre2);
@@ -59,7 +59,7 @@ const SongsByDate = () => {
     }
 
     setDateDataRC(tempDateDataRC);
-  }, [songHistory.songHistory, config.genre, config.genre2]);
+  }, [datesBetween, songHistory.songHistory, config.genre, config.genre2]);
 
   return (
     <>

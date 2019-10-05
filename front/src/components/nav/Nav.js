@@ -46,7 +46,11 @@ const Nav = ({history, showMessages, showBack, defaultStart, defaultEnd}) => {
                 return;
               }
               setIsExpanded(false);
-              configDispatch({type: 'APP_STATE', appState: config.appState});
+              if (window.location.href.includes('dashboard')) {
+                configDispatch({type: 'APP_STATE', appState: config.appState});
+              } else {
+                history.push('/dashboard');
+              }
               configDispatch({
                 type: 'TRIGGER_STATE_UPDATE',
                 triggerStateUpdate: true,

@@ -1,4 +1,4 @@
-import React, {useContext, useCallback, useState, useEffect} from 'react';
+import React, {useContext, useState, useEffect} from 'react';
 import './charts.scss';
 import {SongHistoryContext} from '../../context/SongHistoryContext';
 import {ConfigContext} from '../../context/ConfigContext';
@@ -33,11 +33,13 @@ const Graph = ({dataKey, dataKeyValues}) => {
 
     let rcData = [];
     for (let i = 0; i < dataKeyValues.length; i++) {
+      let dataName = dataKeyValues[i];
       let newDayObject = {};
-      newDayObject['name'] = dataKeyValues[i];
-      newDayObject[basicKey] = basicData[i] ? basicData[i].length : 0;
-      newDayObject[genreKey] = genreData[i] ? genreData[i].length : 0;
-      newDayObject[genre2Key] = genre2Data && genre2Data[i] ? genre2Data[i].length : 0;
+      newDayObject['name'] = dataName;
+      newDayObject[basicKey] = basicData[dataName] ? basicData[dataName].length : 0;
+      newDayObject[genreKey] = genreData[dataName] ? genreData[dataName].length : 0;
+      newDayObject[genre2Key] =
+        genre2Data && genre2Data[dataName] ? genre2Data[dataName].length : 0;
 
       rcData.push(newDayObject);
     }

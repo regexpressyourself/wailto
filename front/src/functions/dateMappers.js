@@ -35,6 +35,7 @@ const accessibleTime = unixTime => {
     meridiem = 'pm';
   }
   let ampmHour = hour % 12;
+  let hourName = (hour % 12) + meridiem;
   let time = ampmHour + ':' + minutes + meridiem;
 
   return {
@@ -44,6 +45,7 @@ const accessibleTime = unixTime => {
     day: day,
     dow: dow,
     dowName: dowName,
+    hourName: hourName,
     year: year,
     hour: hour,
     minutes: minutes,
@@ -67,6 +69,7 @@ const accessibleJsTime = jsDate => {
     meridiem = 'pm';
   }
   let ampmHour = hour % 12;
+  let hourName = (hour % 12) + meridiem;
   let time = ampmHour + ':' + minutes + meridiem;
 
   return {
@@ -76,6 +79,7 @@ const accessibleJsTime = jsDate => {
     day: day,
     dow: dow,
     dowName: dowName,
+    hourName: hourName,
     year: year,
     hour: hour,
     minutes: minutes,
@@ -106,31 +110,7 @@ const matchGenre = (song, genre) => {
   }
 };
 
-const serializeSongList = (songList, bucketKeyValues, bucketKey) => {
-  let map = new Array(bucketKeyValues.length);
-  for (let song of songList) {
-    let date = song.date;
-    let accessibleDate = accessibleTime(date);
-    let key = accessibleDate[bucketKey];
-    //console.log('accessibleDate');
-    //console.log(accessibleDate);
-    //console.log('accessibleDate[key]');
-    //console.log(accessibleDate[key]);
-    //console.log('key');
-    //console.log(key);
-
-    if (map[key]) {
-      map[key].push(song);
-    } else {
-      map[key] = [song];
-    }
-  }
-  //console.log(bucketKey);
-  //console.log(map);
-  return map;
-};
-
-const bucketSongTimes = (bucketKey, bucketKeyValues, songList, genre = null) => {
+const serializeSongList = (songList, bucketKey) => {
   /*
    * The "map" holds an array with a definition of:
    * [{ timeSlot: [Song1, Song2, ...] }, ... ]
@@ -138,9 +118,23 @@ const bucketSongTimes = (bucketKey, bucketKeyValues, songList, genre = null) => 
    * time of day, etc.), and Song1, Song2, etc. are the song objects
    * from Last.fm.
    */
+  let map = {};
+  for (let song of songList) {
+    let date = song.date;
+    let accessibleDate = accessibleTime(date);
+    let key = accessibleDate[bucketKey];
+    if (map[key]) {
+      map[key].push(song);
+    } else {
+      map[key] = [song];
+    }
+  }
+  return map;
+};
 
+const bucketSongTimes = (bucketKey, bucketKeyValues, songList, genre = null) => {
   songList = songList.filter(song => matchGenre(song, genre));
-  return serializeSongList(songList, bucketKeyValues, bucketKey);
+  return serializeSongList(songList, bucketKey);
 };
 
 export {

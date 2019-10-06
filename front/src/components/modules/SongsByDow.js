@@ -3,7 +3,7 @@ import {days} from '../../functions/dateMappers';
 import Graph from './Graph';
 
 const SongsByDow = () => {
-  let dataKey = 'dow';
+  let dataKey = 'dowName';
 
   return (
     <div className="chart-container">

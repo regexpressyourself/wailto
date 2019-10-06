@@ -3,7 +3,7 @@ import Graph from './Graph';
 import {hourToAmpm} from '../../functions/dateMappers';
 
 const SongsByHour = () => {
-  let dataKey = 'hour';
+  let dataKey = 'hourName';
   let hourNames = [];
   for (let i = 0; i < 24; i++) {
     hourNames.push(hourToAmpm(i));

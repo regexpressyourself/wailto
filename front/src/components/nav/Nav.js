@@ -77,19 +77,6 @@ const Nav = ({history, showMessages, showBack, defaultStart, defaultEnd}) => {
   return (
     <header className="main-header">
       <div className="main-header__inner">
-        <nav ref={nav} className="nav">
-          <Username />
-          <Dates />
-          <Genre />
-          <button
-            ref={navSubmitBtn}
-            className="submit-btn"
-            onClick={e => {
-              triggerUpdate();
-            }}>
-            What Am I Listening to?
-          </button>
-        </nav>
         <div className="main-header__bottom">
           <HelpMessage
             defaultStart={defaultStart}
@@ -99,6 +86,7 @@ const Nav = ({history, showMessages, showBack, defaultStart, defaultEnd}) => {
           />
           {showBack ? <BackButton /> : <span />}
           <button
+            tabIndex="0"
             ref={navToggleBtn}
             className={`nav__toggle-btn ${buttonAnimation ? 'animated' : ''}`}
             onClick={e => {
@@ -108,6 +96,20 @@ const Nav = ({history, showMessages, showBack, defaultStart, defaultEnd}) => {
             {buttonText}
           </button>
         </div>
+        <nav ref={nav} className="nav">
+          <Username />
+          <Dates />
+          <Genre />
+          <button
+            tabIndex="0"
+            ref={navSubmitBtn}
+            className="submit-btn"
+            onClick={e => {
+              triggerUpdate();
+            }}>
+            What Am I Listening to?
+          </button>
+        </nav>
       </div>
     </header>
   );

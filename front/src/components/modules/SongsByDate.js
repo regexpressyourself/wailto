@@ -1,22 +1,66 @@
 import React, {useContext, useState, useEffect} from 'react';
-import Graph from './Graph';
+import './charts.scss';
+import {SongHistoryContext} from '../../context/SongHistoryContext';
 import {ConfigContext} from '../../context/ConfigContext';
-import {getDatesBetween} from '../../functions/dateMappers';
+import {ResponsiveContainer, AreaChart, Area, XAxis, YAxis, Tooltip} from 'recharts';
+import {getDatesBetween, bucketSongTimes} from '../../functions/dateMappers';
+import {getGenreKey, getGenre2Key} from '../../functions/genres';
 
 const SongsByDate = () => {
-  const dataKey = 'date';
+  const {songHistory} = useContext(SongHistoryContext);
   const {config} = useContext(ConfigContext);
-  //let [datesBetween, setDatesBetween] = useState(
-  //getDatesBetween(new Date(config.timeStart), new Date(config.timeEnd)),
-  //);
-  let datesBetween = getDatesBetween(new Date(config.timeStart), new Date(config.timeEnd));
+  let [dateDataRC, setDateDataRC] = useState(null);
+  let [initialKey, setInitialKey] = useState(getGenreKey(config.genre, config.genre2));
+  let [secondaryKey, setSecondaryKey] = useState(getGenre2Key(config.genre, config.genre2));
+  let [timeEnd, setTimeEnd] = useState(new Date(config.timeEnd));
+  let [timeStart, setTimeStart] = useState(new Date(config.timeStart));
+  let [datesBetween] = useState(getDatesBetween(timeStart, timeEnd));
 
-  //useEffect(() => {
-  //setDatesBetween(getDatesBetween(new Date(config.timeStart), new Date(config.timeEnd)));
-  //}, [config.timeEnd, config.timeStart]);
+  useEffect(() => {
+    setTimeEnd(new Date(config.timeEnd));
+    setTimeStart(new Date(config.timeStart));
+  }, [config.timeEnd, config.timeStart]);
 
-  console.log('datesBetween');
-  console.log(datesBetween);
+  useEffect(() => {
+    let map = {};
+    let tempInitialKey = getGenreKey(config.genre, config.genre2);
+    let tempSecondaryKey = getGenre2Key(config.genre, config.genre2);
+    setInitialKey(tempInitialKey);
+    setSecondaryKey(tempSecondaryKey);
+
+    map[tempInitialKey] = bucketSongTimes(
+      'date',
+      datesBetween.length,
+      songHistory.songHistory,
+      config.genre,
+    );
+    map[tempSecondaryKey] = bucketSongTimes(
+      'date',
+      datesBetween.length,
+      songHistory.songHistory,
+      config.genre2,
+    );
+
+    let tempDateDataRC = [];
+    for (let i = 0; i < datesBetween.length; i++) {
+      let newDateObject = {
+        name: datesBetween[i],
+      };
+
+      newDateObject[tempInitialKey] = map[tempInitialKey][datesBetween[i]]
+        ? map[tempInitialKey][datesBetween[i]].length
+        : 0;
+
+      newDateObject[tempSecondaryKey] = map[tempSecondaryKey][datesBetween[i]]
+        ? map[tempSecondaryKey][datesBetween[i]].length
+        : 0;
+
+      tempDateDataRC.push(newDateObject);
+    }
+
+    setDateDataRC(tempDateDataRC);
+  }, [datesBetween, songHistory.songHistory, config.genre, config.genre2]);
+
   return (
     <>
       <div className="chart-container">
@@ -25,7 +69,17 @@ const SongsByDate = () => {
           <br /> <span className="per">&mdash;by&mdash;</span> <br />
           Date
         </h1>
-        <Graph dataKey={dataKey} dataKeyValues={datesBetween} />
+        <ResponsiveContainer>
+          <AreaChart data={dateDataRC}>
+            <XAxis dataKey="name" />
+            <YAxis />
+            <Tooltip />
+            <Area type="monotone" dataKey={initialKey} stroke="#7f4782" fill="#aa5c9f" />
+            {secondaryKey ? (
+              <Area type="monotone" dataKey={secondaryKey} stroke="#fd8b7b" fill="#e2598b" />
+            ) : null}
+          </AreaChart>
+        </ResponsiveContainer>
       </div>
     </>
   );

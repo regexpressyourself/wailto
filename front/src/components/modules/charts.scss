@@ -36,9 +36,9 @@ $max-width: 1920px;
   right: 5%;
   margin: 0 20px;
   z-index: 100;
-  &:hover {
-    z-index: 1000;
-  }
+  //&:hover {
+    //z-index: 1000;
+  //}
 }
 .recharts-responsive-container {
   min-height: 33vh;

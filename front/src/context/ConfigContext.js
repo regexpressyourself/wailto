@@ -3,6 +3,7 @@ import React from 'react';
 const ConfigContext = React.createContext();
 
 let initialConfig = {
+  prevTimeStart: localStorage.getItem('wt-prevTimeStart') || null,
   timeStart: localStorage.getItem('wt-timeStart') || new Date(),
   timeEnd: localStorage.getItem('wt-timeEnd') || new Date(),
   unixTimeStart: null,
@@ -69,8 +70,6 @@ const configReducer = (state, configAction) => {
         unixTimeStart: unixTimeStart,
       };
     case 'TIME_END':
-      //console.log('configAction.timeEnd');
-      //console.log(configAction.timeEnd);
       let newEnd = transformTimeEnd(stringToDate(configAction.timeEnd));
       let unixTimeEnd = Math.round(newEnd.getTime() / 1000);
       localStorage.setItem('wt-timeEnd', configAction.timeEnd);

@@ -1,6 +1,8 @@
-import React, {useContext} from 'react';
+import React, {useContext, useRef, useState, useEffect} from 'react';
 import DayPickerInput from 'react-day-picker/DayPickerInput';
+import {isGenre2} from '../../functions/genres';
 import {ConfigContext} from '../../context/ConfigContext';
+import {formIsValid} from './navControls';
 
 const getPrevTime = (timeStart, timeEnd) => {
   let distance = Math.abs(timeEnd - timeStart);
@@ -24,6 +26,43 @@ const formatDate = date => {
 
 const Dates = () => {
   const {config, configDispatch} = useContext(ConfigContext);
+  let [prevDateEl, setPrevDateEl] = useState(null);
+  let prevTimeCheckbox = useRef(null);
+
+  useEffect(() => {
+    if (isGenre2(config.genre, config.genre2)) {
+      setPrevDateEl(null);
+      configDispatch({type: 'PREV_TIME_START', prevTimeStart: null});
+      if (prevTimeCheckbox && prevTimeCheckbox.current) {
+        prevTimeCheckbox.current.checked = false;
+      }
+    } else {
+      setPrevDateEl(
+        <div className="input-wrapper input-wrapper--checkbox">
+          <input
+            ref={prevTimeCheckbox}
+            onChange={e => {
+              if (e.target.checked) {
+                let prevTime = getPrevTime(new Date(config.timeStart), new Date(config.timeEnd));
+                configDispatch({type: 'PREV_TIME_START', prevTimeStart: prevTime});
+                configDispatch({
+                  type: 'TRIGGER_STATE_UPDATE',
+                  triggerStateUpdate: true,
+                });
+              } else {
+                configDispatch({type: 'PREV_TIME_START', prevTimeStart: null});
+              }
+            }}
+            id="prev-time-checkbox"
+            name="prev-time-checkbox"
+            type="checkbox"
+          />
+          <label htmlFor="prev-time-checkbox">&nbsp;Compare to previous period?</label>
+        </div>,
+      );
+    }
+  }, [config.genre, config.timeStart, config.timeEnd, config.genre2, configDispatch]);
+
   return (
     <>
       <div className="nav__date-pickers nav__date-pickers--dates">
@@ -39,7 +78,7 @@ const Dates = () => {
             value={formatDate(config.timeStart)}
             placeholder="YYYY-M-D"
             onDayChange={e => {
-              if (e) {
+              if (formIsValid({...config, timeStart: e})) {
                 configDispatch({type: 'TIME_START', timeStart: new Date(e)});
               }
             }}
@@ -56,28 +95,13 @@ const Dates = () => {
             value={formatDate(config.timeEnd)}
             placeholder="YYYY-M-D"
             onDayChange={e => {
-              if (e) {
+              if (formIsValid({...config, timeEnd: e})) {
                 configDispatch({type: 'TIME_END', timeEnd: new Date(e)});
               }
             }}
           />
         </div>
-        <div className="input-wrapper input-wrapper--checkbox">
-          <input
-            onChange={e => {
-              if (e.target.checked) {
-                let prevTime = getPrevTime(new Date(config.timeStart), new Date(config.timeEnd));
-                configDispatch({type: 'PREV_TIME_START', prevTimeStart: prevTime});
-              } else {
-                configDispatch({type: 'PREV_TIME_START', prevTimeStart: null});
-              }
-            }}
-            id="prev-time-checkbox"
-            name="prev-time-checkbox"
-            type="checkbox"
-          />
-          <label htmlFor="prev-time-checkbox">&nbsp;Compare to previous period?</label>
-        </div>
+        {prevDateEl}
       </div>
     </>
   );

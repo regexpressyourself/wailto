@@ -8,6 +8,10 @@ const SongsByDate = () => {
 
   let dataKey = 'date';
   let datesBetween = getDatesBetween(new Date(config.timeStart), new Date(config.timeEnd));
+  let prevDatesBetween = null;
+  if (config.prevTimeStart) {
+    prevDatesBetween = getDatesBetween(new Date(config.prevTimeStart), new Date(config.timeStart));
+  }
 
   return (
     <div className="chart-container">
@@ -16,7 +20,11 @@ const SongsByDate = () => {
         <br /> <span className="per">&mdash;by&mdash;</span> <br />
         Date
       </h1>
-      <Graph dataKey={dataKey} dataKeyValues={datesBetween} />
+      <Graph
+        dataKey={dataKey}
+        dataKeyValues={datesBetween}
+        secondaryDataKeyValues={prevDatesBetween}
+      />
     </div>
   );
 };

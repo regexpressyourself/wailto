@@ -25,11 +25,22 @@ $max-width: 1920px;
     }
   }
 }
-.chart-container {
-  width: 100%;
-  padding: 20px 0 50px;
+.app .chart-container {
+  background-color: white;
+  border-radius: 5px;
+  margin: 0 10%;
+  max-width: 1200px;
+  padding: 2vw;
+  position: absolute;
+  left: 5%;
+  right: 5%;
+  margin: 0 20px;
+  z-index: 100;
+  &:hover {
+    z-index: 1000;
+  }
 }
-.recharts-responsive-container{
+.recharts-responsive-container {
   min-height: 33vh;
   max-height: 33vh;
   max-width: 1200px;

@@ -3,66 +3,117 @@ import './charts.scss';
 import {SongHistoryContext} from '../../context/SongHistoryContext';
 import {ConfigContext} from '../../context/ConfigContext';
 import {ResponsiveContainer, AreaChart, Area, XAxis, YAxis, Tooltip} from 'recharts';
-import {bucketSongTimes} from '../../functions/dateMappers';
+import {accessibleJsTime, bucketSongTimes} from '../../functions/dateMappers';
 import {getGenreKey, getGenre2Key} from '../../functions/genres';
 
-const Graph = ({dataKey, dataKeyValues}) => {
+const Graph = ({dataKey, dataKeyValues, secondaryDataKeyValues}) => {
   const {songHistory} = useContext(SongHistoryContext);
   const {config} = useContext(ConfigContext);
 
   let [chartElement, setChartElement] = useState();
 
   useEffect(() => {
-    const basicKey = 'song count';
-    const genreKey = getGenreKey(config.genre, config.genre2);
-    const genre2Key = getGenre2Key(config.genre, config.genre2);
+    let primaryKey = getGenreKey(config.genre, config.genre2);
+    let secondaryKey = getGenre2Key(config.genre, config.genre2);
 
-    const basicData = bucketSongTimes(dataKey, dataKeyValues, songHistory.songHistory, null);
-    const genreData = bucketSongTimes(
+    let primaryData = bucketSongTimes(
       dataKey,
       dataKeyValues,
       songHistory.songHistory,
       config.genre,
     );
-    const genre2Data = bucketSongTimes(
-      dataKey,
-      dataKeyValues,
-      songHistory.songHistory,
-      config.genre2,
-    );
+
+    let secondaryData = {};
+    if (secondaryKey) {
+      secondaryData = bucketSongTimes(
+        dataKey,
+        dataKeyValues,
+        songHistory.songHistory,
+        config.genre2,
+      );
+    } else if (config.prevTimeStart && songHistory.prevSongHistory) {
+      let prevTimeStartString = accessibleJsTime(config.prevTimeStart).dateAsString;
+      let timeStartString = accessibleJsTime(config.timeStart).dateAsString;
+      let timeEndString = accessibleJsTime(config.timeEnd).dateAsString;
+      primaryKey = `${timeStartString} - ${timeEndString}`;
+      secondaryKey = `${prevTimeStartString} - ${timeStartString}`;
+
+      secondaryData = bucketSongTimes(
+        dataKey,
+        dataKeyValues,
+        songHistory.prevSongHistory,
+        config.genre,
+      );
+    }
 
     let rcData = [];
+    let secondaryRcData = [];
     for (let i = 0; i < dataKeyValues.length; i++) {
-      let dataName = dataKeyValues[i];
       let newDayObject = {};
+      let secondNewDayObject = {};
+
+      let dataName = dataKeyValues[i];
       newDayObject['name'] = dataName;
-      newDayObject[basicKey] = basicData[dataName] ? basicData[dataName].length : 0;
-      newDayObject[genreKey] = genreData[dataName] ? genreData[dataName].length : 0;
-      newDayObject[genre2Key] =
-        genre2Data && genre2Data[dataName] ? genre2Data[dataName].length : 0;
+      newDayObject[primaryKey] = primaryData[dataName] ? primaryData[dataName].length : 0;
+
+      if (secondaryDataKeyValues && secondaryKey != null) {
+        let secondDataName = secondaryDataKeyValues[i];
+        secondNewDayObject['name'] = secondDataName;
+        secondNewDayObject[secondaryKey] = secondaryData[secondDataName]
+          ? secondaryData[secondDataName].length
+          : 0;
+      } else {
+        newDayObject[secondaryKey] = secondaryData[dataName] ? secondaryData[dataName].length : 0;
+      }
 
       rcData.push(newDayObject);
+
+      if (secondNewDayObject && secondNewDayObject.name) {
+        secondaryRcData.push(secondNewDayObject);
+      }
     }
 
     setChartElement(
-      <ResponsiveContainer>
-        <AreaChart data={rcData}>
-          <XAxis dataKey="name" />
-          <YAxis />
-          <Tooltip />
-          {basicKey ? (
-            <Area type="monotone" dataKey={basicKey} stroke="#fd8b7b" fill="#e2598b" />
-          ) : null}
-          {genreKey ? (
-            <Area type="monotone" dataKey={genreKey} stroke="#7f4782" fill="#aa5c9f" />
-          ) : null}
-          {genre2Key ? (
-            <Area type="monotone" dataKey={genre2Key} stroke="#fd8b7b" fill="#e2598b" />
-          ) : null}
-        </AreaChart>
-      </ResponsiveContainer>,
+      <>
+        <ResponsiveContainer>
+          <AreaChart data={rcData}>
+            <XAxis dataKey="name" />
+            <YAxis />
+            <Tooltip />
+            {primaryKey ? (
+              <Area type="monotone" dataKey={primaryKey} stroke="#fd8b7b" fill="#e2598b" />
+            ) : null}
+            {secondaryKey && secondaryRcData.length === 0 ? (
+              <Area type="monotone" dataKey={secondaryKey} stroke="#7f4782" fill="#aa5c9f" />
+            ) : null}
+          </AreaChart>
+        </ResponsiveContainer>
+        {secondaryRcData.length > 0 ? (
+          <ResponsiveContainer>
+            <AreaChart data={secondaryRcData}>
+              <XAxis dataKey="name" />
+              <YAxis />
+              <Tooltip />
+              {secondaryKey ? (
+                <Area type="monotone" dataKey={secondaryKey} stroke="#7f4782" fill="#aa5c9f" />
+              ) : null}
+            </AreaChart>
+          </ResponsiveContainer>
+        ) : null}
+      </>,
     );
-  }, [config.genre, config.genre2, dataKey, dataKeyValues, songHistory.songHistory]);
+  }, [
+    secondaryDataKeyValues,
+    config.genre,
+    config.genre2,
+    dataKey,
+    dataKeyValues,
+    songHistory.songHistory,
+    songHistory.prevSongHistory,
+    config.timeStart,
+    config.timeEnd,
+    config.prevTimeStart,
+  ]);
 
   return <>{chartElement}</>;
 };

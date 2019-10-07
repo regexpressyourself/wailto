@@ -50,6 +50,7 @@ const accessibleTime = unixTime => {
     hour: hour,
     minutes: minutes,
     seconds: seconds,
+    dateAsString: `${dowName} ${month} ${day}, ${year}`,
   };
 };
 const accessibleJsTime = jsDate => {
@@ -84,6 +85,7 @@ const accessibleJsTime = jsDate => {
     hour: hour,
     minutes: minutes,
     seconds: seconds,
+    dateAsString: `${month} ${day}`,
   };
 };
 const getDatesBetween = (start, end) => {

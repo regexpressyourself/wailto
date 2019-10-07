@@ -50,7 +50,7 @@ const formIsValid = ({username, timeStart, timeEnd}) => {
 
   // check dates
   //if (timeStart > timeEnd || typeof timeStart === 'string' || typeof timeEnd === 'string') {
-  if (new Date(timeStart) > new Date(timeEnd)) {
+  if (!timeStart || !timeEnd || new Date(timeStart) > new Date(timeEnd)) {
     inputAttention(true, 'dates');
     isValid = false;
   } else {

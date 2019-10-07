@@ -25,6 +25,7 @@ const App = ({appState, history}) => {
     localStorage.getItem('wt-genre2') === 'null' ? null : localStorage.getItem('wt-genre2');
 
   let initialConfig = {
+    prevTimeStart: localStorage.getItem('wt-prevTimeStart') || null,
     timeStart: localStorage.getItem('wt-timeStart') || weekAgo,
     timeEnd: localStorage.getItem('wt-timeEnd') || yesterday,
     username: localStorage.getItem('wt-username') || '',
@@ -36,6 +37,7 @@ const App = ({appState, history}) => {
   const [songHistory, songHistoryDispatch] = useReducer(songHistoryReducer, {});
 
   if (window.location.href.includes('zookeeprr')) {
+    configDispatch({type: 'PREV_TIME_START', prevTimeStart: initialConfig.prevTimeStart});
     configDispatch({type: 'TIME_START', timeStart: initialConfig.timeStart});
     configDispatch({type: 'TIME_END', timeEnd: initialConfig.timeEnd});
     configDispatch({type: 'GENRE', genre: initialConfig.genre});
@@ -71,16 +73,35 @@ const App = ({appState, history}) => {
 
     setContent(<Loading />);
     setUserInfo(<UserInfo />);
-    axios
-      .get('/history', {
+    let historyRequests = [];
+    historyRequests.push(
+      axios.get('/history', {
         params: {
           username: config.username,
-          to: config.unixTimeEnd,
           from: config.unixTimeStart,
+          to: config.unixTimeEnd,
         },
-      })
-      .then(data => {
-        songHistoryDispatch({songHistory: data.data});
+      }),
+    );
+    if (config.unixPrevTimeStart) {
+      historyRequests.push(
+        axios.get('/history', {
+          params: {
+            username: config.username,
+            from: config.unixPrevTimeStart,
+            to: config.unixTimeStart,
+          },
+        }),
+      );
+    }
+
+    Promise.all(historyRequests)
+      .then(([data, prevData]) => {
+        songHistoryDispatch({type: 'SONG_HISTORY', songHistory: data.data});
+        if (prevData) {
+          songHistoryDispatch({type: 'PREV_SONG_HISTORY', prevSongHistory: prevData.data});
+        }
+
         switch (config.appState) {
           case 'updating':
             setContent(<Loading />);
@@ -110,6 +131,7 @@ const App = ({appState, history}) => {
         });
       })
       .catch(e => {
+        console.log(e);
         try {
           document.querySelector('footer').style.display = 'none';
           document.querySelector('.main-header').style.display = 'none';
@@ -129,6 +151,7 @@ const App = ({appState, history}) => {
     config.appState,
     config.username,
     config.unixTimeEnd,
+    config.unixPrevTimeStart,
     config.unixTimeStart,
   ]);
 

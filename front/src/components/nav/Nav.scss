@@ -194,6 +194,9 @@ button.nav__toggle-btn {
     cubic-bezier(0.25, 0.8, 0.25, 1) box-shadow 0.4s cubic-bezier(0.25, 0.8, 0.25, 1)
     background-color 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
   transform: scale3d(1, 1, 1);
+  @media screen and (max-width: 768px) {
+    margin-left: 0;
+  }
   &.animated {
     @media screen and (min-width: 768px) {
       animation: jello-horizontal 1s both 3;

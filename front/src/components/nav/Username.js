@@ -30,7 +30,6 @@ const Username = () => {
         </a>
       </label>
       <input
-        autoFocus={true}
         name="username"
         className="username-input"
         placeholder="Last.fm username"

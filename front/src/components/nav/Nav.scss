@@ -177,6 +177,7 @@ div.input-wrapper--checkbox {
 }
 button.nav__back-btn,
 button.nav__toggle-btn {
+  z-index: 2000;
   align-self: flex-end;
   cursor: pointer;
   background-color: #e2598b;

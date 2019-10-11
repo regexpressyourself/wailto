@@ -11,10 +11,14 @@ const Graph = ({dataKey, dataKeyValues, secondaryDataKeyValues}) => {
   const {config} = useContext(ConfigContext);
 
   let [chartElement, setChartElement] = useState();
+  let [title1, setTitle1] = useState(null);
+  let [title2, setTitle2] = useState(null);
 
   useEffect(() => {
     let primaryKey = getGenreKey(config.genre, config.genre2);
     let secondaryKey = getGenre2Key(config.genre, config.genre2);
+    setTitle1(primaryKey);
+    setTitle2(secondaryKey);
 
     let primaryData = bucketSongTimes(
       dataKey,
@@ -32,11 +36,16 @@ const Graph = ({dataKey, dataKeyValues, secondaryDataKeyValues}) => {
         config.genre2,
       );
     } else if (config.prevTimeStart && songHistory.prevSongHistory) {
+
       let prevTimeStartString = accessibleJsTime(config.prevTimeStart).dateAsString;
       let timeStartString = accessibleJsTime(config.timeStart).dateAsString;
+      let timeStartLess1String = accessibleJsTime(config.timeStart, true).dateAsString;
       let timeEndString = accessibleJsTime(config.timeEnd).dateAsString;
-      primaryKey = `${timeStartString} - ${timeEndString}`;
-      secondaryKey = `${prevTimeStartString} - ${timeStartString}`;
+      setTitle1(`${timeStartString} - ${timeEndString}`);
+      setTitle2(`${prevTimeStartString} - ${timeStartLess1String}`);
+
+      primaryKey = 'song count';
+      secondaryKey = 'song count';
 
       secondaryData = bucketSongTimes(
         dataKey,
@@ -56,15 +65,16 @@ const Graph = ({dataKey, dataKeyValues, secondaryDataKeyValues}) => {
       newDayObject['name'] = dataName;
       newDayObject[primaryKey] = primaryData[dataName] ? primaryData[dataName].length : 0;
 
+      let secondDataName = dataName;
       if (secondaryDataKeyValues && secondaryKey != null) {
-        let secondDataName = secondaryDataKeyValues[i];
-        secondNewDayObject['name'] = secondDataName;
-        secondNewDayObject[secondaryKey] = secondaryData[secondDataName]
-          ? secondaryData[secondDataName].length
-          : 0;
-      } else {
-        newDayObject[secondaryKey] = secondaryData[dataName] ? secondaryData[dataName].length : 0;
+        secondDataName = secondaryDataKeyValues[i];
       }
+      //newDayObject[secondaryKey] = secondaryData[dataName] ? secondaryData[dataName].length : 0;
+
+      secondNewDayObject['name'] = secondDataName;
+      secondNewDayObject[secondaryKey] = secondaryData[secondDataName]
+        ? secondaryData[secondDataName].length
+        : 0;
 
       rcData.push(newDayObject);
 
@@ -75,6 +85,7 @@ const Graph = ({dataKey, dataKeyValues, secondaryDataKeyValues}) => {
 
     setChartElement(
       <>
+        <h2>{title1}</h2>
         <ResponsiveContainer>
           <AreaChart data={rcData}>
             <XAxis dataKey="name" />
@@ -89,20 +100,25 @@ const Graph = ({dataKey, dataKeyValues, secondaryDataKeyValues}) => {
           </AreaChart>
         </ResponsiveContainer>
         {secondaryRcData.length > 0 ? (
-          <ResponsiveContainer>
-            <AreaChart data={secondaryRcData}>
-              <XAxis dataKey="name" />
-              <YAxis />
-              <Tooltip />
-              {secondaryKey ? (
-                <Area type="monotone" dataKey={secondaryKey} stroke="#7f4782" fill="#aa5c9f" />
-              ) : null}
-            </AreaChart>
-          </ResponsiveContainer>
+          <>
+            <h2>{title2}</h2>
+            <ResponsiveContainer>
+              <AreaChart data={secondaryRcData}>
+                <XAxis dataKey="name" />
+                <YAxis />
+                <Tooltip />
+                {secondaryKey ? (
+                  <Area type="monotone" dataKey={secondaryKey} stroke="#7f4782" fill="#aa5c9f" />
+                ) : null}
+              </AreaChart>
+            </ResponsiveContainer>
+          </>
         ) : null}
       </>,
     );
   }, [
+    title1,
+    title2,
     secondaryDataKeyValues,
     config.genre,
     config.genre2,

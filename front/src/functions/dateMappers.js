@@ -5,7 +5,7 @@ const months = () => {
   return ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 };
 
-const hourToAmpm = hour => {
+const hourToAmpm = (hour) => {
   let meridiem = 'am';
 
   if (hour >= 12) {
@@ -18,7 +18,7 @@ const hourToAmpm = hour => {
   return hour + meridiem;
 };
 
-const accessibleTime = unixTime => {
+const accessibleTime = (unixTime) => {
   let date = new Date(unixTime * 1000);
   let year = date.getFullYear();
   let month = months()[date.getMonth()];
@@ -53,8 +53,12 @@ const accessibleTime = unixTime => {
     dateAsString: `${dowName} ${month} ${day}, ${year}`,
   };
 };
-const accessibleJsTime = jsDate => {
+const accessibleJsTime = (jsDate, isLess1 = false) => {
   let date = jsDate;
+  if (isLess1) {
+    date = new Date();
+    date.setDate(new Date(jsDate).getDate() - 1);
+  }
   let year = date.getFullYear();
   let month = months()[date.getMonth()];
   let day = date.getDate();
@@ -135,7 +139,7 @@ const serializeSongList = (songList, bucketKey) => {
 };
 
 const bucketSongTimes = (bucketKey, bucketKeyValues, songList, genre = null) => {
-  songList = songList.filter(song => matchGenre(song, genre));
+  songList = songList.filter((song) => matchGenre(song, genre));
   return serializeSongList(songList, bucketKey);
 };
 

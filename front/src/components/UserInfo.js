@@ -56,7 +56,7 @@ const UserInfo = () => {
           <p className="user-info__more-info">
             {prevDateText}
             &nbsp; &mdash; &nbsp;
-            {accessibleJsTime(config.timeStart).date}
+            {accessibleJsTime(config.timeStart, true).date}
           </p>
         )}
       </div>

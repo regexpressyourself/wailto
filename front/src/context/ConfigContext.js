@@ -15,7 +15,7 @@ let initialConfig = {
   configState: 1,
 };
 
-const stringToDate = possibleString => {
+const stringToDate = (possibleString) => {
   if (typeof possibleString === 'string') {
     return new Date(possibleString);
   } else {
@@ -23,7 +23,7 @@ const stringToDate = possibleString => {
   }
 };
 
-const transformTimeEnd = timeEnd => {
+const transformTimeEnd = (timeEnd) => {
   // sets the end time to 11:59:59 on selected date
   let newEnd = new Date(timeEnd.getTime());
   newEnd.setDate(newEnd.getDate());
@@ -42,6 +42,9 @@ const configReducer = (state, configAction) => {
   state.prevTimeStart = stringToDate(state.prevTimeStart);
   state.unixTimeStart = Math.round(state.timeStart.getTime() / 1000);
   state.unixTimeEnd = Math.round(state.timeEnd.getTime() / 1000);
+  state.unixPrevTimeStart = state.prevTimeStart
+    ? Math.round(state.prevTimeStart.getTime() / 1000)
+    : null;
 
   switch (configAction.type) {
     case 'USERNAME':

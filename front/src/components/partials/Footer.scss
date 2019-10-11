@@ -31,11 +31,11 @@ footer {
   text-align: left;
   justify-content: space-between;
   align-items: center;
-  padding: 100px 5vw 100px;
-  margin: 0;
+  padding: 12vh 5vw;
+  margin: -10vh 0 0;
   flex-wrap: wrap;
   border-top: 3px solid rgba(170, 92, 159, 0.5);
-  background-color: rgba(253, 208, 67, 0.1);
+  background-color: #FFFAEC;
   @media screen and (max-width: 768px) {
     flex-direction: column;
     justify-content: center;

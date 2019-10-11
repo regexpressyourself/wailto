@@ -6,7 +6,8 @@ import {isGenre1, isGenre2} from '../functions/genres';
 const UserInfo = () => {
   const {config} = useContext(ConfigContext);
   let [genreInfo, setGenreInfo] = useState(null);
-  let [prevDateEl, setPrevDateEl] = useState(null);
+  let [prevDateDisplay, setPrevDateDisplay] = useState(false);
+  let [prevDateText, setPrevDateText] = useState(false);
 
   useEffect(() => {
     let isGenre1Eval = isGenre1(config.genre, config.genre2);
@@ -34,19 +35,13 @@ const UserInfo = () => {
   }, [config.genre, config.genre2]);
 
   useEffect(() => {
-    if (config.prevTimeStart != null) {
-      setPrevDateEl(
-        <p className="user-info__more-info">
-          {accessibleJsTime(config.timeStart).date}
-          &nbsp; &mdash; &nbsp;
-          {accessibleJsTime(config.timeEnd).date}
-        </p>,
-      );
+    if (config.prevTimeStart != null && !isNaN(config.prevTimeStart)) {
+      setPrevDateDisplay(true);
+      setPrevDateText(accessibleJsTime(config.prevTimeStart).date);
+    } else {
+      setPrevDateDisplay(false);
     }
-    else {
-      setPrevDateEl(null);
-    }
-  }, [config.prevTimeStart]);
+  }, [config.prevTimeStart, config.timeStart]);
 
   return (
     <section className="user-info">
@@ -57,7 +52,13 @@ const UserInfo = () => {
           &nbsp; &mdash; &nbsp;
           {accessibleJsTime(config.timeEnd).date}
         </p>
-        {prevDateEl}
+        {!prevDateDisplay ? null : (
+          <p className="user-info__more-info">
+            {prevDateText}
+            &nbsp; &mdash; &nbsp;
+            {accessibleJsTime(config.timeStart).date}
+          </p>
+        )}
       </div>
       {genreInfo}
     </section>

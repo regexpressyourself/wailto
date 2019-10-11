@@ -131,7 +131,6 @@ const App = ({appState, history}) => {
         });
       })
       .catch(e => {
-        console.log(e);
         try {
           document.querySelector('footer').style.display = 'none';
           document.querySelector('.main-header').style.display = 'none';

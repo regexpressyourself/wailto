@@ -12,7 +12,7 @@ const getPrevTime = (timeStart, timeEnd) => {
   return prevTime;
 };
 
-const formatDate = date => {
+const formatDate = (date) => {
   let d = new Date(date),
     month = '' + (d.getMonth() + 1),
     day = '' + d.getDate(),
@@ -26,44 +26,27 @@ const formatDate = date => {
 
 const Dates = () => {
   const {config, configDispatch} = useContext(ConfigContext);
-  let [prevDateEl, setPrevDateEl] = useState(null);
+  let [prevDateDisplay, setPrevDateDisplay] = useState(null);
   let prevTimeCheckbox = useRef(null);
 
   useEffect(() => {
     if (isGenre2(config.genre, config.genre2)) {
-      setPrevDateEl(null);
+      setPrevDateDisplay(false);
       configDispatch({type: 'PREV_TIME_START', prevTimeStart: null});
       if (prevTimeCheckbox && prevTimeCheckbox.current) {
         prevTimeCheckbox.current.checked = false;
       }
     } else {
-      let prevTime = getPrevTime(new Date(config.timeStart), new Date(config.timeEnd));
-      configDispatch({type: 'PREV_TIME_START', prevTimeStart: prevTime});
-      setPrevDateEl(
-        <div className="input-wrapper input-wrapper--checkbox">
-          <input
-            ref={prevTimeCheckbox}
-            onChange={e => {
-              if (e.target.checked) {
-                let prevTime = getPrevTime(new Date(config.timeStart), new Date(config.timeEnd));
-                configDispatch({type: 'PREV_TIME_START', prevTimeStart: prevTime});
-                configDispatch({
-                  type: 'TRIGGER_STATE_UPDATE',
-                  triggerStateUpdate: true,
-                });
-              } else {
-                configDispatch({type: 'PREV_TIME_START', prevTimeStart: null});
-              }
-            }}
-            id="prev-time-checkbox"
-            name="prev-time-checkbox"
-            type="checkbox"
-          />
-          <label htmlFor="prev-time-checkbox">&nbsp;Compare to previous period?</label>
-        </div>,
-      );
+      setPrevDateDisplay(true);
     }
-  }, [config.genre, config.timeStart, config.timeEnd, config.genre2, configDispatch]);
+  }, [
+    config.genre,
+    //config.timeStart,
+    config.timeEnd,
+    //config.prevTimeStart,
+    config.genre2,
+    configDispatch,
+  ]);
 
   return (
     <>
@@ -74,12 +57,12 @@ const Dates = () => {
             style={{width: '100%'}}
             dayPickerProps={{
               selectedDays: config.timeStart,
-              disabledDays: day =>
+              disabledDays: (day) =>
                 day > config.timeEnd || day < new Date().setDate(new Date().getDate() - 62),
             }}
             value={formatDate(config.timeStart)}
             placeholder="YYYY-M-D"
-            onDayChange={e => {
+            onDayChange={(e) => {
               if (formIsValid({...config, timeStart: e})) {
                 configDispatch({type: 'TIME_START', timeStart: new Date(e)});
               }
@@ -92,18 +75,42 @@ const Dates = () => {
             style={{width: '100%'}}
             dayPickerProps={{
               selectedDays: config.timeEnd,
-              disabledDays: day => day > new Date() || day < config.timeStart,
+              disabledDays: (day) => day > new Date() || day < config.timeStart,
             }}
             value={formatDate(config.timeEnd)}
             placeholder="YYYY-M-D"
-            onDayChange={e => {
+            onDayChange={(e) => {
               if (formIsValid({...config, timeEnd: e})) {
                 configDispatch({type: 'TIME_END', timeEnd: new Date(e)});
               }
             }}
           />
         </div>
-        {prevDateEl}
+
+        {!prevDateDisplay ? null : (
+          <div className="input-wrapper input-wrapper--checkbox input-wrapper--prev-date ">
+            <input
+              ref={prevTimeCheckbox}
+              checked={config.prevTimeStart != null && !isNaN(config.prevTimeStart)}
+              onChange={(e) => {
+                if (e.target.checked) {
+                  let prevTime = getPrevTime(new Date(config.timeStart), new Date(config.timeEnd));
+                  configDispatch({type: 'PREV_TIME_START', prevTimeStart: prevTime});
+                  configDispatch({
+                    type: 'TRIGGER_STATE_UPDATE',
+                    triggerStateUpdate: true,
+                  });
+                } else {
+                  configDispatch({type: 'PREV_TIME_START', prevTimeStart: null});
+                }
+              }}
+              id="prev-time-checkbox"
+              name="prev-time-checkbox"
+              type="checkbox"
+            />
+            <label htmlFor="prev-time-checkbox">&nbsp;Compare to previous period?</label>
+          </div>
+        )}
       </div>
     </>
   );

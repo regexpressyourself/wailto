@@ -23,6 +23,13 @@ const Nav = ({history, showMessages, showBack, defaultStart, defaultEnd}) => {
   const nav = useRef(null);
   const navSubmitBtn = useRef(null);
 
+  const setOutsideClickListener = (e) => {
+    if (e.target && !e.target.closest('nav')) {
+      setIsExpanded(false);
+      document.removeEventListener('click', setOutsideClickListener);
+    }
+  };
+
   useEffect(() => {
     if (window.location.href.includes('dashboard') && !formIsValid(config)) {
       setIsExpanded(true);
@@ -64,6 +71,7 @@ const Nav = ({history, showMessages, showBack, defaultStart, defaultEnd}) => {
 
   useEffect(() => {
     if (isExpanded) {
+      document.addEventListener('click', setOutsideClickListener);
       setButtonText(<X />);
       expandNav(true);
       setHelpMessageType(showMessages ? 'tutorial' : null);
@@ -89,7 +97,7 @@ const Nav = ({history, showMessages, showBack, defaultStart, defaultEnd}) => {
             tabIndex="0"
             ref={navToggleBtn}
             className={`nav__toggle-btn ${buttonAnimation ? 'animated' : ''}`}
-            onClick={e => {
+            onClick={(e) => {
               setIsExpanded(!isExpanded);
               setButtonAnimation(false);
             }}>
@@ -104,7 +112,7 @@ const Nav = ({history, showMessages, showBack, defaultStart, defaultEnd}) => {
             tabIndex="0"
             ref={navSubmitBtn}
             className="submit-btn"
-            onClick={e => {
+            onClick={(e) => {
               triggerUpdate();
             }}>
             What Am I Listening to?

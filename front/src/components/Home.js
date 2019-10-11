@@ -11,7 +11,11 @@ const Home = () => {
   useEffect(() => {
     setTimeout(() => {
       if (localStorage.getItem('wt-username') === null) {
-        document.querySelector('.btn-link--demo').classList.add('entry');
+        try {
+          document.querySelector('.btn-link--demo').classList.add('entry');
+        } catch {
+          console.error("can't add demo animation");
+        }
       }
     }, 10000);
   }, []);

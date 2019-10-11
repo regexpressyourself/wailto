@@ -37,6 +37,8 @@ const Dates = () => {
         prevTimeCheckbox.current.checked = false;
       }
     } else {
+      let prevTime = getPrevTime(new Date(config.timeStart), new Date(config.timeEnd));
+      configDispatch({type: 'PREV_TIME_START', prevTimeStart: prevTime});
       setPrevDateEl(
         <div className="input-wrapper input-wrapper--checkbox">
           <input

@@ -39,6 +39,9 @@ $max-width: 1920px;
   //&:hover {
     //z-index: 1000;
   //}
+  &.chart-container--full-history{
+    position: static;
+  }
 }
 .recharts-responsive-container {
   min-height: 33vh;

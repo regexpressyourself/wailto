@@ -67,7 +67,7 @@ const App = ({appState, history}) => {
       });
     }
 
-    if (!config.triggerStateUpdate) {
+    if (!config.triggerStateUpdate || !config.username) {
       return;
     }
 

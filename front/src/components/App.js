@@ -89,7 +89,8 @@ const App = ({appState, history}) => {
           params: {
             username: config.username,
             from: config.unixPrevTimeStart,
-            to: config.unixTimeStart,
+            // subtract one day's worth of seconds to get non-inclusive date range
+            to: config.unixTimeStart - 86400,
           },
         }),
       );

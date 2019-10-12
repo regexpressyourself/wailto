@@ -12,7 +12,7 @@ const SongsByHour = () => {
   return (
     <div className="chart-container">
       <h1 className="chart-heading">
-        Song Listens
+        Songs
         <br /> <span className="per">&mdash;by&mdash;</span> <br />
         Hour of Day
       </h1>

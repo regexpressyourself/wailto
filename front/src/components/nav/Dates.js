@@ -6,7 +6,10 @@ import {formIsValid} from './navControls';
 
 const getPrevTime = (timeStart, timeEnd) => {
   let distance = Math.abs(timeEnd - timeStart);
-  let daysDistance = Math.floor(distance / (1000 * 60 * 60 * 24 + 1)) + 1;
+  let daysDistance = Math.floor(distance / (1000 * 60 * 60 * 24 + 1)) + 2;
+  if (distance === 0) {
+    daysDistance = 1;
+  }
   let prevTime = new Date(timeStart);
   prevTime.setDate(prevTime.getDate() - daysDistance);
   return prevTime;
@@ -28,6 +31,15 @@ const Dates = () => {
   const {config, configDispatch} = useContext(ConfigContext);
   let [prevDateDisplay, setPrevDateDisplay] = useState(null);
   let prevTimeCheckbox = useRef(null);
+
+  useEffect(() => {
+    let prevTime = getPrevTime(new Date(config.timeStart), new Date(config.timeEnd));
+    configDispatch({type: 'PREV_TIME_START', prevTimeStart: prevTime});
+    configDispatch({
+      type: 'TRIGGER_STATE_UPDATE',
+      triggerStateUpdate: true,
+    });
+  }, [configDispatch, config.timeStart, config.timeEnd]);
 
   useEffect(() => {
     if (isGenre2(config.genre, config.genre2)) {

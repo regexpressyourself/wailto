@@ -54,10 +54,12 @@ const accessibleTime = (unixTime) => {
   };
 };
 const accessibleJsTime = (jsDate, isLess1 = false) => {
-  let date = jsDate;
+  let date = new Date(jsDate);
   if (isLess1) {
-    date = new Date();
-    date.setDate(new Date(jsDate).getDate() - 1);
+    let dateOffset = 24 * 60 * 60 * 1000;
+    let newDate = new Date();
+    newDate.setTime(date.getTime() - dateOffset);
+    date = newDate;
   }
   let year = date.getFullYear();
   let month = months()[date.getMonth()];
@@ -78,6 +80,7 @@ const accessibleJsTime = (jsDate, isLess1 = false) => {
   let time = ampmHour + ':' + minutes + meridiem;
 
   return {
+    jsDate: new Date(date),
     date: `${month} ${day}, ${year}`,
     time: time,
     month: month,

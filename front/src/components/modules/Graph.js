@@ -36,11 +36,11 @@ const Graph = ({dataKey, dataKeyValues, secondaryDataKeyValues}) => {
         config.genre2,
       );
     } else if (config.prevTimeStart && songHistory.prevSongHistory) {
-
       let prevTimeStartString = accessibleJsTime(config.prevTimeStart).dateAsString;
       let timeStartString = accessibleJsTime(config.timeStart).dateAsString;
       let timeStartLess1String = accessibleJsTime(config.timeStart, true).dateAsString;
       let timeEndString = accessibleJsTime(config.timeEnd).dateAsString;
+
       setTitle1(`${timeStartString} - ${timeEndString}`);
       setTitle2(`${prevTimeStartString} - ${timeStartLess1String}`);
 
@@ -78,14 +78,14 @@ const Graph = ({dataKey, dataKeyValues, secondaryDataKeyValues}) => {
 
       rcData.push(newDayObject);
 
-      if (secondNewDayObject && secondNewDayObject.name) {
+      if (secondNewDayObject && secondNewDayObject.name && secondaryKey) {
         secondaryRcData.push(secondNewDayObject);
       }
     }
 
     setChartElement(
       <>
-        <h2>{title1}</h2>
+        <h2>{title2 ? title1 : null}</h2>
         <ResponsiveContainer>
           <AreaChart data={rcData}>
             <XAxis dataKey="name" />

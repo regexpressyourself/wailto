@@ -24,11 +24,18 @@ const Nav = ({history, showMessages, showBack, defaultStart, defaultEnd}) => {
   const navSubmitBtn = useRef(null);
 
   const setOutsideClickListener = (e) => {
-    if (e.target && !e.target.closest('nav')) {
+    if (e.target && !e.target.closest('nav') && !e.target.closest('button')) {
       setIsExpanded(false);
-      document.removeEventListener('click', setOutsideClickListener);
     }
   };
+
+  useEffect(() => {
+    document.addEventListener('click', setOutsideClickListener);
+
+    return () => {
+      document.removeEventListener('click', setOutsideClickListener);
+    };
+  }, []);
 
   useEffect(() => {
     if (window.location.href.includes('dashboard') && !formIsValid(config)) {
@@ -71,7 +78,6 @@ const Nav = ({history, showMessages, showBack, defaultStart, defaultEnd}) => {
 
   useEffect(() => {
     if (isExpanded) {
-      document.addEventListener('click', setOutsideClickListener);
       setButtonText(<X />);
       expandNav(true);
       setHelpMessageType(showMessages ? 'tutorial' : null);

@@ -48,7 +48,7 @@ const FullSongHistory = () => {
 
   return (
     <div className="chart-container chart-container--full-history">
-      <h1 className="chart-heading">Every Song In History</h1>
+      <h1 className="chart-heading">All {config.username}'s Songs</h1>
       {songHistoryElements}
     </div>
   );

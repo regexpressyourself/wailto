@@ -1,4 +1,6 @@
+DROP TABLE hist_coverage;
 DROP TABLE histcoverage;
+DROP TABLE song_history;
 DROP TABLE songhistory;
 DROP TABLE songs;
 DROP TABLE users;

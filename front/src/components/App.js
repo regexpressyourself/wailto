@@ -11,7 +11,7 @@ import FullSongHistory from './modules/FullSongHistory';
 import SongsByDate from './modules/SongsByDate';
 import SongsByDow from './modules/SongsByDow';
 import SongsByHour from './modules/SongsByHour';
-import ArtistPie from './modules/ArtistPie';
+import GenrePie from './modules/GenrePie';
 import Error from './Error';
 import './App.scss';
 
@@ -124,9 +124,9 @@ const App = ({appState, history}) => {
           case 'history':
             setContent(<FullSongHistory />);
             break;
-          case 'artist-pie':
+          case 'genre-pie':
             configDispatch({type: 'ABBREVIATED', abbreviated: true});
-            setContent(<ArtistPie />);
+            setContent(<GenrePie />);
             break;
           case 'tutorial':
           default:

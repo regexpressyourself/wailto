@@ -1,10 +1,10 @@
 import React, {useContext, useState, useEffect} from 'react';
 import PieGraph from './PieGraph';
 import {SongHistoryContext} from '../../context/SongHistoryContext';
-import {ConfigContext} from '../../context/ConfigContext';
+//import {ConfigContext} from '../../context/ConfigContext';
 
-const ArtistPie = () => {
-  const {config, configDispatch} = useContext(ConfigContext);
+const GenrePie = () => {
+  //const {config, configDispatch} = useContext(ConfigContext);
   const {songHistory} = useContext(SongHistoryContext);
   let [pieData, setPieData] = useState(null);
 
@@ -40,4 +40,4 @@ const ArtistPie = () => {
   );
 };
 
-export default ArtistPie;
+export default GenrePie;

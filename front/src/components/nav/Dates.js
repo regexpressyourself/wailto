@@ -31,7 +31,12 @@ const formatDate = (date) => {
 const Dates = () => {
   const {config, configDispatch} = useContext(ConfigContext);
   let [prevDateDisplay, setPrevDateDisplay] = useState(null);
+  let [abbreviated, setAbbreviated] = useState(false);
   let prevTimeCheckbox = useRef(null);
+
+  useEffect(() => {
+    setAbbreviated(config.abbreviated);
+  }, [config.abbreviated]);
 
   useEffect(() => {
     if (isGenre2(config.genre, config.genre2)) {
@@ -85,35 +90,40 @@ const Dates = () => {
         </div>
 
         {!prevDateDisplay ? null : (
-          <div className="input-wrapper input-wrapper--checkbox input-wrapper--prev-date ">
-            <input
-              ref={prevTimeCheckbox}
-              checked={config.prevTimeStart != null && !isNaN(config.prevTimeStart)}
-              onChange={(e) => {
-                if (e.target.checked) {
-                  let prevTime = getPrevTime(new Date(config.timeStart), new Date(config.timeEnd));
-                  configDispatch({type: 'PREV_TIME_START', prevTimeStart: prevTime});
-                  configDispatch({
-                    type: 'TRIGGER_STATE_UPDATE',
-                    triggerStateUpdate: true,
-                  });
-                } else {
-                  configDispatch({type: 'PREV_TIME_START', prevTimeStart: null});
-                  configDispatch({
-                    type: 'TRIGGER_STATE_UPDATE',
-                    triggerStateUpdate: true,
-                  });
-                }
-              }}
-              id="prev-time-checkbox"
-              name="prev-time-checkbox"
-              className="toggle-status"
-              type="checkbox"
-            />
-            <span className="toggle-switch"></span>
-            <label className="prev-date-label" htmlFor="prev-time-checkbox">
-              &nbsp;Compare to previous period?
-            </label>
+          <div className={abbreviated ? 'muted' : null}>
+            <div className="input-wrapper input-wrapper--checkbox input-wrapper--prev-date ">
+              <input
+                ref={prevTimeCheckbox}
+                checked={config.prevTimeStart != null && !isNaN(config.prevTimeStart)}
+                onChange={(e) => {
+                  if (e.target.checked) {
+                    let prevTime = getPrevTime(
+                      new Date(config.timeStart),
+                      new Date(config.timeEnd),
+                    );
+                    configDispatch({type: 'PREV_TIME_START', prevTimeStart: prevTime});
+                    configDispatch({
+                      type: 'TRIGGER_STATE_UPDATE',
+                      triggerStateUpdate: true,
+                    });
+                  } else {
+                    configDispatch({type: 'PREV_TIME_START', prevTimeStart: null});
+                    configDispatch({
+                      type: 'TRIGGER_STATE_UPDATE',
+                      triggerStateUpdate: true,
+                    });
+                  }
+                }}
+                id="prev-time-checkbox"
+                name="prev-time-checkbox"
+                className="toggle-status"
+                type="checkbox"
+              />
+              <span className="toggle-switch"></span>
+              <label className="prev-date-label" htmlFor="prev-time-checkbox">
+                &nbsp;Compare to previous period?
+              </label>
+            </div>
           </div>
         )}
       </div>

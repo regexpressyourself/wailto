@@ -44,7 +44,6 @@ input[type='checkbox'].toggle-status {
   box-sizing: border-box;
   border: solid rgba(0, 0, 0, 0.12) 0.125em;
   transition: border 0.2s ease-in-out;
-
 }
 .toggle-status:checked + .toggle-switch {
   border: solid #e2598b 0.125em;
@@ -64,4 +63,13 @@ input[type='checkbox'].toggle-status {
 .toggle-status:checked + .toggle-switch::after {
   background: #e2598b;
   left: calc(1em - 0.125em * 2 - 0.0625em);
+}
+
+.muted {
+  .toggle-status:checked + .toggle-switch::after {
+    background: rgba(0, 0, 0, 0.12);
+  }
+  .toggle-status:checked + .toggle-switch {
+    border: solid rgba(0, 0, 0, 0.12) 0.125em;
+  }
 }

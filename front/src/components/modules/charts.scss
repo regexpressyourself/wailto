@@ -37,19 +37,21 @@ $max-width: 1920px;
   margin: 0 20px;
   z-index: 100;
   //&:hover {
-    //z-index: 1000;
+  //z-index: 1000;
   //}
-  &.chart-container--full-history{
+  &.chart-container--full-history {
     position: static;
   }
 }
 .recharts-responsive-container {
-  min-height: 33vh;
-  max-height: 33vh;
+  min-height: 40vh;
+  max-height: 40vh;
   max-width: 1200px;
   margin: auto;
 }
-
+.chart-padding {
+  padding: 50px 0;
+}
 .chart-heading {
   text-align: center;
   @include fluid-prop('font-size', $min_width, $max_width, 32px, 64px);

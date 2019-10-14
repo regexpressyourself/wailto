@@ -11,6 +11,7 @@ import FullSongHistory from './modules/FullSongHistory';
 import SongsByDate from './modules/SongsByDate';
 import SongsByDow from './modules/SongsByDow';
 import SongsByHour from './modules/SongsByHour';
+import ArtistPie from './modules/ArtistPie';
 import Error from './Error';
 import './App.scss';
 
@@ -103,6 +104,7 @@ const App = ({appState, history}) => {
           songHistoryDispatch({type: 'PREV_SONG_HISTORY', prevSongHistory: prevData.data});
         }
 
+        configDispatch({type: 'ABBREVIATED', appState: false});
         switch (config.appState) {
           case 'updating':
             setContent(<Loading />);
@@ -122,6 +124,10 @@ const App = ({appState, history}) => {
           case 'history':
             setContent(<FullSongHistory />);
             break;
+          case 'artist-pie':
+            configDispatch({type: 'ABBREVIATED', abbreviated: true});
+            setContent(<ArtistPie />);
+            break;
           case 'tutorial':
           default:
             setContent(null);
@@ -131,18 +137,19 @@ const App = ({appState, history}) => {
           triggerStateUpdate: false,
         });
       })
-      .catch(e => {
+      .catch((e) => {
         try {
           document.querySelector('footer').style.display = 'none';
           document.querySelector('.main-header').style.display = 'none';
           document.querySelector('.user-info').style.display = 'none';
         } catch (e) {}
-        if (e.response.status !== 502) {
+        console.log(e);
+        if (e.response && e.response.status !== 502) {
           setContent(
             <Error errorMessage={"Actually we have no idea. Our bad. Maybe the server's down?"} />,
           );
         } else {
-          setContent(<Error errorMessage={e.response.data} />);
+          setContent(<Error errorMessage={e.response ? e.response.data : null} />);
         }
       });
   }, [

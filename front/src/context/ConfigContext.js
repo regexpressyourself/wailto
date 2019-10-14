@@ -81,6 +81,11 @@ const configReducer = (state, configAction) => {
         timeEnd: newEnd,
         unixTimeEnd: unixTimeEnd,
       };
+    case 'ABBREVIATED':
+      return {
+        ...state,
+        abbreviated: configAction.abbreviated,
+      };
     case 'GENRE':
       localStorage.setItem('wt-genre', configAction.genre);
       return {

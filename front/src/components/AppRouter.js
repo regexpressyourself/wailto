@@ -15,6 +15,7 @@ const AppRouter = () => {
       <Route exact path="/dashboard/hour" render={props => <App {...props} appState="hour" />} />
       <Route exact path="/dashboard/week" render={props => <App {...props} appState="week" />} />
       <Route exact path="/dashboard/history" render={props => <App {...props} appState="history" />} />
+      <Route exact path="/dashboard/artist-pie" render={props => <App {...props} appState="artist-pie" />} />
     </Router>
   );
 };

@@ -43,20 +43,21 @@ const UserInfo = () => {
     }
   }, [config.prevTimeStart, config.timeStart]);
 
+  if (!config.appState) return null;
   return (
     <section className="user-info">
       <p className="user-info__username">{config.username}</p>
       <div>
-        <p className="user-info__more-info">
-          {accessibleJsTime(config.timeStart).date}
+        <p className="user-info__more-info user-info__dates">
+          <span>{accessibleJsTime(config.timeStart).date}</span>
           &nbsp; &mdash; &nbsp;
-          {accessibleJsTime(config.timeEnd).date}
+          <span>{accessibleJsTime(config.timeEnd).date}</span>
         </p>
         {!prevDateDisplay ? null : (
-          <p className="user-info__more-info">
-            {prevDateText}
+          <p className="user-info__more-info user-info__dates">
+            <span>{prevDateText}</span>
             &nbsp; &mdash; &nbsp;
-            {accessibleJsTime(config.timeStart, true).date}
+            <span>{(accessibleJsTime(config.timeStart, true).date)}</span>
           </p>
         )}
       </div>

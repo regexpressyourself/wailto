@@ -24,7 +24,12 @@ const Nav = ({history, showMessages, showBack, defaultStart, defaultEnd}) => {
   const navSubmitBtn = useRef(null);
 
   const setOutsideClickListener = (e) => {
-    if (e.target && !e.target.closest('nav') && !e.target.closest('button')) {
+    if (
+      e.target &&
+      !e.target.closest('nav') &&
+      !e.target.closest('button') &&
+      !e.target.classList.contains('css-1n7v3ny-option')
+    ) {
       setIsExpanded(false);
     }
   };

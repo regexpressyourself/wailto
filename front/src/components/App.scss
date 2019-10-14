@@ -93,6 +93,10 @@ $max-width: 1920px;
   font-weight: 800;
   font-family: 'Barriecito', 'Livvic', sans-serif;
 }
+.user-info__dates {
+  display: flex;
+  justify-content: space-between;
+}
 .user-info__more-info {
   @include fluid-prop('font-size', $min_width, $max_width, 18px, 20px);
   font-family: 'Barriecito', 'Livvic', sans-serif;

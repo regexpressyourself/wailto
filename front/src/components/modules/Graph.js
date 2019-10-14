@@ -17,6 +17,7 @@ const Graph = ({dataKey, dataKeyValues, secondaryDataKeyValues}) => {
   useEffect(() => {
     let primaryKey = getGenreKey(config.genre, config.genre2);
     let secondaryKey = getGenre2Key(config.genre, config.genre2);
+
     setTitle1(primaryKey);
     setTitle2(secondaryKey);
 
@@ -29,6 +30,7 @@ const Graph = ({dataKey, dataKeyValues, secondaryDataKeyValues}) => {
 
     let secondaryData = {};
     if (secondaryKey) {
+      // if there is a second genere, bucketSongTimes can handle it
       secondaryData = bucketSongTimes(
         dataKey,
         dataKeyValues,
@@ -36,6 +38,8 @@ const Graph = ({dataKey, dataKeyValues, secondaryDataKeyValues}) => {
         config.genre2,
       );
     } else if (config.prevTimeStart && songHistory.prevSongHistory) {
+      // if there isn't a second genre and there is a previous song history set, we have to get
+      // new titles and set up for two graphs
       let prevTimeStartString = accessibleJsTime(config.prevTimeStart).dateAsString;
       let timeStartString = accessibleJsTime(config.timeStart).dateAsString;
       let timeStartLess1String = accessibleJsTime(config.timeStart, true).dateAsString;
@@ -65,16 +69,21 @@ const Graph = ({dataKey, dataKeyValues, secondaryDataKeyValues}) => {
       newDayObject['name'] = dataName;
       newDayObject[primaryKey] = primaryData[dataName] ? primaryData[dataName].length : 0;
 
-      let secondDataName = dataName;
-      if (secondaryDataKeyValues && secondaryKey != null) {
-        secondDataName = secondaryDataKeyValues[i];
-      }
-      //newDayObject[secondaryKey] = secondaryData[dataName] ? secondaryData[dataName].length : 0;
+      let twoChartsEnabled = true;
+      if (true || twoChartsEnabled) {
+        let secondDataName = dataName;
+        if (secondaryDataKeyValues && secondaryKey != null) {
+          secondDataName = secondaryDataKeyValues[i];
+        }
 
-      secondNewDayObject['name'] = secondDataName;
-      secondNewDayObject[secondaryKey] = secondaryData[secondDataName]
-        ? secondaryData[secondDataName].length
-        : 0;
+        secondNewDayObject['name'] = secondDataName;
+        secondNewDayObject[secondaryKey] = secondaryData[secondDataName]
+          ? secondaryData[secondDataName].length
+          : 0;
+      } else {
+        // TODO set customizable single-vs-double chart view
+        newDayObject[secondaryKey] = secondaryData[dataName] ? secondaryData[dataName].length : 0;
+      }
 
       rcData.push(newDayObject);
 

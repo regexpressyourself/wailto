@@ -1,0 +1,67 @@
+@function strip-unit($value) {
+  @return $value / ($value * 0 + 1);
+}
+$min-width: 320px;
+$max-width: 1920px;
+
+@mixin fluid-prop($prop, $min-vw, $max-vw, $min-size, $max-size) {
+  $u1: unit($min-vw);
+  $u2: unit($max-vw);
+  $u3: unit($min-size);
+  $u4: unit($max-size);
+
+  @if $u1 == $u2 and $u1 == $u3 and $u1 == $u4 {
+    & {
+      #{$prop}: $min-size;
+      @media screen and (min-width: $min-vw) {
+        #{$prop}: calc(
+          #{$min-size} + #{strip-unit($max-size - $min-size)} *
+            ((100vw - #{$min-vw}) / #{strip-unit($max-vw - $min-vw)})
+        );
+      }
+      @media screen and (min-width: $max-vw) {
+        #{$prop}: $max-size;
+      }
+    }
+  }
+}
+.prev-date-label {
+  @include fluid-prop('font-size', $min_width, $max_width, 16px, 24px);
+}
+input[type='checkbox'].toggle-status {
+  display: none;
+}
+.toggle-switch {
+  @include fluid-prop('font-size', $min_width, $max_width, 24px, 32px);
+  border-radius: calc(1em / 2);
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+  vertical-align: bottom;
+  cursor: pointer;
+  display: inline-block;
+  position: relative;
+  width: calc(1em * 2 - 0.125em * 2 - 0.0625em * 2);
+  height: calc(1em * 1);
+  box-sizing: border-box;
+  border: solid rgba(0, 0, 0, 0.12) 0.125em;
+  transition: border 0.2s ease-in-out;
+
+}
+.toggle-status:checked + .toggle-switch {
+  border: solid #e2598b 0.125em;
+}
+.toggle-switch::after {
+  content: '';
+  border-radius: calc(1em / 2 - 0.125em - 0.0625em);
+  display: inline-block;
+  position: absolute;
+  top: 0.0625em;
+  left: 0.0625em;
+  width: calc(1em - 0.125em * 2 - 0.0625em * 2);
+  height: calc(1em - 0.125em * 2 - 0.0625em * 2);
+  background: rgba(0, 0, 0, 0.12);
+  transition: background 0.2s ease-in-out, left 0.2s ease-in-out;
+}
+.toggle-status:checked + .toggle-switch::after {
+  background: #e2598b;
+  left: calc(1em - 0.125em * 2 - 0.0625em);
+}

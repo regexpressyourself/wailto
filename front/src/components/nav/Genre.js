@@ -68,6 +68,7 @@ const Genre = () => {
               value: config.genre,
               label: config.genre,
             }}
+            className="genre-select"
             onChange={e => {
               configDispatch({type: 'GENRE', genre: e.value});
             }}
@@ -101,6 +102,7 @@ const Genre = () => {
                 configDispatch({type: 'GENRE2', genre2: e.value});
               }
             }}
+            className="genre-select"
             options={genreSelectionOptions}
           />
         </div>

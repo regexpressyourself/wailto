@@ -3,6 +3,7 @@ import DayPickerInput from 'react-day-picker/DayPickerInput';
 import {isGenre2} from '../../functions/genres';
 import {ConfigContext} from '../../context/ConfigContext';
 import {formIsValid} from './navControls';
+import './checkbox.scss';
 
 const getPrevTime = (timeStart, timeEnd) => {
   let distance = Math.abs(timeEnd - timeStart);
@@ -33,15 +34,6 @@ const Dates = () => {
   let prevTimeCheckbox = useRef(null);
 
   useEffect(() => {
-    let prevTime = getPrevTime(new Date(config.timeStart), new Date(config.timeEnd));
-    configDispatch({type: 'PREV_TIME_START', prevTimeStart: prevTime});
-    configDispatch({
-      type: 'TRIGGER_STATE_UPDATE',
-      triggerStateUpdate: true,
-    });
-  }, [configDispatch, config.timeStart, config.timeEnd]);
-
-  useEffect(() => {
     if (isGenre2(config.genre, config.genre2)) {
       setPrevDateDisplay(false);
       configDispatch({type: 'PREV_TIME_START', prevTimeStart: null});
@@ -51,14 +43,7 @@ const Dates = () => {
     } else {
       setPrevDateDisplay(true);
     }
-  }, [
-    config.genre,
-    //config.timeStart,
-    config.timeEnd,
-    //config.prevTimeStart,
-    config.genre2,
-    configDispatch,
-  ]);
+  }, [config.genre, config.timeEnd, config.genre2, configDispatch]);
 
   return (
     <>
@@ -114,13 +99,21 @@ const Dates = () => {
                   });
                 } else {
                   configDispatch({type: 'PREV_TIME_START', prevTimeStart: null});
+                  configDispatch({
+                    type: 'TRIGGER_STATE_UPDATE',
+                    triggerStateUpdate: true,
+                  });
                 }
               }}
               id="prev-time-checkbox"
               name="prev-time-checkbox"
+              className="toggle-status"
               type="checkbox"
             />
-            <label htmlFor="prev-time-checkbox">&nbsp;Compare to previous period?</label>
+            <span className="toggle-switch"></span>
+            <label className="prev-date-label" htmlFor="prev-time-checkbox">
+              &nbsp;Compare to previous period?
+            </label>
           </div>
         )}
       </div>
@@ -128,3 +121,4 @@ const Dates = () => {
   );
 };
 export default Dates;
+//<label for="toggle2" class="toggle-switch  toggle-x2 toggle-rounded"></label>

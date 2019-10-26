@@ -8,6 +8,7 @@ const UserInfo = () => {
   let [genreInfo, setGenreInfo] = useState(null);
   let [prevDateDisplay, setPrevDateDisplay] = useState(false);
   let [prevDateText, setPrevDateText] = useState(false);
+  let [abbreviated, setAbbreviated] = useState(false);
 
   useEffect(() => {
     let isGenre1Eval = isGenre1(config.genre, config.genre2);
@@ -15,24 +16,22 @@ const UserInfo = () => {
 
     if (isGenre1Eval && isGenre2Eval) {
       setGenreInfo(
-        <div>
-          <p className="user-info__more-info">
-            <span className="genre">{config.genre}</span>
-            &nbsp; &amp; &nbsp;
-            <span className="genre2">{config.genre2}</span>
-          </p>
-        </div>,
+        <p className="user-info__more-info">
+          <span className="genre">{config.genre}</span>
+          &nbsp; &amp; &nbsp;
+          <span className="genre2">{config.genre2}</span>
+        </p>,
       );
     } else if (isGenre1Eval) {
-      setGenreInfo(
-        <div>
-          <p className="user-info__more-info">{config.genre}</p>
-        </div>,
-      );
+      setGenreInfo(<p className="user-info__more-info">{config.genre}</p>);
     } else {
       setGenreInfo(null);
     }
   }, [config.genre, config.genre2]);
+
+  useEffect(() => {
+    setAbbreviated(config.abbreviated);
+  }, [config.abbreviated]);
 
   useEffect(() => {
     if (config.prevTimeStart != null && !isNaN(config.prevTimeStart)) {
@@ -47,7 +46,7 @@ const UserInfo = () => {
   return (
     <section className="user-info">
       <p className="user-info__username">{config.username}</p>
-      <div>
+      <div className={abbreviated ? 'muted' : null}>
         <p className="user-info__more-info user-info__dates">
           <span>{accessibleJsTime(config.timeStart).date}</span>
           &nbsp; &mdash; &nbsp;
@@ -57,11 +56,11 @@ const UserInfo = () => {
           <p className="user-info__more-info user-info__dates">
             <span>{prevDateText}</span>
             &nbsp; &mdash; &nbsp;
-            <span>{(accessibleJsTime(config.timeStart, true).date)}</span>
+            <span>{accessibleJsTime(config.timeStart, true).date}</span>
           </p>
         )}
       </div>
-      {genreInfo}
+      <div className={abbreviated ? 'muted' : null}>{genreInfo}</div>
     </section>
   );
 };

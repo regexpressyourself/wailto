@@ -66,3 +66,12 @@ input[type='checkbox'].toggle-status {
   background: #e2598b;
   left: calc(1em - 0.125em * 2 - 0.0625em);
 }
+
+.muted {
+  .toggle-status:checked + .toggle-switch::after {
+    background: rgba(0, 0, 0, 0.12);
+  }
+  .toggle-status:checked + .toggle-switch {
+    border: solid rgba(0, 0, 0, 0.12) 0.125em;
+  }
+}

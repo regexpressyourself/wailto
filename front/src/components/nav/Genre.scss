@@ -5,6 +5,10 @@
     text-decoration: underline;
   }
 }
+
+.muted *{
+    color: rgba(0, 0, 0, 0.12) !important;
+}
 .genre-toggle--1 {
 }
 .genre-toggle--2 {

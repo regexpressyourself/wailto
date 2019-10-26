@@ -31,7 +31,12 @@ const formatDate = date => {
 const Dates = () => {
   const {config, configDispatch} = useContext(ConfigContext);
   let [prevDateDisplay, setPrevDateDisplay] = useState(null);
+  let [abbreviated, setAbbreviated] = useState(false);
   let prevTimeCheckbox = useRef(null);
+
+  useEffect(() => {
+    setAbbreviated(config.abbreviated);
+  }, [config.abbreviated]);
 
   useEffect(() => {
     if (isGenre2(config.genre, config.genre2)) {

@@ -130,7 +130,10 @@ $max-width: 1920px;
     }
   }
 }
-
+.muted *,
+.muted {
+  color: rgba(0,0,0,.12);
+}
 @keyframes text-focus-in {
   0% {
     filter: blur(12px);

@@ -49,23 +49,6 @@ const saveSongs = (userid, history) => {
   return Songs.bulkCreate(songValues, {ignoreDuplicates: true});
 };
 
-const saveHistory = (userid, history) => {
-  console.log('user %i:\tsave history', userid);
-  let historyValues = [];
-  for (let song of history) {
-    if (!song.id || !userid || !song.date) {
-      continue;
-    }
-    historyValues.push({
-      songid: song.id ? song.id : stringHash(song.name),
-      userid: userid,
-      unixdate: song.date,
-    });
-  }
-
-  return SongHistory.bulkCreate(historyValues, {ignoreDuplicates: true});
-};
-
 const saveCoverage = (userid, from, to) => {
   console.log('user %i:\tsave coverage', userid);
   console.log('user %i:\tlooking for day coverage', userid);
@@ -116,6 +99,23 @@ const getUser = async function(username) {
     console.log('user created id: ', saveConfirmationRes.dataValues);
     return saveConfirmationRes.dataValues;
   }
+};
+
+const saveHistory = (userid, history) => {
+  console.log('user %i:\tsave history', userid);
+  let historyValues = [];
+  for (let song of history) {
+    if (!song.id || !userid || !song.date) {
+      continue;
+    }
+    historyValues.push({
+      songid: song.id ? song.id : stringHash(song.name),
+      userid: userid,
+      unixdate: song.date,
+    });
+  }
+
+  return SongHistory.bulkCreate(historyValues, {ignoreDuplicates: true});
 };
 
 const getSongHistory = async function(userid, unixFrom, unixTo) {
@@ -189,9 +189,42 @@ const getSongHistory = async function(userid, unixFrom, unixTo) {
   return finalArray;
 };
 
+let saveUserInfo = async function(userid, from, to, recentTracks) {
+  return new Promise(async (resolve, reject) => {
+    let saveSongsPromise;
+    let saveHistoryPromise;
+    let saveCoveragePromise;
+    if (userid && recentTracks) {
+      // await b/c we need songs before history for foreign key
+      saveSongs(userid, recentTracks)
+        .then(saveSongsPromise => {
+          saveHistoryPromise = saveHistory(userid, recentTracks);
+          if (userid && from && to) {
+            saveCoveragePromise = saveCoverage(userid, from, to);
+          }
+          Promise.all([saveHistoryPromise, saveCoveragePromise])
+            .then(saveUserResponses => {
+              resolve(saveUserResponses);
+            })
+            .catch(e => {
+              console.error('ERROR: ', 'error waiting on promises in save');
+              console.error('ERROR: ', e);
+              reject(e);
+            });
+        })
+        .catch(e => {
+          console.error('ERROR: ', 'error waiting on songs in save');
+          console.error('ERROR: ', e);
+          reject(e);
+        });
+    }
+  });
+};
+
 exports.saveSongs = saveSongs;
-exports.saveHistory = saveHistory;
-exports.saveCoverage = saveCoverage;
 exports.getUser = getUser;
+exports.saveHistory = saveHistory;
 exports.getSongHistory = getSongHistory;
 exports.getCoverageValues = getCoverageValues;
+exports.saveCoverage = saveCoverage;
+exports.saveUserInfo = saveUserInfo;

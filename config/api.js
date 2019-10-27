@@ -1,6 +1,21 @@
 const axios = require('axios');
-let a = 0;
+const stringHash = require('string-hash');
 const {resetDate} = require('./dates');
+const {GENRELIST} = require('./constants');
+require('dotenv').config();
+const LASTFM_KEY = process.env.LASTFM_KEY;
+
+const removeDuplicates = array => {
+  const reducedArray = array.reduce((acc, current) => {
+    const x = acc.find(item => item.id === current.id);
+    if (!x) {
+      return acc.concat([current]);
+    } else {
+      return acc;
+    }
+  }, []);
+  return reducedArray;
+};
 
 const fetchArtistInfo = async function(artistInfoHash) {
   console.log('fetching tags');
@@ -41,7 +56,6 @@ const fetchArtistInfo = async function(artistInfoHash) {
 
           //get artist name
           let artistName = artistInfoResponse.toptags['@attr'].artist;
-
           // get top 4 approved genres
           let artistTags = artistInfoResponse.toptags.tag;
           let topTags = [];
@@ -59,6 +73,8 @@ const fetchArtistInfo = async function(artistInfoHash) {
             : null;
         }
       }
+
+      console.log('got artists');
       return artistInfoHash;
     })
     .catch(e => {
@@ -234,13 +250,7 @@ const fetchAndSaveTracks = async (
     return false;
   }
 
-  let saveUserResponses;
-  try {
-    saveUserResponses = await saveUserInfo(userid, from, to, recentTracks);
-  } catch (error) {
-    console.error('ERROR: ', error.stack);
-    return false;
-  }
+  return recentTracks;
 };
 
 exports.fetchArtistInfo = fetchArtistInfo;

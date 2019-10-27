@@ -2,7 +2,6 @@ const path = require('path');
 const express = require('express');
 const request = require('request');
 const cors = require('cors');
-const stringHash = require('string-hash');
 
 const {
   saveSongs,
@@ -79,11 +78,23 @@ module.exports = app => {
 
     // some missing data, fetch certain days
     if (missingValues.length) {
+      let recentTracks;
       try {
-        await fetchAndSaveTracks(username, missingValues, storedCoverageValues);
+        recentTracks = await fetchAndSaveTracks(
+          username,
+          missingValues,
+          storedCoverageValues,
+        );
       } catch (error) {
         console.error('ERROR: ', error.stack);
         res.status(502).send('Error fetching and saving tracks');
+        return false;
+      }
+      let saveUserResponses;
+      try {
+        saveUserResponses = await saveUserInfo(userid, from, to, recentTracks);
+      } catch (error) {
+        console.error('ERROR: ', error.stack);
         return false;
       }
     }

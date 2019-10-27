@@ -190,20 +190,24 @@ const getSongHistory = async function(userid, unixFrom, unixTo) {
 };
 
 let saveUserInfo = async function(userid, from, to, recentTracks) {
+  console.log('saving user info');
   return new Promise(async (resolve, reject) => {
     let saveSongsPromise;
     let saveHistoryPromise;
     let saveCoveragePromise;
     if (userid && recentTracks) {
       // await b/c we need songs before history for foreign key
+      console.log('saving songs');
       saveSongs(userid, recentTracks)
         .then(saveSongsPromise => {
+          console.log('saved songs');
           saveHistoryPromise = saveHistory(userid, recentTracks);
           if (userid && from && to) {
             saveCoveragePromise = saveCoverage(userid, from, to);
           }
           Promise.all([saveHistoryPromise, saveCoveragePromise])
             .then(saveUserResponses => {
+              console.log('saved history and coverage');
               resolve(saveUserResponses);
             })
             .catch(e => {
@@ -217,6 +221,8 @@ let saveUserInfo = async function(userid, from, to, recentTracks) {
           console.error('ERROR: ', e);
           reject(e);
         });
+    } else {
+      reject('No userid of recentTracks');
     }
   });
 };

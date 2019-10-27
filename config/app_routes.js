@@ -4,40 +4,15 @@ const request = require('request');
 const cors = require('cors');
 
 const {
-  saveSongs,
-  saveHistory,
-  saveCoverage,
   getUser,
   getSongHistory,
   getCoverageValues,
   saveUserInfo,
 } = require('./database');
 
-const {
-  serializeLastFmData,
-  attachArtistInfo,
-  fetchAndSaveTracks,
-  fetchArtistInfo,
-  fetchTracks,
-} = require('./api');
+const {fetchAndSaveTracks, removeDuplicates} = require('./api');
 
 const {getDateRange, resetDate} = require('./dates');
-
-const {GENRELIST} = require('./constants');
-require('dotenv').config();
-const LASTFM_KEY = process.env.LASTFM_KEY;
-
-const removeDuplicates = array => {
-  const reducedArray = array.reduce((acc, current) => {
-    const x = acc.find(item => item.id === current.id);
-    if (!x) {
-      return acc.concat([current]);
-    } else {
-      return acc;
-    }
-  }, []);
-  return reducedArray;
-};
 
 module.exports = app => {
   app.get('/history', cors(), async (req, res, next) => {

@@ -258,3 +258,4 @@ exports.fetchTracks = fetchTracks;
 exports.serializeLastFmData = serializeLastFmData;
 exports.attachArtistInfo = attachArtistInfo;
 exports.fetchAndSaveTracks = fetchAndSaveTracks;
+exports.removeDuplicates = removeDuplicates;

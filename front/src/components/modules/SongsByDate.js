@@ -24,6 +24,7 @@ const SongsByDate = () => {
         dataKey={dataKey}
         dataKeyValues={datesBetween}
         secondaryDataKeyValues={prevDatesBetween}
+        twoGraphsEnabled={true}
       />
     </div>
   );

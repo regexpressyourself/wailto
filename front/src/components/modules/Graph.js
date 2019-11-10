@@ -2,131 +2,151 @@ import React, {useContext, useState, useEffect} from 'react';
 import './charts.scss';
 import {SongHistoryContext} from '../../context/SongHistoryContext';
 import {ConfigContext} from '../../context/ConfigContext';
-import {ResponsiveContainer, AreaChart, Area, XAxis, YAxis, Tooltip} from 'recharts';
+import {
+  ResponsiveContainer,
+  AreaChart,
+  Area,
+  XAxis,
+  YAxis,
+  Tooltip,
+} from 'recharts';
 import {accessibleJsTime, bucketSongTimes} from '../../functions/dateMappers';
 import {getGenreKey, getGenre2Key} from '../../functions/genres';
 
-const Graph = ({dataKey, dataKeyValues, secondaryDataKeyValues}) => {
+const Graph = ({
+  dataKey,
+  dataKeyValues,
+  secondaryDataKeyValues,
+  twoGraphsEnabled = false,
+}) => {
   const {songHistory} = useContext(SongHistoryContext);
   const {config} = useContext(ConfigContext);
 
   let [chartElement, setChartElement] = useState();
-  let [title1, setTitle1] = useState(null);
   let [title2, setTitle2] = useState(null);
+  let [primaryData, setPrimaryData] = useState(null);
+  let [secondaryData, setSecondaryData] = useState(null);
+  let [primaryKey, setPrimaryKey] = useState(null);
+  let [secondaryKey, setSecondaryKey] = useState(null);
+  let [primaryChartData, setPrimaryChartData] = useState(null);
+  let [secondaryChartData, setSecondaryChartData] = useState(null);
 
   useEffect(() => {
-    let primaryKey = getGenreKey(config.genre, config.genre2);
-    let secondaryKey = getGenre2Key(config.genre, config.genre2);
+    if (twoGraphsEnabled) {
+      setPrimaryKey('song count');
+    } else if (config.prevTimeStart && songHistory.prevSongHistory) {
+      setPrimaryKey(
+        `${accessibleJsTime(config.timeStart).dateAsString} - ${
+          accessibleJsTime(config.timeEnd).dateAsString
+        }`,
+      );
+    } else {
+      setPrimaryKey(getGenreKey(config.genre, config.genre2));
+    }
 
-    setTitle1(primaryKey);
-    setTitle2(secondaryKey);
-
-    let primaryData = bucketSongTimes(
-      dataKey,
-      dataKeyValues,
-      songHistory.songHistory,
-      config.genre,
-    );
-
-    let secondaryData = {};
-    if (secondaryKey) {
-      // if there is a second genere, bucketSongTimes can handle it
-      secondaryData = bucketSongTimes(
+    setPrimaryData(
+      bucketSongTimes(
         dataKey,
         dataKeyValues,
         songHistory.songHistory,
-        config.genre2,
-      );
-    } else if (config.prevTimeStart && songHistory.prevSongHistory) {
-      // if there isn't a second genre and there is a previous song history set, we have to get
-      // new titles and set up for two graphs
-      let prevTimeStartString = accessibleJsTime(config.prevTimeStart).dateAsString;
-      let timeStartString = accessibleJsTime(config.timeStart).dateAsString;
-      let timeStartLess1String = accessibleJsTime(config.timeStart, true).dateAsString;
-      let timeEndString = accessibleJsTime(config.timeEnd).dateAsString;
-
-      setTitle1(`${timeStartString} - ${timeEndString}`);
-      setTitle2(`${prevTimeStartString} - ${timeStartLess1String}`);
-
-      primaryKey = 'song count';
-      secondaryKey = 'song count';
-
-      secondaryData = bucketSongTimes(
-        dataKey,
-        dataKeyValues,
-        songHistory.prevSongHistory,
         config.genre,
+      ),
+    );
+  }, [config, dataKey, dataKeyValues, songHistory, twoGraphsEnabled]);
+
+  useEffect(() => {
+    let isSecondGenre = getGenre2Key(config.genre, config.genre2);
+    let isPrevTimeSet = config.prevTimeStart && songHistory.prevSongHistory;
+
+    if (twoGraphsEnabled) {
+      setSecondaryKey('song count');
+    } else if (isSecondGenre) {
+      setSecondaryKey(getGenre2Key(config.genre, config.genre2));
+    } else if (isPrevTimeSet) {
+      setSecondaryKey(
+        `${accessibleJsTime(config.timeStart, true).dateAsString} - ${
+          accessibleJsTime(config.prevTimeStart).dateAsString
+        }`,
       );
     }
 
+    if (isSecondGenre) {
+      setSecondaryData(
+        bucketSongTimes(
+          dataKey,
+          dataKeyValues,
+          songHistory.songHistory,
+          config.genre2,
+        ),
+      );
+    } else if (isPrevTimeSet) {
+      setSecondaryData(
+        bucketSongTimes(
+          dataKey,
+          dataKeyValues,
+          songHistory.prevSongHistory,
+          config.genre,
+        ),
+      );
+    }
+
+    if (secondaryKey) {
+      setTitle2(secondaryKey);
+    }
+  }, [
+    config,
+    dataKey,
+    dataKeyValues,
+    songHistory,
+    twoGraphsEnabled,
+    primaryData,
+    secondaryKey,
+  ]);
+
+  useEffect(() => {
+    if (!primaryData) return;
     let rcData = [];
     let secondaryRcData = [];
+
     for (let i = 0; i < dataKeyValues.length; i++) {
       let newDayObject = {};
       let secondNewDayObject = {};
 
       let dataName = dataKeyValues[i];
       newDayObject['name'] = dataName;
-      newDayObject[primaryKey] = primaryData[dataName] ? primaryData[dataName].length : 0;
+      newDayObject[primaryKey] = primaryData[dataName]
+        ? primaryData[dataName].length
+        : 0;
+      if (secondaryData) {
+        if (twoGraphsEnabled) {
+          let secondDataName = dataName;
+          if (secondaryDataKeyValues && secondaryKey != null) {
+            secondDataName = secondaryDataKeyValues[i];
+          }
 
-      let twoChartsEnabled = true;
-      if (true || twoChartsEnabled) {
-        let secondDataName = dataName;
-        if (secondaryDataKeyValues && secondaryKey != null) {
-          secondDataName = secondaryDataKeyValues[i];
+          secondNewDayObject['name'] = secondDataName;
+          secondNewDayObject[secondaryKey] = secondaryData[secondDataName]
+            ? secondaryData[secondDataName].length
+            : 0;
+        } else {
+          // TODO set customizable single-vs-double chart view
+          newDayObject[secondaryKey] = secondaryData[dataName]
+            ? secondaryData[dataName].length
+            : 0;
         }
-
-        secondNewDayObject['name'] = secondDataName;
-        secondNewDayObject[secondaryKey] = secondaryData[secondDataName]
-          ? secondaryData[secondDataName].length
-          : 0;
-      } else {
-        // TODO set customizable single-vs-double chart view
-        newDayObject[secondaryKey] = secondaryData[dataName] ? secondaryData[dataName].length : 0;
+        if (secondNewDayObject && secondNewDayObject.name && secondaryKey) {
+          secondaryRcData.push(secondNewDayObject);
+        }
       }
-
       rcData.push(newDayObject);
-
-      if (secondNewDayObject && secondNewDayObject.name && secondaryKey) {
-        secondaryRcData.push(secondNewDayObject);
-      }
     }
-
-    setChartElement(
-      <>
-        <h2>{title2 ? title1 : null}</h2>
-        <ResponsiveContainer>
-          <AreaChart data={rcData}>
-            <XAxis dataKey="name" />
-            <YAxis />
-            <Tooltip />
-            {primaryKey ? (
-              <Area type="monotone" dataKey={primaryKey} stroke="#fd8b7b" fill="#e2598b" />
-            ) : null}
-            {secondaryKey && secondaryRcData.length === 0 ? (
-              <Area type="monotone" dataKey={secondaryKey} stroke="#7f4782" fill="#aa5c9f" />
-            ) : null}
-          </AreaChart>
-        </ResponsiveContainer>
-        {secondaryRcData.length > 0 ? (
-          <>
-            <h2>{title2}</h2>
-            <ResponsiveContainer>
-              <AreaChart data={secondaryRcData}>
-                <XAxis dataKey="name" />
-                <YAxis />
-                <Tooltip />
-                {secondaryKey ? (
-                  <Area type="monotone" dataKey={secondaryKey} stroke="#7f4782" fill="#aa5c9f" />
-                ) : null}
-              </AreaChart>
-            </ResponsiveContainer>
-          </>
-        ) : null}
-      </>,
-    );
+    setPrimaryChartData(rcData);
+    setSecondaryChartData(secondaryRcData);
   }, [
-    title1,
+    primaryData,
+    secondaryData,
+    primaryKey,
+    secondaryKey,
     title2,
     secondaryDataKeyValues,
     config.genre,
@@ -138,6 +158,69 @@ const Graph = ({dataKey, dataKeyValues, secondaryDataKeyValues}) => {
     config.timeStart,
     config.timeEnd,
     config.prevTimeStart,
+    twoGraphsEnabled,
+  ]);
+
+  useEffect(() => {
+    if (!primaryChartData) {
+      setChartElement(null);
+      return;
+    }
+    setChartElement(
+      <>
+        <h2>{title2 ? primaryKey : null}</h2>
+        <ResponsiveContainer>
+          <AreaChart data={primaryChartData}>
+            <XAxis dataKey="name" />
+            <YAxis />
+            <Tooltip />
+            {primaryKey ? (
+              <Area
+                type="monotone"
+                dataKey={primaryKey}
+                stroke="#fd8b7b"
+                fill="#e2598b"
+              />
+            ) : null}
+            {secondaryKey && secondaryChartData.length === 0 ? (
+              <Area
+                type="monotone"
+                dataKey={secondaryKey}
+                stroke="#7f4782"
+                fill="#aa5c9f"
+              />
+            ) : null}
+          </AreaChart>
+        </ResponsiveContainer>
+        {twoGraphsEnabled && secondaryChartData ? (
+          <>
+            <h2>{title2}</h2>
+            <ResponsiveContainer>
+              <AreaChart data={secondaryChartData}>
+                <XAxis dataKey="name" />
+                <YAxis />
+                <Tooltip />
+                {secondaryKey ? (
+                  <Area
+                    type="monotone"
+                    dataKey={secondaryKey}
+                    stroke="#7f4782"
+                    fill="#aa5c9f"
+                  />
+                ) : null}
+              </AreaChart>
+            </ResponsiveContainer>
+          </>
+        ) : null}
+      </>,
+    );
+  }, [
+    primaryChartData,
+    secondaryChartData,
+    primaryKey,
+    secondaryKey,
+    title2,
+    twoGraphsEnabled,
   ]);
 
   return <>{chartElement}</>;

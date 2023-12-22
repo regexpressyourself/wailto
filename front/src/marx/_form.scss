@@ -22,11 +22,13 @@ textarea {
   width: 100%;
   padding: $sm-pad $md-pad;
   line-height: 1.5;
-  transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+  transition:
+    border-color 0.15s ease-in-out,
+    box-shadow 0.15s ease-in-out;
   font-family: $sans-serif;
 }
 
-input[type="color"], {
+input[type="color"] {
   background: $white;
   border: $border;
   border-radius: $br;
@@ -45,7 +47,9 @@ input:not([type]) {
   width: 100%;
   padding: $sm-pad $md-pad;
   line-height: 1.5;
-  transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+  transition:
+    border-color 0.15s ease-in-out,
+    box-shadow 0.15s ease-in-out;
   text-align: left;
 }
 
@@ -171,8 +175,8 @@ textarea {
   resize: vertical;
 }
 
-input[type=checkbox],
-input[type=radio] {
+input[type="checkbox"],
+input[type="radio"] {
   box-sizing: border-box;
   padding: 0;
   display: inline;

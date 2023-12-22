@@ -23,7 +23,7 @@ const resetDate = (time, isEnd = false) => {
   }
   jsTime.setMilliseconds(0);
   let unixTime = Math.round(jsTime.getTime() / 1000);
-  return {jsTime: jsTime, unixTime: unixTime};
+  return { jsTime: jsTime, unixTime: unixTime };
 };
 
 exports.getDateRange = getDateRange;

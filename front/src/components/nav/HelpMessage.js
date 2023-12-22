@@ -1,9 +1,9 @@
-import React, {useContext} from 'react';
-import {Link} from 'react-router-dom';
-import {ConfigContext} from '../../context/ConfigContext';
+import React, { useContext } from "react";
+import { Link } from "react-router-dom";
+import { ConfigContext } from "../../context/ConfigContext";
 
-const HelpMessage = ({message, history}) => {
-  const {configDispatch} = useContext(ConfigContext);
+const HelpMessage = ({ message, history }) => {
+  const { configDispatch } = useContext(ConfigContext);
 
   const defaultMessage = (
     <div className="introduce-message">
@@ -24,14 +24,19 @@ const HelpMessage = ({message, history}) => {
       <p className="help-link help-link--use-mine">
         <span
           className="clickable use-mine"
-          onClick={e => {
-            document.querySelector('.nav__heading--username').classList.add('atn--font-color');
-            document.querySelector('.username-input').classList.add('atn--border-color');
-            configDispatch({type: 'USERNAME', username: 'zookeeprr'});
-            if (window.location.href !== 'dashboard') {
-              history.push('/dashboard');
+          onClick={(e) => {
+            document
+              .querySelector(".nav__heading--username")
+              .classList.add("atn--font-color");
+            document
+              .querySelector(".username-input")
+              .classList.add("atn--border-color");
+            configDispatch({ type: "USERNAME", username: "zookeeprr" });
+            if (window.location.href !== "dashboard") {
+              history.push("/dashboard");
             }
-          }}>
+          }}
+        >
           Or see mine!
         </span>
       </p>
@@ -46,9 +51,9 @@ const HelpMessage = ({message, history}) => {
   );
 
   switch (message) {
-    case 'tutorial':
+    case "tutorial":
       return tutorialMessage;
-    case 'default':
+    case "default":
       return defaultMessage;
     default:
       return null;

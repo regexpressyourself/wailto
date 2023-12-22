@@ -1,9 +1,9 @@
-import React from 'react';
-import {days} from '../../functions/dateMappers';
-import Graph from './Graph';
+import React from "react";
+import { days } from "../../functions/dateMappers";
+import Graph from "./Graph";
 
 const SongsByDow = () => {
-  let dataKey = 'dowName';
+  let dataKey = "dowName";
 
   return (
     <div className="chart-container">

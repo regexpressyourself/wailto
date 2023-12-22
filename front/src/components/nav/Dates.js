@@ -1,9 +1,9 @@
-import React, {useContext, useRef, useState, useEffect} from 'react';
-import DayPickerInput from 'react-day-picker/DayPickerInput';
-import {isGenre2} from '../../functions/genres';
-import {ConfigContext} from '../../context/ConfigContext';
-import {formIsValid} from './navControls';
-import './checkbox.scss';
+import React, { useContext, useRef, useState, useEffect } from "react";
+import DayPickerInput from "react-day-picker/DayPickerInput";
+import { isGenre2 } from "../../functions/genres";
+import { ConfigContext } from "../../context/ConfigContext";
+import { formIsValid } from "./navControls";
+import "./checkbox.scss";
 
 const getPrevTime = (timeStart, timeEnd) => {
   let distance = Math.abs(timeEnd - timeStart);
@@ -16,27 +16,27 @@ const getPrevTime = (timeStart, timeEnd) => {
   return prevTime;
 };
 
-const formatDate = date => {
+const formatDate = (date) => {
   let d = new Date(date),
-    month = '' + (d.getMonth() + 1),
-    day = '' + d.getDate(),
+    month = "" + (d.getMonth() + 1),
+    day = "" + d.getDate(),
     year = d.getFullYear();
 
-  if (month.length < 2) month = '0' + month;
-  if (day.length < 2) day = '0' + day;
+  if (month.length < 2) month = "0" + month;
+  if (day.length < 2) day = "0" + day;
 
-  return [year, month, day].join('-');
+  return [year, month, day].join("-");
 };
 
 const Dates = () => {
-  const {config, configDispatch} = useContext(ConfigContext);
+  const { config, configDispatch } = useContext(ConfigContext);
   let [prevDateDisplay, setPrevDateDisplay] = useState(null);
   let prevTimeCheckbox = useRef(null);
 
   useEffect(() => {
     if (isGenre2(config.genre, config.genre2)) {
       setPrevDateDisplay(false);
-      configDispatch({type: 'PREV_TIME_START', prevTimeStart: null});
+      configDispatch({ type: "PREV_TIME_START", prevTimeStart: null });
       if (prevTimeCheckbox && prevTimeCheckbox.current) {
         prevTimeCheckbox.current.checked = false;
       }
@@ -51,18 +51,18 @@ const Dates = () => {
         <div className="input-wrapper input-wrapper--start-date">
           <label className="nav__heading">Start date:</label>
           <DayPickerInput
-            style={{width: '100%'}}
+            style={{ width: "100%" }}
             dayPickerProps={{
               selectedDays: config.timeStart,
-              disabledDays: day =>
+              disabledDays: (day) =>
                 day > config.timeEnd ||
                 day < new Date().setDate(new Date().getDate() - 62),
             }}
             value={formatDate(config.timeStart)}
             placeholder="YYYY-M-D"
-            onDayChange={e => {
-              if (formIsValid({...config, timeStart: e})) {
-                configDispatch({type: 'TIME_START', timeStart: new Date(e)});
+            onDayChange={(e) => {
+              if (formIsValid({ ...config, timeStart: e })) {
+                configDispatch({ type: "TIME_START", timeStart: new Date(e) });
               }
             }}
           />
@@ -70,16 +70,16 @@ const Dates = () => {
         <div className="input-wrapper input-wrapper--end-date">
           <label className="nav__heading">End date:</label>
           <DayPickerInput
-            style={{width: '100%'}}
+            style={{ width: "100%" }}
             dayPickerProps={{
               selectedDays: config.timeEnd,
-              disabledDays: day => day > new Date() || day < config.timeStart,
+              disabledDays: (day) => day > new Date() || day < config.timeStart,
             }}
             value={formatDate(config.timeEnd)}
             placeholder="YYYY-M-D"
-            onDayChange={e => {
-              if (formIsValid({...config, timeEnd: e})) {
-                configDispatch({type: 'TIME_END', timeEnd: new Date(e)});
+            onDayChange={(e) => {
+              if (formIsValid({ ...config, timeEnd: e })) {
+                configDispatch({ type: "TIME_END", timeEnd: new Date(e) });
               }
             }}
           />
@@ -93,27 +93,27 @@ const Dates = () => {
                 checked={
                   config.prevTimeStart != null && !isNaN(config.prevTimeStart)
                 }
-                onChange={e => {
+                onChange={(e) => {
                   if (e.target.checked) {
                     let prevTime = getPrevTime(
                       new Date(config.timeStart),
                       new Date(config.timeEnd),
                     );
                     configDispatch({
-                      type: 'PREV_TIME_START',
+                      type: "PREV_TIME_START",
                       prevTimeStart: prevTime,
                     });
                     configDispatch({
-                      type: 'TRIGGER_STATE_UPDATE',
+                      type: "TRIGGER_STATE_UPDATE",
                       triggerStateUpdate: true,
                     });
                   } else {
                     configDispatch({
-                      type: 'PREV_TIME_START',
+                      type: "PREV_TIME_START",
                       prevTimeStart: null,
                     });
                     configDispatch({
-                      type: 'TRIGGER_STATE_UPDATE',
+                      type: "TRIGGER_STATE_UPDATE",
                       triggerStateUpdate: true,
                     });
                   }

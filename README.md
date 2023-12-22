@@ -108,7 +108,6 @@ yarn build
 
 The server is already pointing at the production build location, so opening up the same routes on port `:3011` should show your production app.
 
-
 ## Contributing
 
 I'm always happy to receive pull requests, questions/issues regarding code, and feature requests on all my projects. Please feel free to open an issue or submit a pull request.

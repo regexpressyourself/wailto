@@ -1,25 +1,25 @@
-import React, {useContext, useState, useEffect} from 'react';
-import {SongHistoryContext} from '../../context/SongHistoryContext';
-import {ConfigContext} from '../../context/ConfigContext';
-import SongItem from './SongItem.js';
-import './charts.scss';
-import {accessibleTime} from '../../functions/dateMappers';
-import LazyLoad from 'react-lazyload';
+import React, { useContext, useState, useEffect } from "react";
+import { SongHistoryContext } from "../../context/SongHistoryContext";
+import { ConfigContext } from "../../context/ConfigContext";
+import SongItem from "./SongItem.js";
+import "./charts.scss";
+import { accessibleTime } from "../../functions/dateMappers";
+import LazyLoad from "react-lazyload";
 
 const FullSongHistory = () => {
-  const {songHistory} = useContext(SongHistoryContext);
-  const {config} = useContext(ConfigContext);
+  const { songHistory } = useContext(SongHistoryContext);
+  const { config } = useContext(ConfigContext);
   let [songHistoryElements, setSongHistoryElements] = useState(null);
 
   useEffect(() => {
     setSongHistoryElements(
       songHistory.songHistory
-        .map(song => {
+        .map((song) => {
           let date = accessibleTime(song.date);
           let genres = [song.genre1, song.genre2, song.genre3, song.genre4];
-          if (config.genre && config.genre !== 'any genre') {
+          if (config.genre && config.genre !== "any genre") {
             if (!genres.includes(config.genre)) {
-              if (config.genre2 && config.genre2 !== 'any genre') {
+              if (config.genre2 && config.genre2 !== "any genre") {
                 if (!genres.includes(config.genre2)) {
                   return null;
                 }
@@ -44,7 +44,13 @@ const FullSongHistory = () => {
         })
         .reverse(),
     );
-  }, [config.genre, config.genre2, config.timeStart, config.timeEnd, songHistory.songHistory]);
+  }, [
+    config.genre,
+    config.genre2,
+    config.timeStart,
+    config.timeEnd,
+    songHistory.songHistory,
+  ]);
 
   return (
     <div className="chart-container chart-container--full-history">

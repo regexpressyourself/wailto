@@ -60,18 +60,18 @@ $max-width: 1920px;
     margin-top: 0;
     line-height: 1.1;
     font-weight: 600;
-    @include fluid-prop('font-size', $min_width, $max_width, 18px, 28px);
+    @include fluid-prop("font-size", $min_width, $max_width, 18px, 28px);
   }
   .help-subtext {
     font-weight: 400;
-    @include fluid-prop('font-size', $min_width, $max_width, 14px, 18px);
+    @include fluid-prop("font-size", $min_width, $max_width, 14px, 18px);
   }
   p {
     margin: 0;
-    @include fluid-prop('font-size', $min_width, $max_width, 18px, 22px);
+    @include fluid-prop("font-size", $min_width, $max_width, 18px, 22px);
   }
   p.help-link {
-    @include fluid-prop('font-size', $min_width, $max_width, 16px, 20px);
+    @include fluid-prop("font-size", $min_width, $max_width, 16px, 20px);
   }
 }
 .input-wrapper {
@@ -94,7 +94,7 @@ $max-width: 1920px;
   & > div {
     flex-basis: 66%;
     * {
-      @include fluid-prop('font-size', $min_width, $max_width, 18px, 34px);
+      @include fluid-prop("font-size", $min_width, $max_width, 18px, 34px);
     }
   }
 }
@@ -125,21 +125,27 @@ div.input-wrapper--checkbox {
   width: 760px;
   max-width: 85vw;
   justify-content: space-between;
-  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.12), 0 3px 10px rgba(0, 0, 0, 0.24);
+  box-shadow:
+    0 3px 10px rgba(0, 0, 0, 0.12),
+    0 3px 10px rgba(0, 0, 0, 0.24);
   transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
   bottom: 100%;
   right: 8vw;
   z-index: 100;
-  @include fluid-prop('right', $min_width, $max_width, 60px, 100px);
+  @include fluid-prop("right", $min_width, $max_width, 60px, 100px);
   &:focus,
   &:hover {
-    box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
+    box-shadow:
+      0 14px 28px rgba(0, 0, 0, 0.25),
+      0 10px 10px rgba(0, 0, 0, 0.22);
   }
   &.nav--uncollapsed {
-    animation: slide-in-blurred-right 0.3s cubic-bezier(0.55, 0.06, 0.68, 0.19) both;
+    animation: slide-in-blurred-right 0.3s cubic-bezier(0.55, 0.06, 0.68, 0.19)
+      both;
   }
   &.nav--collapsed {
-    animation: slide-out-blurred-right 0.3s cubic-bezier(0.755, 0.05, 0.855, 0.06) both;
+    animation: slide-out-blurred-right 0.3s
+      cubic-bezier(0.755, 0.05, 0.855, 0.06) both;
   }
   @media screen and (max-width: 768px) {
     position: fixed;
@@ -156,7 +162,9 @@ div.input-wrapper--checkbox {
   animation: jello-horizontal 1s both 3;
 }
 .use-mine {
-  box-shadow: 0 1px 3px rgba(255, 255, 255, 0.12), 0 1px 2px rgba(255, 255, 255, 0.24);
+  box-shadow:
+    0 1px 3px rgba(255, 255, 255, 0.12),
+    0 1px 2px rgba(255, 255, 255, 0.24);
   background-color: rgba(170, 92, 159, 0.2);
   border: 2px solid rgba(127, 71, 130, 0.2);
   line-height: 2;
@@ -166,7 +174,7 @@ div.input-wrapper--checkbox {
   font-weight: 600;
   background-color: rgba(253, 139, 123, 1);
   border-color: rgba(226, 89, 139, 1);
-  @include fluid-prop('font-size', $min_width, $max_width, 22px, 36px);
+  @include fluid-prop("font-size", $min_width, $max_width, 22px, 36px);
   &:focus,
   &:hover {
     background-color: white;
@@ -185,14 +193,17 @@ button.nav__toggle-btn {
   border: none;
   margin-left: 30px;
   border-radius: 50%;
-  @include fluid-prop('width', $min_width, $max_width, 60px, 100px);
-  @include fluid-prop('height', $min_width, $max_width, 60px, 100px);
-  @include fluid-prop('min-width', $min_width, $max_width, 60px, 100px);
-  @include fluid-prop('min-height', $min_width, $max_width, 60px, 100px);
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+  @include fluid-prop("width", $min_width, $max_width, 60px, 100px);
+  @include fluid-prop("height", $min_width, $max_width, 60px, 100px);
+  @include fluid-prop("min-width", $min_width, $max_width, 60px, 100px);
+  @include fluid-prop("min-height", $min_width, $max_width, 60px, 100px);
+  box-shadow:
+    0 1px 3px rgba(0, 0, 0, 0.12),
+    0 1px 2px rgba(0, 0, 0, 0.24);
   transition: margin 1s cubic-bezier(0.25, 0.8, 0.25, 1) transform 0.4s
-    cubic-bezier(0.25, 0.8, 0.25, 1) box-shadow 0.4s cubic-bezier(0.25, 0.8, 0.25, 1)
-    background-color 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    cubic-bezier(0.25, 0.8, 0.25, 1) box-shadow 0.4s
+    cubic-bezier(0.25, 0.8, 0.25, 1) background-color 0.3s
+    cubic-bezier(0.25, 0.8, 0.25, 1);
   transform: scale3d(1, 1, 1);
   @media screen and (max-width: 768px) {
     margin-left: 0;
@@ -206,7 +217,9 @@ button.nav__toggle-btn {
   &:hover {
     background-color: #aa5c9f;
     cursor: pointer;
-    box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
+    box-shadow:
+      0 14px 28px rgba(0, 0, 0, 0.25),
+      0 10px 10px rgba(0, 0, 0, 0.22);
     transform: scale(1.01);
   }
   svg {
@@ -231,7 +244,8 @@ button.nav__back-btn {
   svg {
     transform: scale(1);
     margin-left: 0;
-    transition: transform 0.6s cubic-bezier(0.25, 0.8, 0.25, 1),
+    transition:
+      transform 0.6s cubic-bezier(0.25, 0.8, 0.25, 1),
       margin-left 0.6s cubic-bezier(0.25, 0.8, 0.25, 1);
   }
   &:focus,
@@ -248,7 +262,7 @@ button.submit-btn {
   color: #333;
   font-weight: 600;
   min-height: 50px;
-  @include fluid-prop('font-size', $min_width, $max_width, 18px, 28px);
+  @include fluid-prop("font-size", $min_width, $max_width, 18px, 28px);
   margin-top: 20px;
   border-radius: 0;
   &:focus,
@@ -273,10 +287,10 @@ button.submit-btn {
   }
 }
 .username-input {
-  @include fluid-prop('font-size', $min_width, $max_width, 18px, 34px);
+  @include fluid-prop("font-size", $min_width, $max_width, 18px, 34px);
 }
 .nav__username {
-  @include fluid-prop('font-size', $min_width, $max_width, 22px, 34px);
+  @include fluid-prop("font-size", $min_width, $max_width, 22px, 34px);
   font-weight: 600;
   .required-reminder {
     display: none;
@@ -286,10 +300,10 @@ button.submit-btn {
   font-weight: 600;
   line-height: 1.1;
   margin: 5px 0;
-  @include fluid-prop('font-size', $min_width, $max_width, 18px, 34px);
+  @include fluid-prop("font-size", $min_width, $max_width, 18px, 34px);
   display: block;
   .header-help-link {
-    @include fluid-prop('font-size', $min_width, $max_width, 16px, 20px);
+    @include fluid-prop("font-size", $min_width, $max_width, 16px, 20px);
   }
 }
 .nav__username--invalid {

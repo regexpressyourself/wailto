@@ -88,18 +88,18 @@ $max-width: 1920px;
   }
 }
 .user-info__username {
-  @include fluid-prop('font-size', $min_width, $max_width, 24px, 28px);
+  @include fluid-prop("font-size", $min_width, $max_width, 24px, 28px);
   text-transform: uppercase;
   font-weight: 800;
-  font-family: 'Barriecito', 'Livvic', sans-serif;
+  font-family: "Barriecito", "Livvic", sans-serif;
 }
 .user-info__dates {
   display: flex;
   justify-content: space-between;
 }
 .user-info__more-info {
-  @include fluid-prop('font-size', $min_width, $max_width, 18px, 20px);
-  font-family: 'Barriecito', 'Livvic', sans-serif;
+  @include fluid-prop("font-size", $min_width, $max_width, 18px, 20px);
+  font-family: "Barriecito", "Livvic", sans-serif;
 
   .genre {
     color: #fd8b7b;
@@ -109,8 +109,8 @@ $max-width: 1920px;
   }
 }
 .user-info__zookeeprr-info {
-  @include fluid-prop('font-size', $min_width, $max_width, 22px, 28px);
-  font-family: 'Livvic', sans-serif;
+  @include fluid-prop("font-size", $min_width, $max_width, 22px, 28px);
+  font-family: "Livvic", sans-serif;
   text-align: center;
   animation: text-focus-in 1s cubic-bezier(0.55, 0.085, 0.68, 0.53) both;
   color: rgba(226, 89, 139, 1);
@@ -132,7 +132,7 @@ $max-width: 1920px;
 }
 .muted *,
 .muted {
-  color: rgba(0,0,0,.12);
+  color: rgba(0, 0, 0, 0.12);
 }
 @keyframes text-focus-in {
   0% {

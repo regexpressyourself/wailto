@@ -1,10 +1,10 @@
-import React from 'react';
-import './Home.scss';
-import './Error.scss';
-import {Link} from 'react-router-dom';
-import {LineChart, ResponsiveContainer, Line} from 'recharts';
+import React from "react";
+import "./Home.scss";
+import "./Error.scss";
+import { Link } from "react-router-dom";
+import { LineChart, ResponsiveContainer, Line } from "recharts";
 
-const Error = ({errorMessage}) => {
+const Error = ({ errorMessage }) => {
   return (
     <div className="error-page-wrapper">
       <section className="home__header home__header--error">
@@ -12,7 +12,9 @@ const Error = ({errorMessage}) => {
           <span className="css-logo__wail">Oops!</span>
         </p>
         <h1>Somethine went wrong!</h1>
-        <p className="server-message">Our servers are saying it's something to do with:</p>
+        <p className="server-message">
+          Our servers are saying it's something to do with:
+        </p>
         <p className="server-message server-message--code">
           <code>{errorMessage}</code>
         </p>
@@ -24,9 +26,10 @@ const Error = ({errorMessage}) => {
 
           <div
             className="btn-link btn-link--2"
-            onClick={e => {
-              window.location.href = 'https://smessina.com';
-            }}>
+            onClick={(e) => {
+              window.location.href = "https://smessina.com";
+            }}
+          >
             <button className="btn">Speak To The Dev</button>
           </div>
         </div>
@@ -35,31 +38,32 @@ const Error = ({errorMessage}) => {
           <LineChart
             data={[
               {
-                '': 90,
+                "": 90,
               },
               {
-                '': 50,
+                "": 50,
               },
               {
-                '': 66,
+                "": 66,
               },
               {
-                '': 79,
+                "": 79,
               },
               {
-                '': 50,
+                "": 50,
               },
               {
-                '': 40,
+                "": 40,
               },
               {
-                '': 0,
+                "": 0,
               },
-            ]}>
+            ]}
+          >
             }>
             <Line
               type="monotone"
-              dot={{stroke: '#aa5c9f', strokeWidth: 4, r: 10}}
+              dot={{ stroke: "#aa5c9f", strokeWidth: 4, r: 10 }}
               dataKey=""
               stroke="#aa5c9f"
               strokeWidth={10}

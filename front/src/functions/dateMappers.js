@@ -1,16 +1,37 @@
 const days = () => {
-  return ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+  return [
+    "Sunday",
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+  ];
 };
 const months = () => {
-  return ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  return [
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec",
+  ];
 };
 
 const hourToAmpm = (hour) => {
-  let meridiem = 'am';
+  let meridiem = "am";
 
   if (hour >= 12) {
     hour = hour - 12;
-    meridiem = 'pm';
+    meridiem = "pm";
   }
   if (hour === 0) {
     hour = 12;
@@ -26,17 +47,17 @@ const accessibleTime = (unixTime) => {
   let dow = date.getDay();
   let dowName = days()[date.getDay()];
   let hour = date.getHours();
-  let minutes = '0' + date.getMinutes();
+  let minutes = "0" + date.getMinutes();
   minutes = minutes.substr(-2);
-  let seconds = '0' + date.getSeconds();
+  let seconds = "0" + date.getSeconds();
   seconds = seconds.substr(-2);
-  let meridiem = 'am';
+  let meridiem = "am";
   if (hour >= 12) {
-    meridiem = 'pm';
+    meridiem = "pm";
   }
   let ampmHour = hour % 12;
   let hourName = (hour % 12) + meridiem;
-  let time = ampmHour + ':' + minutes + meridiem;
+  let time = ampmHour + ":" + minutes + meridiem;
 
   return {
     date: `${month} ${day}, ${year}`,
@@ -67,17 +88,17 @@ const accessibleJsTime = (jsDate, isLess1 = false) => {
   let dow = date.getDay();
   let dowName = days()[date.getDay()];
   let hour = date.getHours();
-  let minutes = '0' + date.getMinutes();
+  let minutes = "0" + date.getMinutes();
   minutes = minutes.substr(-2);
-  let seconds = '0' + date.getSeconds();
+  let seconds = "0" + date.getSeconds();
   seconds = seconds.substr(-2);
-  let meridiem = 'am';
+  let meridiem = "am";
   if (hour >= 12) {
-    meridiem = 'pm';
+    meridiem = "pm";
   }
   let ampmHour = hour % 12;
   let hourName = (hour % 12) + meridiem;
-  let time = ampmHour + ':' + minutes + meridiem;
+  let time = ampmHour + ":" + minutes + meridiem;
 
   return {
     jsDate: new Date(date),
@@ -109,10 +130,13 @@ const getDatesBetween = (start, end) => {
 };
 
 const matchGenre = (song, genre) => {
-  if (genre === 'any genre') {
+  if (genre === "any genre") {
     return song;
   }
-  if (genre && ![song.genre1, song.genre2, song.genre3, song.genre4].includes(genre)) {
+  if (
+    genre &&
+    ![song.genre1, song.genre2, song.genre3, song.genre4].includes(genre)
+  ) {
     return null;
   } else {
     return song;
@@ -141,7 +165,12 @@ const serializeSongList = (songList, bucketKey) => {
   return map;
 };
 
-const bucketSongTimes = (bucketKey, bucketKeyValues, songList, genre = null) => {
+const bucketSongTimes = (
+  bucketKey,
+  bucketKeyValues,
+  songList,
+  genre = null,
+) => {
   songList = songList.filter((song) => matchGenre(song, genre));
   return serializeSongList(songList, bucketKey);
 };

@@ -1,10 +1,10 @@
-import React, {useState, useEffect, useContext} from 'react';
-import {ConfigContext} from '../context/ConfigContext';
-import {accessibleJsTime} from '../functions/dateMappers';
-import {isGenre1, isGenre2} from '../functions/genres';
+import React, { useState, useEffect, useContext } from "react";
+import { ConfigContext } from "../context/ConfigContext";
+import { accessibleJsTime } from "../functions/dateMappers";
+import { isGenre1, isGenre2 } from "../functions/genres";
 
 const UserInfo = () => {
-  const {config} = useContext(ConfigContext);
+  const { config } = useContext(ConfigContext);
   let [genreInfo, setGenreInfo] = useState(null);
   let [prevDateDisplay, setPrevDateDisplay] = useState(false);
   let [prevDateText, setPrevDateText] = useState(false);
@@ -46,7 +46,7 @@ const UserInfo = () => {
   return (
     <section className="user-info">
       <p className="user-info__username">{config.username}</p>
-      <div className={abbreviated ? 'muted' : null}>
+      <div className={abbreviated ? "muted" : null}>
         <p className="user-info__more-info user-info__dates">
           <span>{accessibleJsTime(config.timeStart).date}</span>
           &nbsp; &mdash; &nbsp;
@@ -60,7 +60,7 @@ const UserInfo = () => {
           </p>
         )}
       </div>
-      <div className={abbreviated ? 'muted' : null}>{genreInfo}</div>
+      <div className={abbreviated ? "muted" : null}>{genreInfo}</div>
     </section>
   );
 };

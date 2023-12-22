@@ -1,9 +1,9 @@
-import React from 'react';
-import Graph from './Graph';
-import {hourToAmpm} from '../../functions/dateMappers';
+import React from "react";
+import Graph from "./Graph";
+import { hourToAmpm } from "../../functions/dateMappers";
 
 const SongsByHour = () => {
-  let dataKey = 'hourName';
+  let dataKey = "hourName";
   let hourNames = [];
   for (let i = 0; i < 24; i++) {
     hourNames.push(hourToAmpm(i));

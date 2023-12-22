@@ -1,21 +1,21 @@
-const path = require('path');
-const express = require('express');
-const request = require('request');
-const cors = require('cors');
+const path = require("path");
+const express = require("express");
+const request = require("request");
+const cors = require("cors");
 
 const {
   getUser,
   getSongHistory,
   getCoverageValues,
   saveUserInfo,
-} = require('./database');
+} = require("./database");
 
-const {fetchAndSaveTracks, removeDuplicates} = require('./api');
+const { fetchAndSaveTracks, removeDuplicates } = require("./api");
 
-const {getDateRange, resetDate} = require('./dates');
+const { getDateRange, resetDate } = require("./dates");
 
-module.exports = app => {
-  app.get('/history', cors(), async (req, res, next) => {
+module.exports = (app) => {
+  app.get("/history", cors(), async (req, res, next) => {
     let request = JSON.parse(JSON.stringify(req.query));
     let username = request.username;
     const from = resetDate(request.from).jsTime;
@@ -27,8 +27,8 @@ module.exports = app => {
     try {
       userRes = await getUser(username);
     } catch (error) {
-      console.error('ERROR: ', error.stack);
-      res.status(502).send('Error getting user');
+      console.error("ERROR: ", error.stack);
+      res.status(502).send("Error getting user");
       return false;
     }
     let userid = userRes.id;
@@ -38,15 +38,15 @@ module.exports = app => {
     try {
       storedCoverageValues = await getCoverageValues(userid, from, to);
     } catch (error) {
-      console.error('ERROR: ', error.stack);
-      res.status(502).send('Error getting saved songs');
+      console.error("ERROR: ", error.stack);
+      res.status(502).send("Error getting saved songs");
       return false;
     }
 
     // find any missing values from the db
     let missingValues = [];
     for (let date of getDateRange(from, to)) {
-      if (!storedCoverageValues.find(covVal => covVal.day === date)) {
+      if (!storedCoverageValues.find((covVal) => covVal.day === date)) {
         missingValues.push(date);
       }
     }
@@ -61,15 +61,15 @@ module.exports = app => {
           storedCoverageValues,
         );
       } catch (error) {
-        console.error('ERROR: ', error.stack);
-        res.status(502).send('Error fetching and saving tracks');
+        console.error("ERROR: ", error.stack);
+        res.status(502).send("Error fetching and saving tracks");
         return false;
       }
       let saveUserResponses;
       try {
         saveUserResponses = await saveUserInfo(userid, from, to, recentTracks);
       } catch (error) {
-        console.error('ERROR: ', error.stack);
+        console.error("ERROR: ", error.stack);
         return false;
       }
     }
@@ -79,26 +79,26 @@ module.exports = app => {
     try {
       finalResult = await getSongHistory(userid, unixFrom, unixTo);
     } catch (error) {
-      console.error('ERROR: ', error.stack);
-      res.status(502).send('Error retrieving saved songs');
+      console.error("ERROR: ", error.stack);
+      res.status(502).send("Error retrieving saved songs");
       return false;
     }
 
     finalResult = removeDuplicates(finalResult);
-    console.log('sending data');
+    console.log("sending data");
     res.json(finalResult);
   });
 
-  app.use('/', express.static('../front/build'));
+  app.use("/", express.static("../front/build"));
 
-  app.get('/', (req, res, next) => {
-    res.sendFile(path.join(__dirname, '../front/build/index.html'));
+  app.get("/", (req, res, next) => {
+    res.sendFile(path.join(__dirname, "../front/build/index.html"));
     return;
   });
 
-  app.use(express.static(path.join(__dirname, '/../front/build')));
+  app.use(express.static(path.join(__dirname, "/../front/build")));
 
-  app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname + '/../front/build/index.html'));
+  app.get("*", (req, res) => {
+    res.sendFile(path.join(__dirname + "/../front/build/index.html"));
   });
 };

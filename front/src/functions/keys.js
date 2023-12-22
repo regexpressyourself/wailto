@@ -1,1 +1,1 @@
-import {getGenreKey, getGenre2Key} from '../../functions/genres';
+import { getGenreKey, getGenre2Key } from "../../functions/genres";

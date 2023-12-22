@@ -1,16 +1,22 @@
-import React, {useContext} from 'react';
-import {ConfigContext} from '../../context/ConfigContext';
-import Graph from './Graph';
-import {getDatesBetween} from '../../functions/dateMappers';
+import React, { useContext } from "react";
+import { ConfigContext } from "../../context/ConfigContext";
+import Graph from "./Graph";
+import { getDatesBetween } from "../../functions/dateMappers";
 
 const SongsByDate = () => {
-  const {config} = useContext(ConfigContext);
+  const { config } = useContext(ConfigContext);
 
-  let dataKey = 'date';
-  let datesBetween = getDatesBetween(new Date(config.timeStart), new Date(config.timeEnd));
+  let dataKey = "date";
+  let datesBetween = getDatesBetween(
+    new Date(config.timeStart),
+    new Date(config.timeEnd),
+  );
   let prevDatesBetween = null;
   if (config.prevTimeStart) {
-    prevDatesBetween = getDatesBetween(new Date(config.prevTimeStart), new Date(config.timeStart));
+    prevDatesBetween = getDatesBetween(
+      new Date(config.prevTimeStart),
+      new Date(config.timeStart),
+    );
   }
 
   return (

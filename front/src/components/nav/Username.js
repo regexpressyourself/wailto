@@ -1,22 +1,22 @@
-import React, {useState, useEffect, useContext} from 'react';
-import {ConfigContext} from '../../context/ConfigContext';
-import {inputAttention} from './navControls';
+import React, { useState, useEffect, useContext } from "react";
+import { ConfigContext } from "../../context/ConfigContext";
+import { inputAttention } from "./navControls";
 
 const Username = () => {
-  const {config, configDispatch} = useContext(ConfigContext);
+  const { config, configDispatch } = useContext(ConfigContext);
   let [username, setUsername] = useState(config.username);
 
   useEffect(() => {
-    if (config.username === 'zookeeprr') {
-      let zookeeprr = 'zookeeprr';
-      inputAttention(true, 'username');
+    if (config.username === "zookeeprr") {
+      let zookeeprr = "zookeeprr";
+      inputAttention(true, "username");
       for (let i = 1; i <= zookeeprr.length; i++) {
         setTimeout(() => {
           setUsername(zookeeprr.substring(0, i));
         }, 50 * i);
       }
     } else {
-      inputAttention(false, 'username');
+      inputAttention(false, "username");
       setUsername(config.username);
     }
   }, [config.username]);
@@ -25,7 +25,11 @@ const Username = () => {
     <div className="nav__username input-wrapper">
       <label className="nav__heading nav__heading--username" htmlFor="username">
         Username&nbsp;
-        <a href="https://www.last.fm/join" rel="noopener noreferrer" target="_blank">
+        <a
+          href="https://www.last.fm/join"
+          rel="noopener noreferrer"
+          target="_blank"
+        >
           <span className="clickable header-help-link">(Need a username?)</span>
         </a>
       </label>
@@ -35,8 +39,8 @@ const Username = () => {
         placeholder="Last.fm username"
         type="text"
         value={username}
-        onChange={e => {
-          configDispatch({type: 'USERNAME', username: e.target.value});
+        onChange={(e) => {
+          configDispatch({ type: "USERNAME", username: e.target.value });
         }}
       />
     </div>

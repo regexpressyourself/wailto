@@ -1,23 +1,25 @@
-import React, {useState, useRef, useEffect, useContext} from 'react';
-import {withRouter} from 'react-router-dom';
-import {Plus, X} from 'react-feather';
-import {ConfigContext} from '../../context/ConfigContext';
-import BackButton from './BackButton';
-import HelpMessage from './HelpMessage';
-import Username from './Username';
-import Dates from './Dates';
-import Genre from './Genre';
-import './daypicker.scss';
-import './Nav.scss';
-import {expandNav, formIsValid} from './navControls';
+import React, { useState, useRef, useEffect, useContext } from "react";
+import { withRouter } from "react-router-dom";
+import { Plus, X } from "react-feather";
+import { ConfigContext } from "../../context/ConfigContext";
+import BackButton from "./BackButton";
+import HelpMessage from "./HelpMessage";
+import Username from "./Username";
+import Dates from "./Dates";
+import Genre from "./Genre";
+import "./daypicker.scss";
+import "./Nav.scss";
+import { expandNav, formIsValid } from "./navControls";
 
-const Nav = ({history, showMessages, showBack, defaultStart, defaultEnd}) => {
-  const {config, configDispatch} = useContext(ConfigContext);
+const Nav = ({ history, showMessages, showBack, defaultStart, defaultEnd }) => {
+  const { config, configDispatch } = useContext(ConfigContext);
 
   let [isExpanded, setIsExpanded] = useState(null);
   let [helpMessageType, setHelpMessageType] = useState(null);
   let [buttonText, setButtonText] = useState(<Plus />);
-  let [buttonAnimation, setButtonAnimation] = useState(!localStorage.getItem('wt-username'));
+  let [buttonAnimation, setButtonAnimation] = useState(
+    !localStorage.getItem("wt-username"),
+  );
 
   const navToggleBtn = useRef(null);
   const nav = useRef(null);
@@ -26,38 +28,38 @@ const Nav = ({history, showMessages, showBack, defaultStart, defaultEnd}) => {
   const setOutsideClickListener = (e) => {
     if (
       e.target &&
-      !e.target.closest('nav') &&
-      !e.target.closest('button') &&
-      !e.target.classList.contains('css-1n7v3ny-option')
+      !e.target.closest("nav") &&
+      !e.target.closest("button") &&
+      !e.target.classList.contains("css-1n7v3ny-option")
     ) {
       setIsExpanded(false);
     }
   };
 
   useEffect(() => {
-    document.addEventListener('click', setOutsideClickListener);
+    document.addEventListener("click", setOutsideClickListener);
 
     return () => {
-      document.removeEventListener('click', setOutsideClickListener);
+      document.removeEventListener("click", setOutsideClickListener);
     };
   }, []);
 
   useEffect(() => {
-    if (window.location.href.includes('dashboard') && !formIsValid(config)) {
+    if (window.location.href.includes("dashboard") && !formIsValid(config)) {
       setIsExpanded(true);
     }
 
-    const clickSubmitOnEnter = ({keyCode}) => {
+    const clickSubmitOnEnter = ({ keyCode }) => {
       if (keyCode === 13) {
         navSubmitBtn.current.click();
       }
     };
 
     if (!nav) {
-      nav.current.removeEventListener('keydown', clickSubmitOnEnter);
+      nav.current.removeEventListener("keydown", clickSubmitOnEnter);
       return;
     }
-    nav.current.addEventListener('keydown', clickSubmitOnEnter);
+    nav.current.addEventListener("keydown", clickSubmitOnEnter);
   }, [nav, config]);
 
   const triggerUpdate = () => {
@@ -67,14 +69,14 @@ const Nav = ({history, showMessages, showBack, defaultStart, defaultEnd}) => {
     }
     setIsExpanded(false);
 
-    if (window.location.href.includes('dashboard')) {
-      configDispatch({type: 'APP_STATE', appState: config.appState});
+    if (window.location.href.includes("dashboard")) {
+      configDispatch({ type: "APP_STATE", appState: config.appState });
     } else {
-      history.push('/dashboard');
+      history.push("/dashboard");
     }
 
     configDispatch({
-      type: 'TRIGGER_STATE_UPDATE',
+      type: "TRIGGER_STATE_UPDATE",
       triggerStateUpdate: true,
     });
 
@@ -85,11 +87,11 @@ const Nav = ({history, showMessages, showBack, defaultStart, defaultEnd}) => {
     if (isExpanded) {
       setButtonText(<X />);
       expandNav(true);
-      setHelpMessageType(showMessages ? 'tutorial' : null);
+      setHelpMessageType(showMessages ? "tutorial" : null);
     } else {
       setButtonText(<Plus />);
       expandNav(false);
-      setHelpMessageType(showMessages ? 'default' : null);
+      setHelpMessageType(showMessages ? "default" : null);
     }
   }, [isExpanded, showMessages]);
 
@@ -107,11 +109,12 @@ const Nav = ({history, showMessages, showBack, defaultStart, defaultEnd}) => {
           <button
             tabIndex="0"
             ref={navToggleBtn}
-            className={`nav__toggle-btn ${buttonAnimation ? 'animated' : ''}`}
+            className={`nav__toggle-btn ${buttonAnimation ? "animated" : ""}`}
             onClick={(e) => {
               setIsExpanded(!isExpanded);
               setButtonAnimation(false);
-            }}>
+            }}
+          >
             {buttonText}
           </button>
         </div>
@@ -125,7 +128,8 @@ const Nav = ({history, showMessages, showBack, defaultStart, defaultEnd}) => {
             className="submit-btn"
             onClick={(e) => {
               triggerUpdate();
-            }}>
+            }}
+          >
             What Am I Listening to?
           </button>
         </nav>

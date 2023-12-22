@@ -1,8 +1,8 @@
-import React from 'react';
-import {GitHub} from 'react-feather';
-import {Link} from 'react-router-dom';
-import './Footer.scss';
-import sm from '../../assets/sm.png';
+import React from "react";
+import { GitHub } from "react-feather";
+import { Link } from "react-router-dom";
+import "./Footer.scss";
+import sm from "../../assets/sm.png";
 
 const Footer = () => {
   const inlineLogo = <span className="logo-font">WAILto</span>;
@@ -22,7 +22,8 @@ const Footer = () => {
             href="https://github.com/regexpressyourself/wailto"
             className="footer-gh-link"
             rel="noopener noreferrer"
-            target="_blank">
+            target="_blank"
+          >
             <GitHub />
             {inlineLogo} &nbsp;is 100% open source
           </a>
@@ -33,7 +34,8 @@ const Footer = () => {
           <a
             href="https://smessina.com"
             rel="noopener noreferrer"
-            target="_blank">
+            target="_blank"
+          >
             Sam Messina
             <br />
             &copy; {new Date().getFullYear()}
@@ -44,13 +46,14 @@ const Footer = () => {
             className="footer-img"
             href="https://smessina.com"
             rel="noopener noreferrer"
-            target="_blank">
+            target="_blank"
+          >
             <img className="sm-fav" src={sm} alt="smessina.com" />
           </a>
         </p>
       </div>
     </footer>
   );
-}
+};
 
 export default Footer;

@@ -1,14 +1,21 @@
-import React, {useContext, useState, useEffect} from 'react';
-import './charts.scss';
-import {SongHistoryContext} from '../../context/SongHistoryContext';
-import {ConfigContext} from '../../context/ConfigContext';
-import {ResponsiveContainer, AreaChart, Area, XAxis, YAxis, Tooltip} from 'recharts';
-import {accessibleJsTime, bucketSongTimes} from '../../functions/dateMappers';
-import {getGenreKey, getGenre2Key} from '../../functions/genres';
+import React, { useContext, useState, useEffect } from "react";
+import "./charts.scss";
+import { SongHistoryContext } from "../../context/SongHistoryContext";
+import { ConfigContext } from "../../context/ConfigContext";
+import {
+  ResponsiveContainer,
+  AreaChart,
+  Area,
+  XAxis,
+  YAxis,
+  Tooltip,
+} from "recharts";
+import { accessibleJsTime, bucketSongTimes } from "../../functions/dateMappers";
+import { getGenreKey, getGenre2Key } from "../../functions/genres";
 
-const Graph = ({dataKey, dataKeyValues, secondaryDataKeyValues}) => {
-  const {songHistory} = useContext(SongHistoryContext);
-  const {config} = useContext(ConfigContext);
+const Graph = ({ dataKey, dataKeyValues, secondaryDataKeyValues }) => {
+  const { songHistory } = useContext(SongHistoryContext);
+  const { config } = useContext(ConfigContext);
 
   let [chartElement, setChartElement] = useState();
   let [title1, setTitle1] = useState(null);
@@ -40,16 +47,21 @@ const Graph = ({dataKey, dataKeyValues, secondaryDataKeyValues}) => {
     } else if (config.prevTimeStart && songHistory.prevSongHistory) {
       // if there isn't a second genre and there is a previous song history set, we have to get
       // new titles and set up for two graphs
-      let prevTimeStartString = accessibleJsTime(config.prevTimeStart).dateAsString;
+      let prevTimeStartString = accessibleJsTime(
+        config.prevTimeStart,
+      ).dateAsString;
       let timeStartString = accessibleJsTime(config.timeStart).dateAsString;
-      let timeStartLess1String = accessibleJsTime(config.timeStart, true).dateAsString;
+      let timeStartLess1String = accessibleJsTime(
+        config.timeStart,
+        true,
+      ).dateAsString;
       let timeEndString = accessibleJsTime(config.timeEnd).dateAsString;
 
       setTitle1(`${timeStartString} - ${timeEndString}`);
       setTitle2(`${prevTimeStartString} - ${timeStartLess1String}`);
 
-      primaryKey = 'song count';
-      secondaryKey = 'song count';
+      primaryKey = "song count";
+      secondaryKey = "song count";
 
       secondaryData = bucketSongTimes(
         dataKey,
@@ -66,8 +78,10 @@ const Graph = ({dataKey, dataKeyValues, secondaryDataKeyValues}) => {
       let secondNewDayObject = {};
 
       let dataName = dataKeyValues[i];
-      newDayObject['name'] = dataName;
-      newDayObject[primaryKey] = primaryData[dataName] ? primaryData[dataName].length : 0;
+      newDayObject["name"] = dataName;
+      newDayObject[primaryKey] = primaryData[dataName]
+        ? primaryData[dataName].length
+        : 0;
 
       let twoChartsEnabled = true;
       if (true || twoChartsEnabled) {
@@ -76,13 +90,15 @@ const Graph = ({dataKey, dataKeyValues, secondaryDataKeyValues}) => {
           secondDataName = secondaryDataKeyValues[i];
         }
 
-        secondNewDayObject['name'] = secondDataName;
+        secondNewDayObject["name"] = secondDataName;
         secondNewDayObject[secondaryKey] = secondaryData[secondDataName]
           ? secondaryData[secondDataName].length
           : 0;
       } else {
         // TODO set customizable single-vs-double chart view
-        newDayObject[secondaryKey] = secondaryData[dataName] ? secondaryData[dataName].length : 0;
+        newDayObject[secondaryKey] = secondaryData[dataName]
+          ? secondaryData[dataName].length
+          : 0;
       }
 
       rcData.push(newDayObject);
@@ -101,10 +117,20 @@ const Graph = ({dataKey, dataKeyValues, secondaryDataKeyValues}) => {
             <YAxis />
             <Tooltip />
             {primaryKey ? (
-              <Area type="monotone" dataKey={primaryKey} stroke="#fd8b7b" fill="#e2598b" />
+              <Area
+                type="monotone"
+                dataKey={primaryKey}
+                stroke="#fd8b7b"
+                fill="#e2598b"
+              />
             ) : null}
             {secondaryKey && secondaryRcData.length === 0 ? (
-              <Area type="monotone" dataKey={secondaryKey} stroke="#7f4782" fill="#aa5c9f" />
+              <Area
+                type="monotone"
+                dataKey={secondaryKey}
+                stroke="#7f4782"
+                fill="#aa5c9f"
+              />
             ) : null}
           </AreaChart>
         </ResponsiveContainer>
@@ -117,7 +143,12 @@ const Graph = ({dataKey, dataKeyValues, secondaryDataKeyValues}) => {
                 <YAxis />
                 <Tooltip />
                 {secondaryKey ? (
-                  <Area type="monotone" dataKey={secondaryKey} stroke="#7f4782" fill="#aa5c9f" />
+                  <Area
+                    type="monotone"
+                    dataKey={secondaryKey}
+                    stroke="#7f4782"
+                    fill="#aa5c9f"
+                  />
                 ) : null}
               </AreaChart>
             </ResponsiveContainer>

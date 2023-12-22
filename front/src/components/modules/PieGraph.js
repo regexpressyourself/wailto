@@ -1,5 +1,5 @@
-import React, {useState} from 'react';
-import {Sector, ResponsiveContainer, PieChart, Pie, Cell} from 'recharts';
+import React, { useState } from "react";
+import { Sector, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
 
 const renderActiveShape = (props) => {
   const RADIAN = Math.PI / 180;
@@ -24,7 +24,7 @@ const renderActiveShape = (props) => {
   const my = cy + (outerRadius + 30) * sin;
   const ex = mx + (cos >= 0 ? 1 : -1) * 22;
   const ey = my;
-  const textAnchor = cos >= 0 ? 'start' : 'end';
+  const textAnchor = cos >= 0 ? "start" : "end";
 
   return (
     <g>
@@ -49,24 +49,35 @@ const renderActiveShape = (props) => {
         outerRadius={outerRadius + 10}
         fill={fill}
       />
-      <path d={`M${sx},${sy}L${mx},${my}L${ex},${ey}`} stroke={fill} fill="none" />
+      <path
+        d={`M${sx},${sy}L${mx},${my}L${ex},${ey}`}
+        stroke={fill}
+        fill="none"
+      />
       <circle cx={ex} cy={ey} r={2} fill={fill} stroke="none" />
       <text
         x={ex + (cos >= 0 ? 1 : -1) * 12}
         y={ey}
         textAnchor={textAnchor}
-        fill="#333">{`song count: ${value}`}</text>
-      <text x={ex + (cos >= 0 ? 1 : -1) * 12} y={ey} dy={18} textAnchor={textAnchor} fill="#999">
+        fill="#333"
+      >{`song count: ${value}`}</text>
+      <text
+        x={ex + (cos >= 0 ? 1 : -1) * 12}
+        y={ey}
+        dy={18}
+        textAnchor={textAnchor}
+        fill="#999"
+      >
         {`% of total: ${(percent * 100).toFixed(2)}%`}
       </text>
     </g>
   );
 };
 
-const PieGraph = ({data}) => {
+const PieGraph = ({ data }) => {
   let [activeIndex, setActiveIndex] = useState(0);
 
-  const COLORS = ['#fdd043', '#fd8b7b', '#aa5c9f', '#e2598b'];
+  const COLORS = ["#fdd043", "#fd8b7b", "#aa5c9f", "#e2598b"];
   if (!data) return null;
 
   return (
@@ -82,7 +93,8 @@ const PieGraph = ({data}) => {
           dataKey="value"
           onMouseEnter={(data, index) => {
             setActiveIndex(index);
-          }}>
+          }}
+        >
           {data.map((entry, index) => (
             <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
           ))}

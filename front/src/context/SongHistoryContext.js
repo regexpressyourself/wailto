@@ -1,22 +1,22 @@
-import React from 'react';
+import React from "react";
 
 const SongHistoryContext = React.createContext();
 
 const songHistoryReducer = (state, songHistoryAction) => {
   switch (songHistoryAction.type) {
-    case 'SONG_HISTORY':
+    case "SONG_HISTORY":
       return {
         ...state,
         songHistory: songHistoryAction.songHistory,
       };
-    case 'PREV_SONG_HISTORY':
+    case "PREV_SONG_HISTORY":
       return {
         ...state,
         prevSongHistory: songHistoryAction.prevSongHistory,
       };
     default:
-      return {songHistory: null, prevSongHistory: null};
+      return { songHistory: null, prevSongHistory: null };
   }
 };
 
-export {SongHistoryContext, songHistoryReducer};
+export { SongHistoryContext, songHistoryReducer };

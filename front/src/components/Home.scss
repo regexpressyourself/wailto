@@ -59,12 +59,13 @@ $max-width: 1920px;
     animation: slide-in-top 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
   }
   h1 {
-    @include fluid-prop('font-size', $min_width, $max_width, 28px, 90px);
-    animation: tracking-in-contract 0.8s cubic-bezier(0.215, 0.61, 0.355, 1) both;
+    @include fluid-prop("font-size", $min_width, $max_width, 28px, 90px);
+    animation: tracking-in-contract 0.8s cubic-bezier(0.215, 0.61, 0.355, 1)
+      both;
     margin: 0;
     line-height: 1;
     margin-top: -25px;
-    font-family: 'Barriecito', 'Livvic', sans-serif;
+    font-family: "Barriecito", "Livvic", sans-serif;
     font-weight: 800;
     color: #7f4782;
   }
@@ -95,9 +96,9 @@ $max-width: 1920px;
   .btn-link .btn {
     font-weight: 800;
     line-height: 1.2;
-    @include fluid-prop('font-size', $min_width, $max_width, 22px, 36px);
+    @include fluid-prop("font-size", $min_width, $max_width, 22px, 36px);
     & > .sub-button {
-      @include fluid-prop('font-size', $min_width, $max_width, 14px, 24px);
+      @include fluid-prop("font-size", $min_width, $max_width, 14px, 24px);
       font-weight: 400;
       line-height: 1;
     }
@@ -123,8 +124,10 @@ $max-width: 1920px;
   }
 
   .btn-link--demo .btn {
-    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.12), 0 1px 5px rgba(0, 0, 0, 0.24);
-    @include fluid-prop('font-size', $min_width, $max_width, 28px, 48px);
+    box-shadow:
+      0 1px 5px rgba(0, 0, 0, 0.12),
+      0 1px 5px rgba(0, 0, 0, 0.24);
+    @include fluid-prop("font-size", $min_width, $max_width, 28px, 48px);
     line-height: 1;
     & * {
       margin: 0;
@@ -139,7 +142,9 @@ $max-width: 1920px;
     border-radius: 50%;
     border: 3px solid #e2598b;
     background-color: #e2598b;
-    transition: color 0.3s, background-color 0.3s;
+    transition:
+      color 0.3s,
+      background-color 0.3s;
     cursor: pointer;
     &:hover {
       background-color: white;
@@ -175,8 +180,8 @@ $max-width: 1920px;
 
 .css-logo {
   animation: slide-in-top 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
-  font-family: 'Barriecito', 'Livvic', sans-serif;
-  @include fluid-prop('font-size', $min_width, $max_width, 150px, 600px);
+  font-family: "Barriecito", "Livvic", sans-serif;
+  @include fluid-prop("font-size", $min_width, $max_width, 150px, 600px);
   position: relative;
   text-align: center;
   line-height: 0.9;
@@ -187,7 +192,7 @@ $max-width: 1920px;
 }
 .css-logo__to {
   color: #fdd043;
-  @include fluid-prop('font-size', $min_width, $max_width, 75px, 300px);
+  @include fluid-prop("font-size", $min_width, $max_width, 75px, 300px);
   position: absolute;
   right: 0;
   top: 20%;
@@ -197,27 +202,28 @@ main.home {
   padding: 2vw 5vw 10vw;
   max-width: 1000px;
   margin: auto;
-  font-family: 'Livvic', sans-serif;
+  font-family: "Livvic", sans-serif;
 
   h2 {
-    @include fluid-prop('font-size', $min_width, $max_width, 42px, 90px);
-    animation: tracking-in-contract--mini 0.8s cubic-bezier(0.215, 0.61, 0.355, 1) both;
+    @include fluid-prop("font-size", $min_width, $max_width, 42px, 90px);
+    animation: tracking-in-contract--mini 0.8s
+      cubic-bezier(0.215, 0.61, 0.355, 1) both;
     animation-delay: 1s;
     line-height: 1;
     font-weight: 800;
     color: #7f4782;
   }
   blockquote {
-    font-family: 'Livvic', sans-serif;
+    font-family: "Livvic", sans-serif;
     border-left: 4px solid #e2598b;
     color: #e2598b;
   }
   blockquote,
   p {
-    @include fluid-prop('font-size', $min_width, $max_width, 18px, 24px);
+    @include fluid-prop("font-size", $min_width, $max_width, 18px, 24px);
   }
   .body__p-header {
-    @include fluid-prop('font-size', $min_width, $max_width, 28px, 36px);
+    @include fluid-prop("font-size", $min_width, $max_width, 28px, 36px);
     font-weight: 800;
     line-height: 1;
     margin-bottom: 10px;
@@ -246,7 +252,7 @@ main.home {
   }
 }
 .logo-font {
-  font-family: 'Barriecito', 'Livvic', sans-serif;
+  font-family: "Barriecito", "Livvic", sans-serif;
   font-size: 120%;
 }
 @keyframes slide-in-top {

@@ -1,18 +1,20 @@
-import React, {useContext, useState, useEffect} from 'react';
-import PieGraph from './PieGraph';
-import {SongHistoryContext} from '../../context/SongHistoryContext';
+import React, { useContext, useState, useEffect } from "react";
+import PieGraph from "./PieGraph";
+import { SongHistoryContext } from "../../context/SongHistoryContext";
 //import {ConfigContext} from '../../context/ConfigContext';
 
 const GenrePie = () => {
   //const {config, configDispatch} = useContext(ConfigContext);
-  const {songHistory} = useContext(SongHistoryContext);
+  const { songHistory } = useContext(SongHistoryContext);
   let [pieData, setPieData] = useState(null);
 
   useEffect(() => {
     let allGenreData = {};
     songHistory.songHistory.forEach((song) => {
       if (song.genre1)
-        allGenreData[song.genre1] = allGenreData[song.genre1] ? allGenreData[song.genre1] + 1 : 1;
+        allGenreData[song.genre1] = allGenreData[song.genre1]
+          ? allGenreData[song.genre1] + 1
+          : 1;
       //if (song.genre2)
       //allGenreData[song.genre2] = allGenreData[song.genre2] ? allGenreData[song.genre2] + 1 : 1;
       //if (song.genre3)
@@ -24,9 +26,9 @@ const GenrePie = () => {
 
     let tempPieData = [];
     for (let genre in allGenreData) {
-      tempPieData.push({name: genre, value: allGenreData[genre]});
+      tempPieData.push({ name: genre, value: allGenreData[genre] });
     }
-    tempPieData = tempPieData.sort(function(a, b) {
+    tempPieData = tempPieData.sort(function (a, b) {
       return b.value - a.value;
     });
     setPieData(tempPieData);

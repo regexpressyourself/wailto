@@ -1,18 +1,18 @@
-import React, {useEffect} from 'react';
-import './Home.scss';
-import {Link} from 'react-router-dom';
-import Footer from './partials/Footer';
-import {X} from 'react-feather';
-import {LineChart, ResponsiveContainer, Line} from 'recharts';
+import React, { useEffect } from "react";
+import "./Home.scss";
+import { Link } from "react-router-dom";
+import Footer from "./partials/Footer";
+import { X } from "react-feather";
+import { LineChart, ResponsiveContainer, Line } from "recharts";
 
 const Home = () => {
   const inlineLogo = <span className="logo-font">WAILto</span>;
 
   useEffect(() => {
     setTimeout(() => {
-      if (localStorage.getItem('wt-username') === null) {
+      if (localStorage.getItem("wt-username") === null) {
         try {
-          document.querySelector('.btn-link--demo').classList.add('entry');
+          document.querySelector(".btn-link--demo").classList.add("entry");
         } catch {
           console.error("can't add demo animation");
         }
@@ -34,12 +34,13 @@ const Home = () => {
           </Link>
           <div
             className="btn-link btn-link--2"
-            onClick={e => {
-              document.querySelector('#get-started').scrollIntoView({
-                behavior: 'smooth',
-                block: 'start',
+            onClick={(e) => {
+              document.querySelector("#get-started").scrollIntoView({
+                behavior: "smooth",
+                block: "start",
               });
-            }}>
+            }}
+          >
             <button className="btn">Learn More</button>
           </div>
         </div>
@@ -48,31 +49,32 @@ const Home = () => {
           <LineChart
             data={[
               {
-                '': 0,
+                "": 0,
               },
               {
-                '': 50,
+                "": 50,
               },
               {
-                '': 35,
+                "": 35,
               },
               {
-                '': 66,
+                "": 66,
               },
               {
-                '': 90,
+                "": 90,
               },
               {
-                '': 60,
+                "": 60,
               },
               {
-                '': 84,
+                "": 84,
               },
-            ]}>
+            ]}
+          >
             }>
             <Line
               type="monotone"
-              dot={{stroke: '#aa5c9f', strokeWidth: 4, r: 10}}
+              dot={{ stroke: "#aa5c9f", strokeWidth: 4, r: 10 }}
               dataKey=""
               stroke="#aa5c9f"
               strokeWidth={10}
@@ -85,11 +87,14 @@ const Home = () => {
           <div className="btn-link btn-link--demo">
             <span
               id="exit-btn"
-              onClick={e => {
-                document.querySelector('.btn-link--demo').classList.remove('entry');
-                localStorage.setItem('wt-username', '');
+              onClick={(e) => {
+                document
+                  .querySelector(".btn-link--demo")
+                  .classList.remove("entry");
+                localStorage.setItem("wt-username", "");
               }}
-              className="exit-btn">
+              className="exit-btn"
+            >
               <X />
             </span>
             <Link to="/zookeeprr">
@@ -106,14 +111,15 @@ const Home = () => {
             What Is <span className="logo-font">{inlineLogo}</span>?
           </h2>
           <p>
-            <span className="body__p-header">{inlineLogo}</span> (or{' '}
+            <span className="body__p-header">{inlineLogo}</span> (or{" "}
             <strong>
               <em>What Am I Listening To</em>
             </strong>
             ) is a way to analyze your music listening history.
             <br />
             <br />
-            Learn about your music listening trends, daily breakdowns, and history.
+            Learn about your music listening trends, daily breakdowns, and
+            history.
           </p>
           <br />
           <div className="header__btn-container">
@@ -126,42 +132,49 @@ const Home = () => {
           <p>
             <span className="body__p-header">
               <span className="logo-font">1. SIGN UP</span> with Last.fm.
-            </span>{' '}
+            </span>{" "}
             <br />
-            <a href="https://www.last.fm/join" rel="noopener noreferrer" target="_blank">
+            <a
+              href="https://www.last.fm/join"
+              rel="noopener noreferrer"
+              target="_blank"
+            >
               (You can do that here)
             </a>
           </p>
           <p>
-            Now, I totally understand if you don't need another service in your life. Feel free to
-            check out <Link to="/zookeeprr">my account's dashboard</Link> if you just want to check
-            out {inlineLogo}
+            Now, I totally understand if you don't need another service in your
+            life. Feel free to check out{" "}
+            <Link to="/zookeeprr">my account's dashboard</Link> if you just want
+            to check out {inlineLogo}
           </p>
           <p className="home__body__123">
             <span className="body__p-header">
-              <span className="logo-font">2. CONNECT</span> your music player to Last.fm.{' '}
+              <span className="logo-font">2. CONNECT</span> your music player to
+              Last.fm.{" "}
             </span>
             <br />
-            (They support a ton of players.{' '}
+            (They support a ton of players.{" "}
             <a
               href="https://www.last.fm/about/trackmymusic"
               rel="noopener noreferrer"
-              target="_blank">
+              target="_blank"
+            >
               Find yours here.
             </a>
-            ) This will enable{' '}
+            ) This will enable{" "}
             <strong>
               <em>scrobbling</em>
-            </strong>{' '}
+            </strong>{" "}
             with Last.fm.
           </p>
           <p>
-            Scrobbling allows {inlineLogo} to access your history for analysis. According to
-            Last.fm:
+            Scrobbling allows {inlineLogo} to access your history for analysis.
+            According to Last.fm:
           </p>
           <blockquote>
-            Scrobbling is when Last.fm tracks the music you listen to and automatically adds it to
-            your music profile.
+            Scrobbling is when Last.fm tracks the music you listen to and
+            automatically adds it to your music profile.
           </blockquote>
 
           <p className="home__body__123">
@@ -170,15 +183,17 @@ const Home = () => {
             </span>
           </p>
           <p>
-            {inlineLogo} needs at least a day of history to really get interesting. In the meantime,
-            feel free to check out <Link to="/zookeeprr">my account's dashboard</Link>.
+            {inlineLogo} needs at least a day of history to really get
+            interesting. In the meantime, feel free to check out{" "}
+            <Link to="/zookeeprr">my account's dashboard</Link>.
           </p>
           <br />
           <br />
           <h2>What Have You Been Listening To?</h2>
           <p className="home__body__123">
             <span className="body__p-header">
-              <span className="logo-font">Ready</span> to see what your music listening looks like?
+              <span className="logo-font">Ready</span> to see what your music
+              listening looks like?
             </span>
           </p>
           <div className="header__btn-container">

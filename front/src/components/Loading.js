@@ -1,5 +1,5 @@
-import React from 'react';
-import './Loading.scss';
+import React from "react";
+import "./Loading.scss";
 
 const Loading = () => {
   return (
@@ -12,6 +12,6 @@ const Loading = () => {
       </h1>
     </>
   );
-}
+};
 
 export default Loading;

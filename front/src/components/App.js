@@ -1,21 +1,24 @@
-import React, {useReducer, useState, useEffect} from 'react';
-import axios from 'axios';
-import {ConfigContext, configReducer} from '../context/ConfigContext';
-import {SongHistoryContext, songHistoryReducer} from '../context/SongHistoryContext';
-import Dashboard from './Dashboard';
-import Nav from './nav/Nav';
-import Footer from './partials/Footer';
-import Loading from './Loading';
-import UserInfo from './UserInfo';
-import FullSongHistory from './modules/FullSongHistory';
-import SongsByDate from './modules/SongsByDate';
-import SongsByDow from './modules/SongsByDow';
-import SongsByHour from './modules/SongsByHour';
-import GenrePie from './modules/GenrePie';
-import Error from './Error';
-import './App.scss';
+import React, { useReducer, useState, useEffect } from "react";
+import axios from "axios";
+import { ConfigContext, configReducer } from "../context/ConfigContext";
+import {
+  SongHistoryContext,
+  songHistoryReducer,
+} from "../context/SongHistoryContext";
+import Dashboard from "./Dashboard";
+import Nav from "./nav/Nav";
+import Footer from "./partials/Footer";
+import Loading from "./Loading";
+import UserInfo from "./UserInfo";
+import FullSongHistory from "./modules/FullSongHistory";
+import SongsByDate from "./modules/SongsByDate";
+import SongsByDow from "./modules/SongsByDow";
+import SongsByHour from "./modules/SongsByHour";
+import GenrePie from "./modules/GenrePie";
+import Error from "./Error";
+import "./App.scss";
 
-const App = ({appState, history}) => {
+const App = ({ appState, history }) => {
   window.scrollTo(0, 0);
   let today = new Date();
   let weekAgo = new Date();
@@ -23,47 +26,54 @@ const App = ({appState, history}) => {
   yesterday.setDate(today.getDate() - 1);
   weekAgo.setDate(today.getDate() - 8);
   let genre2 =
-    localStorage.getItem('wt-genre2') === 'null' ? null : localStorage.getItem('wt-genre2');
+    localStorage.getItem("wt-genre2") === "null"
+      ? null
+      : localStorage.getItem("wt-genre2");
 
   let initialConfig = {
-    prevTimeStart: localStorage.getItem('wt-prevTimeStart') || null,
-    timeStart: localStorage.getItem('wt-timeStart') || weekAgo,
-    timeEnd: localStorage.getItem('wt-timeEnd') || yesterday,
-    username: localStorage.getItem('wt-username') || '',
-    genre: localStorage.getItem('wt-genre') || '',
-    genre2: genre2 || '',
+    prevTimeStart: localStorage.getItem("wt-prevTimeStart") || null,
+    timeStart: localStorage.getItem("wt-timeStart") || weekAgo,
+    timeEnd: localStorage.getItem("wt-timeEnd") || yesterday,
+    username: localStorage.getItem("wt-username") || "",
+    genre: localStorage.getItem("wt-genre") || "",
+    genre2: genre2 || "",
   };
 
   const [config, configDispatch] = useReducer(configReducer, initialConfig);
   const [songHistory, songHistoryDispatch] = useReducer(songHistoryReducer, {});
 
-  if (window.location.href.includes('zookeeprr')) {
-    configDispatch({type: 'PREV_TIME_START', prevTimeStart: initialConfig.prevTimeStart});
-    configDispatch({type: 'TIME_START', timeStart: initialConfig.timeStart});
-    configDispatch({type: 'TIME_END', timeEnd: initialConfig.timeEnd});
-    configDispatch({type: 'GENRE', genre: initialConfig.genre});
-    configDispatch({type: 'USERNAME', username: 'zookeeprr'});
-    configDispatch({type: 'APP_STATE', appState: 'dashboard'});
+  if (window.location.href.includes("zookeeprr")) {
     configDispatch({
-      type: 'TRIGGER_STATE_UPDATE',
+      type: "PREV_TIME_START",
+      prevTimeStart: initialConfig.prevTimeStart,
+    });
+    configDispatch({ type: "TIME_START", timeStart: initialConfig.timeStart });
+    configDispatch({ type: "TIME_END", timeEnd: initialConfig.timeEnd });
+    configDispatch({ type: "GENRE", genre: initialConfig.genre });
+    configDispatch({ type: "USERNAME", username: "zookeeprr" });
+    configDispatch({ type: "APP_STATE", appState: "dashboard" });
+    configDispatch({
+      type: "TRIGGER_STATE_UPDATE",
       triggerStateUpdate: true,
     });
-    history.replace('/dashboard');
+    history.replace("/dashboard");
   }
 
   let [content, setContent] = useState(null);
   let [userInfo, setUserInfo] = useState(null);
 
   const appIsPopulated =
-    config.appState || !config.appState === 'tutorial' || !config.appState === 'updating';
+    config.appState ||
+    !config.appState === "tutorial" ||
+    !config.appState === "updating";
 
   const footer = appIsPopulated ? <Footer /> : null;
 
   useEffect(() => {
     if (appState && appState !== config.appState) {
-      configDispatch({type: 'APP_STATE', appState: appState});
+      configDispatch({ type: "APP_STATE", appState: appState });
       configDispatch({
-        type: 'TRIGGER_STATE_UPDATE',
+        type: "TRIGGER_STATE_UPDATE",
         triggerStateUpdate: true,
       });
     }
@@ -76,7 +86,7 @@ const App = ({appState, history}) => {
     setUserInfo(<UserInfo />);
     let historyRequests = [];
     historyRequests.push(
-      axios.get('/history', {
+      axios.get("/history", {
         params: {
           username: config.username,
           from: config.unixTimeStart,
@@ -86,7 +96,7 @@ const App = ({appState, history}) => {
     );
     if (config.unixPrevTimeStart) {
       historyRequests.push(
-        axios.get('/history', {
+        axios.get("/history", {
           params: {
             username: config.username,
             from: config.unixPrevTimeStart,
@@ -99,57 +109,66 @@ const App = ({appState, history}) => {
 
     Promise.all(historyRequests)
       .then(([data, prevData]) => {
-        songHistoryDispatch({type: 'SONG_HISTORY', songHistory: data.data});
+        songHistoryDispatch({ type: "SONG_HISTORY", songHistory: data.data });
         if (prevData) {
-          songHistoryDispatch({type: 'PREV_SONG_HISTORY', prevSongHistory: prevData.data});
+          songHistoryDispatch({
+            type: "PREV_SONG_HISTORY",
+            prevSongHistory: prevData.data,
+          });
         }
 
-        configDispatch({type: 'ABBREVIATED', appState: false});
+        configDispatch({ type: "ABBREVIATED", appState: false });
         switch (config.appState) {
-          case 'updating':
+          case "updating":
             setContent(<Loading />);
             break;
-          case 'dashboard':
+          case "dashboard":
             setContent(<Dashboard />);
             break;
-          case 'dow':
+          case "dow":
             setContent(<SongsByDow />);
             break;
-          case 'date':
+          case "date":
             setContent(<SongsByDate />);
             break;
-          case 'hour':
+          case "hour":
             setContent(<SongsByHour />);
             break;
-          case 'history':
+          case "history":
             setContent(<FullSongHistory />);
             break;
-          case 'genre-pie':
-            configDispatch({type: 'ABBREVIATED', abbreviated: true});
+          case "genre-pie":
+            configDispatch({ type: "ABBREVIATED", abbreviated: true });
             setContent(<GenrePie />);
             break;
-          case 'tutorial':
+          case "tutorial":
           default:
             setContent(null);
         }
         configDispatch({
-          type: 'TRIGGER_STATE_UPDATE',
+          type: "TRIGGER_STATE_UPDATE",
           triggerStateUpdate: false,
         });
       })
       .catch((e) => {
         try {
-          document.querySelector('footer').style.display = 'none';
-          document.querySelector('.main-header').style.display = 'none';
-          document.querySelector('.user-info').style.display = 'none';
+          document.querySelector("footer").style.display = "none";
+          document.querySelector(".main-header").style.display = "none";
+          document.querySelector(".user-info").style.display = "none";
         } catch (e) {}
         console.log(e);
         if (e.response && e.response.status !== 502) {
           setContent(
-            <Error errorMessage={"Actually we have no idea. Our bad. Maybe the server's down?"} />,
+            <Error
+              errorMessage={
+                "Actually we have no idea. Our bad. Maybe the server's down?"
+              }
+            />,
           );
         } else {
-          setContent(<Error errorMessage={e.response ? e.response.data : null} />);
+          setContent(
+            <Error errorMessage={e.response ? e.response.data : null} />,
+          );
         }
       });
   }, [
@@ -164,20 +183,22 @@ const App = ({appState, history}) => {
 
   return (
     <>
-      <main className={`app ${!appIsPopulated ? 'app--unpopulated' : ''}`}>
-        <ConfigContext.Provider value={{config, configDispatch}}>
-          <SongHistoryContext.Provider value={{songHistory, songHistoryDispatch}}>
+      <main className={`app ${!appIsPopulated ? "app--unpopulated" : ""}`}>
+        <ConfigContext.Provider value={{ config, configDispatch }}>
+          <SongHistoryContext.Provider
+            value={{ songHistory, songHistoryDispatch }}
+          >
             {userInfo}
             {content}
             <Nav
               defaultStart={initialConfig.timeStart}
               defaultEnd={initialConfig.timeEnd}
-              showMessages={!config.appState || config.appState === 'home'}
+              showMessages={!config.appState || config.appState === "home"}
               showBack={
-                config.appState === 'dow' ||
-                config.appState === 'date' ||
-                config.appState === 'hour' ||
-                config.appState === 'history'
+                config.appState === "dow" ||
+                config.appState === "date" ||
+                config.appState === "hour" ||
+                config.appState === "history"
               }
             />
           </SongHistoryContext.Provider>

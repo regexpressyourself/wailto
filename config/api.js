@@ -1,13 +1,13 @@
-const axios = require('axios');
-const stringHash = require('string-hash');
-const {resetDate} = require('./dates');
-const {GENRELIST} = require('./constants');
-require('dotenv').config();
+const axios = require("axios");
+const stringHash = require("string-hash");
+const { resetDate } = require("./dates");
+const { GENRELIST } = require("./constants");
+require("dotenv").config();
 const LASTFM_KEY = process.env.LASTFM_KEY;
 
-const removeDuplicates = array => {
+const removeDuplicates = (array) => {
   const reducedArray = array.reduce((acc, current) => {
-    const x = acc.find(item => item.id === current.id);
+    const x = acc.find((item) => item.id === current.id);
     if (!x) {
       return acc.concat([current]);
     } else {
@@ -17,29 +17,29 @@ const removeDuplicates = array => {
   return reducedArray;
 };
 
-const fetchArtistInfo = async function(artistInfoHash) {
-  console.log('fetching tags');
+const fetchArtistInfo = async function (artistInfoHash) {
+  console.log("fetching tags");
 
   let artistInfoRequests = [];
   for (let artist in artistInfoHash) {
-    console.log('getting artist: ' + artist);
+    console.log("getting artist: " + artist);
     artistInfoRequests.push(
-      axios.get('https://ws.audioscrobbler.com/2.0/', {
+      axios.get("https://ws.audioscrobbler.com/2.0/", {
         params: {
-          method: 'artist.gettoptags',
+          method: "artist.gettoptags",
           artist: artist,
           mbid: artistInfoHash[artist].id,
           api_key: LASTFM_KEY,
-          format: 'json',
+          format: "json",
         },
       }),
     );
   }
 
   artistInfoHash = await Promise.all(artistInfoRequests)
-    .then(async allArtistInfo => {
-      console.log('batched artist info requests succeeded:');
-      console.log('getting top tags');
+    .then(async (allArtistInfo) => {
+      console.log("batched artist info requests succeeded:");
+      console.log("getting top tags");
       for (let artistInfoResponse of allArtistInfo) {
         artistInfoResponse = artistInfoResponse.data;
         if (artistInfoResponse.toptags) {
@@ -55,7 +55,7 @@ const fetchArtistInfo = async function(artistInfoHash) {
            **/
 
           //get artist name
-          let artistName = artistInfoResponse.toptags['@attr'].artist;
+          let artistName = artistInfoResponse.toptags["@attr"].artist;
           // get top 4 approved genres
           let artistTags = artistInfoResponse.toptags.tag;
           let topTags = [];
@@ -74,31 +74,31 @@ const fetchArtistInfo = async function(artistInfoHash) {
         }
       }
 
-      console.log('got artists');
+      console.log("got artists");
       return artistInfoHash;
     })
-    .catch(e => {
-      console.error('error waiting on batched artist info request ');
+    .catch((e) => {
+      console.error("error waiting on batched artist info request ");
       console.error(e);
       reject(e);
     });
   return artistInfoHash;
 };
 
-const fetchTracks = async function(username, key, from, to, page = 1) {
-  console.log('page %i: fetching tracks', page);
+const fetchTracks = async function (username, key, from, to, page = 1) {
+  console.log("page %i: fetching tracks", page);
 
   let lastFMData;
   try {
-    lastFMData = await axios.get('https://ws.audioscrobbler.com/2.0/', {
+    lastFMData = await axios.get("https://ws.audioscrobbler.com/2.0/", {
       params: {
-        method: 'user.getRecentTracks',
+        method: "user.getRecentTracks",
         user: username,
         api_key: key,
         limit: 200,
         extended: 0,
         page: 1,
-        format: 'json',
+        format: "json",
         to: to,
         from: from,
         page: page,
@@ -106,33 +106,33 @@ const fetchTracks = async function(username, key, from, to, page = 1) {
     });
     lastFMData = lastFMData.data;
   } catch (error) {
-    console.error('ERROR: ', error);
+    console.error("ERROR: ", error);
     throw new Error(error);
   }
 
-  console.log('page %i: got tracks', page);
+  console.log("page %i: got tracks", page);
 
   if (!lastFMData.recenttracks) {
-    console.error('ERROR: no recent tracks');
+    console.error("ERROR: no recent tracks");
     return false;
   }
-  let recentTracks = lastFMData.recenttracks.track.map(track => {
+  let recentTracks = lastFMData.recenttracks.track.map((track) => {
     return serializeLastFmData(track, username);
   });
-  let totalPages = lastFMData.recenttracks['@attr'].totalPages;
+  let totalPages = lastFMData.recenttracks["@attr"].totalPages;
 
   let subsequentRequests = [];
   if (page === 1 && page < totalPages) {
-    console.log('HIT LIMIT -- getting more tracks ');
+    console.log("HIT LIMIT -- getting more tracks ");
     while (page < totalPages) {
       page = page + 1;
       console.log(
-        `getting page ${page} of ${lastFMData.recenttracks['@attr'].totalPages}`,
+        `getting page ${page} of ${lastFMData.recenttracks["@attr"].totalPages}`,
       );
       try {
         subsequentRequests.push(fetchTracks(username, key, from, to, page));
       } catch (error) {
-        console.error('ERROR: ', error);
+        console.error("ERROR: ", error);
         throw new Error(error);
         return false;
       }
@@ -141,25 +141,25 @@ const fetchTracks = async function(username, key, from, to, page = 1) {
 
   if (subsequentRequests.length) {
     recentTracks = await Promise.all(subsequentRequests)
-      .then(allTrackLists => {
+      .then((allTrackLists) => {
         // allTrackLists is an array containing the "page"s of tracks from LastFM
-        console.log('batched track requests succeeded:');
+        console.log("batched track requests succeeded:");
         for (let trackList of allTrackLists) {
           console.log(`\tbatch length: ${trackList.length}`);
           recentTracks = recentTracks.concat(trackList);
           recentTracks = removeDuplicates(recentTracks);
         }
-        console.log('recentTracks.length');
+        console.log("recentTracks.length");
         console.log(recentTracks.length);
         return recentTracks;
       })
-      .catch(e => {
-        console.error('ERROR: ', 'error waiting on batched track request ');
-        console.error('ERROR: ', e);
+      .catch((e) => {
+        console.error("ERROR: ", "error waiting on batched track request ");
+        console.error("ERROR: ", e);
         reject(e);
       });
   }
-  console.log('Full track list length:');
+  console.log("Full track list length:");
   console.log(recentTracks.length);
   return recentTracks;
 };
@@ -167,9 +167,9 @@ const fetchTracks = async function(username, key, from, to, page = 1) {
 const serializeLastFmData = (track, username) => {
   let id;
   if (track.mbid) {
-    id = stringHash(track.mbid + username + (track.date ? track.date.uts : ''));
+    id = stringHash(track.mbid + username + (track.date ? track.date.uts : ""));
   } else if (track.artist) {
-    id = stringHash(track.name + track.artist['#text']);
+    id = stringHash(track.name + track.artist["#text"]);
   } else {
     id = stringHash(track.name);
   }
@@ -177,33 +177,33 @@ const serializeLastFmData = (track, username) => {
     name: track.name,
     id: id,
     url: track.url,
-    date: track.date ? track.date.uts : '',
-    album: track.album ? track.album['#text'] : '',
-    image: track.image ? track.image[track.image.length - 1]['#text'] : '',
-    artist: track.artist ? track.artist['#text'] : '',
-    artistid: track.artist ? track.artist['mbid'] : '',
+    date: track.date ? track.date.uts : "",
+    album: track.album ? track.album["#text"] : "",
+    image: track.image ? track.image[track.image.length - 1]["#text"] : "",
+    artist: track.artist ? track.artist["#text"] : "",
+    artistid: track.artist ? track.artist["mbid"] : "",
   };
 
   return newTrack;
 };
 
-const attachArtistInfo = async recentTracks => {
+const attachArtistInfo = async (recentTracks) => {
   let artistInfoHash = {};
   for (let track of recentTracks) {
-    artistInfoHash[track.artist] = {id: track.artistid};
+    artistInfoHash[track.artist] = { id: track.artistid };
   }
 
   artistInfoHash = await fetchArtistInfo(artistInfoHash);
 
-  recentTracks = recentTracks.map(track => {
+  recentTracks = recentTracks.map((track) => {
     let genres = artistInfoHash[track.artist].genres;
     if (!genres) {
       return track;
     }
-    track.genre1 = genres[0] ? genres[0] : '';
-    track.genre2 = genres[1] ? genres[1] : '';
-    track.genre3 = genres[2] ? genres[2] : '';
-    track.genre4 = genres[3] ? genres[3] : '';
+    track.genre1 = genres[0] ? genres[0] : "";
+    track.genre2 = genres[1] ? genres[1] : "";
+    track.genre3 = genres[2] ? genres[2] : "";
+    track.genre4 = genres[3] ? genres[3] : "";
     return track;
   });
 
@@ -226,8 +226,10 @@ const fetchAndSaveTracks = async (
    * more fun stuff to do.
    */
   let missingFrom = missingValues[0];
-  let missingTo = resetDate(missingValues[missingValues.length - 1], true)
-    .unixTime;
+  let missingTo = resetDate(
+    missingValues[missingValues.length - 1],
+    true,
+  ).unixTime;
 
   let recentTracks;
 
@@ -239,14 +241,14 @@ const fetchAndSaveTracks = async (
       missingTo,
     );
   } catch (error) {
-    console.error('ERROR: ', error.stack);
+    console.error("ERROR: ", error.stack);
     return false;
   }
 
   try {
     recentTracks = await attachArtistInfo(recentTracks);
   } catch (error) {
-    console.error('ERROR: ', error.stack);
+    console.error("ERROR: ", error.stack);
     return false;
   }
 

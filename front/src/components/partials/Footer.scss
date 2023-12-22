@@ -35,7 +35,7 @@ footer {
   margin: -10vh 0 0;
   flex-wrap: wrap;
   border-top: 3px solid rgba(170, 92, 159, 0.5);
-  background-color: #FFFAEC;
+  background-color: #fffaec;
   @media screen and (max-width: 768px) {
     flex-direction: column;
     justify-content: center;
@@ -52,15 +52,15 @@ footer {
   }
 
   .footer-p {
-    @include fluid-prop('font-size', $min_width, $max_width, 16px, 24px);
+    @include fluid-prop("font-size", $min_width, $max_width, 16px, 24px);
   }
 
   .css-logo {
     animation: none;
-    @include fluid-prop('font-size', $min_width, $max_width, 80px, 120px);
+    @include fluid-prop("font-size", $min_width, $max_width, 80px, 120px);
   }
   .css-logo__to {
-    @include fluid-prop('font-size', $min_width, $max_width, 40px, 60px);
+    @include fluid-prop("font-size", $min_width, $max_width, 40px, 60px);
   }
   .smessina-info {
     text-align: right;

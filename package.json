@@ -24,7 +24,7 @@
     "path": "^0.12.7",
     "pg": "^8.7.3",
     "pg-hstore": "^2.3.4",
-    "recharts": "^2.10.3",
+    "recharts": "^1.6.2",
     "request": "^2.88.0",
     "sequelize": "^6.20.1",
     "sequelize-cli": "^6.4.1",

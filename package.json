@@ -1,11 +1,11 @@
 {
   "name": "wailto",
   "version": "1.0.0",
-  "main": "app.js",
+  "main": "wailto.js",
   "author": "Sam Messina",
   "license": "MIT",
   "scripts": {
-    "start": "node wailto"
+  "start": "node wailto.js"
   },
   "dependencies": {
     "@babel/runtime": "^7.5.5",

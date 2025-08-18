@@ -3,11 +3,13 @@ const stringHash = require("string-hash");
 require("dotenv").config();
 const DB_USER = process.env.DB_USER;
 const DB_PW = process.env.DB_PW;
+const DB_NAME = process.env.DB_NAME;
+const DB_HOST = process.env.DB_HOST;
 const Sequelize = require("sequelize");
 const Op = Sequelize.Op;
 
-const sequelize = new Sequelize("wailto", DB_USER, DB_PW, {
-  host: "localhost",
+const sequelize = new Sequelize(DB_NAME, DB_USER, DB_PW, {
+  host: DB_HOST,
   dialect: "postgres",
   logging: false,
   define: {

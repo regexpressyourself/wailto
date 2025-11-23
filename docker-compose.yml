@@ -1,31 +1,79 @@
 version: '3.8'
+
 services:
   wailto-web:
     build: .
-    ports:
-      - "3500:3500"
+    container_name: wailto-web
+    restart: unless-stopped
+    env_file:
+      - .env
     environment:
-      - PORT=3500
+      - NODE_ENV=production
+      - PORT=3000                 # match whatever the app actually listens on
       - DB_HOST=db
       - DB_USER=postgres
       - DB_PW=postgres
       - DB_NAME=wailtodb
       - DATABASE_URL=postgresql://postgres:postgres@db:5432/wailtodb
     depends_on:
-      - db
-    restart: unless-stopped
+      db:
+        condition: service_healthy
+    networks:
+      - app-network
+      - proxy
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.wailto.rule=Host(`${WAILTO_DOMAIN}`)"
+      - "traefik.http.routers.wailto.entrypoints=websecure"
+      - "traefik.http.routers.wailto.tls.certresolver=le"
+      - "traefik.http.routers.wailto.middlewares=secure-headers@file,compress@file,rate-limit@file"
+      - "traefik.http.services.wailto.loadbalancer.server.port=3000"
+    #labels:
+      #- "traefik.enable=true"
+
+      ## Router for HTTPS
+      #- "traefik.http.routers.wailto.rule=Host(`${WAILTO_DOMAIN}`)"
+      #- "traefik.http.routers.wailto.entrypoints=websecure"
+      #- "traefik.http.routers.wailto.tls.certresolver=le"
+
+      ## Shared middlewares from traefik_dynamic.yml
+      #- "traefik.http.routers.wailto.middlewares=secure-headers@file,compress@file,rate-limit@file"
+
+      ## Internal port the app listens on INSIDE the container
+      #- "traefik.http.services.wailto.loadbalancer.server.port=3000"
+
+    # Optional debug port, leave commented so it’s not exposed publicly
+    #ports:
+    #  - "3000:3000"
 
   db:
     image: postgres:16-alpine
+    container_name: wailto-db
+    restart: unless-stopped
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
       - POSTGRES_DB=wailtodb
-    ports:
-      - "5433:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
-    restart: unless-stopped
+    networks:
+      - app-network
+    # Keep DB private (no host port)
+    #ports:
+    #  - "5433:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d wailtodb || exit 1"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+      start_period: 5s
+
+networks:
+  app-network:
+    driver: bridge
+  proxy:
+    external: true
+    name: proxy
 
 volumes:
   pgdata:

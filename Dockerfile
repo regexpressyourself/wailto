@@ -2,20 +2,23 @@ FROM node:20-alpine
 
 WORKDIR /app
 
+# Build tools for native deps (node-sass)
+RUN apk add --no-cache python3 make g++
 
-# Install common dependencies (optional)
-# RUN apk add --no-cache python3 make g++
-
-# Copy package files by default (override in app Dockerfiles)
+# Install server dependencies
 COPY package*.json ./
+RUN npm ci
 
-# Install dependencies (override in app Dockerfiles if needed)
-RUN if [ -f package-lock.json ]; then npm ci; else npm install; fi
+# Install frontend dependencies separately to leverage layer caching
+COPY front/package*.json front/
+RUN cd front && npm ci
 
-
-# Copy app source (override in app Dockerfiles)
+# Copy application code
 COPY . .
 
-EXPOSE 3500
+# Build the frontend so the server can serve /front/build
+RUN cd front && npm run build
+
+EXPOSE 3000
 
 CMD ["node", "wailto.js"]
